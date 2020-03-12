@@ -1,6 +1,6 @@
 {
     "name": "codezilla-hours",
-    "homepage": "http://codezilla-nl.github.io/hours",
+    "homepage": "https://codezilla-nl.github.io/hours",
     "version": "0.1.0",
     "private": true,
     "dependencies": {

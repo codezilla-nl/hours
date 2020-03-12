@@ -25,7 +25,7 @@ class HoursGrid extends React.Component {
             data: {
                 days: this.getDaysInMonth(0, 2020),
                 expandColumns: false,
-                month: new Date.getMonth(),
+                month: new Date().getMonth(),
                 year: 2020
             }
         };
@@ -80,8 +80,6 @@ class HoursGrid extends React.Component {
                 explanation: ""
             });
         }
-
-        console.log(rows);
 
         return rows;
     }

@@ -19,21 +19,30 @@ import TableFooter from "@material-ui/core/TableFooter";
 import * as HoursConstants from "./hoursConstants";
 
 class HoursGrid extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            data: {
-                days: this.getDaysInMonth(0, 2020),
-                expandColumns: false,
-                month: new Date().getMonth() + 1,
-                year: 2020
-            }
-        };
-    }
-
     columns = HoursConstants.columns;
     months = HoursConstants.months;
     years = HoursConstants.years;
+    isTemplate = false;
+
+    constructor(props) {
+        super(props);
+        this.init(props.type);
+    }
+
+    init(type) {
+        this.isTemplate = type === "template";
+        const currentYear = new Date().getFullYear();
+        const currentMonth = new Date().getMonth() + 1;
+
+        this.state = {
+            data: {
+                days: this.getDaysInMonth(0, currentYear),
+                expandColumns: this.isTemplate,
+                month: currentMonth,
+                year: currentYear
+            }
+        };
+    }
 
     handleChange(value, column, day) {
         var days = this.state.data.days;
@@ -96,7 +105,7 @@ class HoursGrid extends React.Component {
     }
 
     isNotWeekend(dayOfTheWeek) {
-        return dayOfTheWeek !== 0 && dayOfTheWeek !== 6;
+        return (dayOfTheWeek !== 0 && dayOfTheWeek !== 6) || this.isTemplate;
     }
 
     hoursCell(row, column) {
@@ -128,74 +137,81 @@ class HoursGrid extends React.Component {
     render() {
         return (
             <form noValidate autoComplete="off">
-                <Toolbar>
-                    <Grid
-                        container
-                        direction="row"
-                        justify="space-between"
-                        alignItems="flex-start"
-                    >
-                        <div>
-                            <FormControl>
-                                <Select
-                                    labelId="select-month-label"
-                                    id="select-month-label"
-                                    value={this.state.data.month}
-                                    onChange={event =>
-                                        this.setMonth(
-                                            event.target.value,
-                                            this.state.data.year
-                                        )
-                                    }
-                                >
-                                    {this.months.map(month => {
-                                        return (
-                                            <MenuItem
-                                                value={month.id}
-                                                key={month.id}
-                                            >
-                                                {month.description}
-                                            </MenuItem>
-                                        );
-                                    })}
-                                </Select>
-                            </FormControl>
-                            <FormControl>
-                                <Select
-                                    labelId="select-year-label"
-                                    id="select-year-label"
-                                    value={this.state.data.year}
-                                    onChange={event =>
-                                        this.setMonth(
-                                            this.state.data.month,
-                                            event.target.value
-                                        )
-                                    }
-                                >
-                                    {this.years.map(year => {
-                                        return (
-                                            <MenuItem value={year} key={year}>
-                                                {year}
-                                            </MenuItem>
-                                        );
-                                    })}
-                                </Select>
-                            </FormControl>
-                        </div>
-                        <FormControlLabel
-                            control={
-                                <Switch
-                                    checked={this.state.data.expandColumns}
-                                    onChange={event =>
-                                        this.expandColumns(event.target.checked)
-                                    }
-                                    color="primary"
-                                />
-                            }
-                            label="Toon alle velden"
-                        />
-                    </Grid>
-                </Toolbar>
+                {!this.isTemplate ? (
+                    <Toolbar>
+                        <Grid
+                            container
+                            direction="row"
+                            justify="space-between"
+                            alignItems="flex-start"
+                        >
+                            <div>
+                                <FormControl>
+                                    <Select
+                                        labelId="select-month-label"
+                                        id="select-month-label"
+                                        value={this.state.data.month}
+                                        onChange={event =>
+                                            this.setMonth(
+                                                event.target.value,
+                                                this.state.data.year
+                                            )
+                                        }
+                                    >
+                                        {this.months.map(month => {
+                                            return (
+                                                <MenuItem
+                                                    value={month.id}
+                                                    key={month.id}
+                                                >
+                                                    {month.description}
+                                                </MenuItem>
+                                            );
+                                        })}
+                                    </Select>
+                                </FormControl>
+                                <FormControl>
+                                    <Select
+                                        labelId="select-year-label"
+                                        id="select-year-label"
+                                        value={this.state.data.year}
+                                        onChange={event =>
+                                            this.setMonth(
+                                                this.state.data.month,
+                                                event.target.value
+                                            )
+                                        }
+                                    >
+                                        {this.years.map(year => {
+                                            return (
+                                                <MenuItem
+                                                    value={year}
+                                                    key={year}
+                                                >
+                                                    {year}
+                                                </MenuItem>
+                                            );
+                                        })}
+                                    </Select>
+                                </FormControl>
+                            </div>
+                            <FormControlLabel
+                                control={
+                                    <Switch
+                                        checked={this.state.data.expandColumns}
+                                        onChange={event =>
+                                            this.expandColumns(
+                                                event.target.checked
+                                            )
+                                        }
+                                        color="primary"
+                                    />
+                                }
+                                label="Toon alle velden"
+                            />
+                        </Grid>
+                    </Toolbar>
+                ) : null}
                 <TableContainer component={Paper} className="hoursGrid">
                     <Table stickyHeader size="small" aria-label="simple table">
                         <TableHead>

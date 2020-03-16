@@ -1,4 +1,10 @@
 import React from "react";
+import {
+    BrowserRouter as Router,
+    Switch,
+    Route,
+    NavLink
+} from "react-router-dom";
 import clsx from "clsx";
 import { makeStyles } from "@material-ui/core/styles";
 import Drawer from "@material-ui/core/Drawer";
@@ -18,6 +24,10 @@ const useStyles = makeStyles(theme => ({
     root: {
         display: "flex"
     },
+    activeItem: {
+        backgroundColor: theme.palette.primary[100]
+    },
+    item: {},
     appBar: {
         backgroundColor: "#67d518",
         zIndex: theme.zIndex.drawer + 1,
@@ -81,34 +91,54 @@ export default function MiniDrawer() {
 
     return (
         <div className={classes.root}>
-            <CssBaseline />
-            <Drawer
-                variant="permanent"
-                className={clsx(classes.drawer, {
-                    [classes.drawerOpen]: open,
-                    [classes.drawerClose]: !open
-                })}
-                classes={{
-                    paper: clsx({
+            <Router>
+                <CssBaseline />
+                <Drawer
+                    variant="permanent"
+                    className={clsx(classes.drawer, {
                         [classes.drawerOpen]: open,
                         [classes.drawerClose]: !open
-                    })
-                }}
-            >
-                <div className={classes.toolbar}>CODEZILLA Hours</div>
-                <Divider />
-                <List>
-                    <ListItem button key="hours">
-                        <ListItemIcon>
-                            <GridOn />
-                        </ListItemIcon>
-                        <ListItemText primary="hours" />
-                    </ListItem>
-                </List>
-            </Drawer>
-            <main className={classes.content}>
-                <HoursGrid />
-            </main>
+                    })}
+                    classes={{
+                        paper: clsx({
+                            [classes.drawerOpen]: open,
+                            [classes.drawerClose]: !open
+                        })
+                    }}
+                >
+                    <div className={classes.toolbar}>CODEZILLA Hours</div>
+                    <Divider />
+                    <List>
+                        <ListItem component={NavLink} button key="hours" to="/">
+                            <ListItemIcon>
+                                <GridOn />
+                            </ListItemIcon>
+                            <ListItemText primary="Maand" />
+                        </ListItem>
+                        <ListItem
+                            component={NavLink}
+                            button
+                            key="template"
+                            to="/template"
+                        >
+                            <ListItemIcon>
+                                <GridOn />
+                            </ListItemIcon>
+                            <ListItemText primary="Template" />
+                        </ListItem>
+                    </List>
+                </Drawer>
+                <main className={classes.content}>
+                    <Switch>
+                        <Route exact path="/">
+                            <HoursGrid type="month" />
+                        </Route>
+                        <Route path="/template">
+                            <HoursGrid type="template" />
+                        </Route>
+                    </Switch>
+                </main>
+            </Router>
         </div>
     );
 }

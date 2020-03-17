@@ -1,5 +1,6 @@
 import React from "react";
 import Table from "@material-ui/core/Table";
+import Button from "@material-ui/core/Button";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
 import TableContainer from "@material-ui/core/TableContainer";
@@ -9,6 +10,7 @@ import TextField from "@material-ui/core/TextField";
 import Grid from "@material-ui/core/Grid";
 import FormControl from "@material-ui/core/FormControl";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
+import InputLabel from "@material-ui/core/InputLabel";
 import MenuItem from "@material-ui/core/MenuItem";
 import Select from "@material-ui/core/Select";
 import Switch from "@material-ui/core/Switch";
@@ -26,20 +28,23 @@ class HoursGrid extends React.Component {
 
     constructor(props) {
         super(props);
-        this.init(props.type);
-    }
 
-    init(type) {
-        this.isTemplate = type === "template";
+        this.isTemplate = props.type === "template";
         const currentYear = new Date().getFullYear();
         const currentMonth = new Date().getMonth() + 1;
+
+        this.submitHours = this.submitHours.bind(this);
+        this.handleClientInput = this.handleClientInput.bind(this);
+        this.handleProjectInput = this.handleProjectInput.bind(this);
 
         this.state = {
             data: {
                 days: this.getDaysInMonth(0, currentYear),
                 expandColumns: this.isTemplate,
                 month: currentMonth,
-                year: currentYear
+                year: currentYear,
+                client: "",
+                project: ""
             }
         };
     }
@@ -134,67 +139,86 @@ class HoursGrid extends React.Component {
         );
     }
 
+    handleClientInput(client) {
+        this.setState({ ...this.state.data, client: client });
+    }
+
+    handleProjectInput(project) {
+        this.setState({ ...this.state.data, project: project });
+    }
+
+    submitHours() {
+        console.log(this.state);
+    }
+
     render() {
         return (
             <form noValidate autoComplete="off">
                 {!this.isTemplate ? (
                     <Toolbar>
-                        <Grid
-                            container
-                            direction="row"
-                            justify="space-between"
-                            alignItems="flex-start"
-                        >
-                            <div>
-                                <FormControl>
-                                    <Select
-                                        labelId="select-month-label"
-                                        id="select-month-label"
-                                        value={this.state.data.month}
-                                        onChange={event =>
-                                            this.setMonth(
-                                                event.target.value,
-                                                this.state.data.year
-                                            )
-                                        }
-                                    >
-                                        {this.months.map(month => {
-                                            return (
-                                                <MenuItem
-                                                    value={month.id}
-                                                    key={month.id}
-                                                >
-                                                    {month.description}
-                                                </MenuItem>
-                                            );
-                                        })}
-                                    </Select>
-                                </FormControl>
-                                <FormControl>
-                                    <Select
-                                        labelId="select-year-label"
-                                        id="select-year-label"
-                                        value={this.state.data.year}
-                                        onChange={event =>
-                                            this.setMonth(
-                                                this.state.data.month,
-                                                event.target.value
-                                            )
-                                        }
-                                    >
-                                        {this.years.map(year => {
-                                            return (
-                                                <MenuItem
-                                                    value={year}
-                                                    key={year}
-                                                >
-                                                    {year}
-                                                </MenuItem>
-                                            );
-                                        })}
-                                    </Select>
-                                </FormControl>
-                            </div>
+                        <Grid container direction="row" alignItems="flex-start">
+                            <FormControl>
+                                <InputLabel id="select-month-label">
+                                    Maand
+                                </InputLabel>
+                                <Select
+                                    labelId="select-month-label"
+                                    id="select-month-label"
+                                    value={this.state.data.month}
+                                    onChange={event =>
+                                        this.setMonth(
+                                            event.target.value,
+                                            this.state.data.year
+                                        )
+                                    }
+                                >
+                                    {this.months.map(month => {
+                                        return (
+                                            <MenuItem
+                                                value={month.id}
+                                                key={month.id}
+                                            >
+                                                {month.description}
+                                            </MenuItem>
+                                        );
+                                    })}
+                                </Select>
+                            </FormControl>
+                            <FormControl>
+                                <InputLabel id="select-year-label">
+                                    Jaar
+                                </InputLabel>
+                                <Select
+                                    labelId="select-year-label"
+                                    id="select-year-label"
+                                    value={this.state.data.year}
+                                    onChange={event =>
+                                        this.setMonth(
+                                            this.state.data.month,
+                                            event.target.value
+                                        )
+                                    }
+                                >
+                                    {this.years.map(year => {
+                                        return (
+                                            <MenuItem value={year} key={year}>
+                                                {year}
+                                            </MenuItem>
+                                        );
+                                    })}
+                                </Select>
+                            </FormControl>
+                            <TextField
+                                id="client"
+                                label="Klant"
+                                onChange={this.handleClientInput}
+                            />
+                            <TextField
+                                id="project"
+                                label="Project"
+                                onChange={this.handleProjectInput}
+                            />
+
                             <FormControlLabel
                                 control={
                                     <Switch
@@ -209,6 +233,13 @@ class HoursGrid extends React.Component {
                                 }
                                 label="Toon alle velden"
                             />
+                            <Button
+                                variant="contained"
+                                color="primary"
+                                onClick={this.submitHours}
+                            >
+                                Verstuur
+                            </Button>
                         </Grid>
                     </Toolbar>
                 ) : null}

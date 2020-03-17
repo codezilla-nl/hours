@@ -15,8 +15,12 @@ import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
 import GridOn from "@material-ui/icons/GridOn";
+import AccountCircle from "@material-ui/icons/AccountCircle";
+import BookmarkBorder from "@material-ui/icons/BookmarkBorder";
+import Typography from "@material-ui/core/Typography";
 
 import HoursGrid from "./hours/hoursGrid";
+import Profile from "./profile/profile";
 
 const drawerWidth = 240;
 
@@ -28,22 +32,6 @@ const useStyles = makeStyles(theme => ({
         backgroundColor: theme.palette.primary[100]
     },
     item: {},
-    appBar: {
-        backgroundColor: "#67d518",
-        zIndex: theme.zIndex.drawer + 1,
-        transition: theme.transitions.create(["width", "margin"], {
-            easing: theme.transitions.easing.sharp,
-            duration: theme.transitions.duration.leavingScreen
-        })
-    },
-    appBarShift: {
-        marginLeft: drawerWidth,
-        width: `calc(100% - ${drawerWidth}px)`,
-        transition: theme.transitions.create(["width", "margin"], {
-            easing: theme.transitions.easing.sharp,
-            duration: theme.transitions.duration.enteringScreen
-        })
-    },
     menuButton: {
         marginRight: 36
     },
@@ -82,6 +70,9 @@ const useStyles = makeStyles(theme => ({
     },
     content: {
         flexGrow: 1
+    },
+    title: {
+        margin: theme.spacing(0, 1)
     }
 }));
 
@@ -109,6 +100,17 @@ export default function MiniDrawer() {
                     <div className={classes.toolbar}>CODEZILLA Hours</div>
                     <Divider />
                     <List>
+                        <ListItem
+                            component={NavLink}
+                            button
+                            key="profile"
+                            to="/profile"
+                        >
+                            <ListItemIcon>
+                                <AccountCircle />
+                            </ListItemIcon>
+                            <ListItemText primary="Profiel" />
+                        </ListItem>
                         <ListItem component={NavLink} button key="hours" to="/">
                             <ListItemIcon>
                                 <GridOn />
@@ -122,7 +124,7 @@ export default function MiniDrawer() {
                             to="/template"
                         >
                             <ListItemIcon>
-                                <GridOn />
+                                <BookmarkBorder />
                             </ListItemIcon>
                             <ListItemText primary="Template" />
                         </ListItem>
@@ -134,7 +136,24 @@ export default function MiniDrawer() {
                             <HoursGrid type="month" />
                         </Route>
                         <Route path="/template">
+                            <Typography
+                                variant="h4"
+                                component="h4"
+                                className={classes.title}
+                            >
+                                Template
+                            </Typography>
                             <HoursGrid type="template" />
+                        </Route>
+                        <Route path="/profile">
+                            <Typography
+                                variant="h4"
+                                component="h4"
+                                className={classes.title}
+                            >
+                                Profiel
+                            </Typography>
+                            <Profile />
                         </Route>
                     </Switch>
                 </main>

@@ -17,14 +17,32 @@ import Switch from "@material-ui/core/Switch";
 import Paper from "@material-ui/core/Paper";
 import Toolbar from "@material-ui/core/Toolbar";
 import TableFooter from "@material-ui/core/TableFooter";
+import Snackbar from "@material-ui/core/Snackbar";
 
 import * as HoursConstants from "./hoursConstants";
+
+import * as firebase from "firebase";
+import "firebase/firestore";
 
 class HoursGrid extends React.Component {
     columns = HoursConstants.columns;
     months = HoursConstants.months;
     years = HoursConstants.years;
     isTemplate = false;
+    db;
+    snackbarOpen = false;
+
+    // Your web app's Firebase configuration
+    firebaseConfig = {
+        apiKey: "AIzaSyAkvaF-lqt8ZxyBwcNlwrHhj-Pp3Ev54pI",
+        authDomain: "codezilla-hours.firebaseapp.com",
+        databaseURL: "https://codezilla-hours.firebaseio.com",
+        projectId: "codezilla-hours",
+        storageBucket: "codezilla-hours.appspot.com",
+        messagingSenderId: "634823174203",
+        appId: "1:634823174203:web:ca40af276111cfae66541e",
+        measurementId: "G-DR0KK33WCW"
+    };
 
     constructor(props) {
         super(props);
@@ -47,6 +65,22 @@ class HoursGrid extends React.Component {
                 project: ""
             }
         };
+
+        // Initialize Firebase
+        if (!firebase.apps.length) {
+            firebase.initializeApp(this.firebaseConfig);
+        }
+
+        this.db = firebase.firestore();
+
+        this.db
+            .collection("months")
+            .get()
+            .then(querySnapshot => {
+                querySnapshot.forEach(doc => {
+                    console.log(doc.data());
+                });
+            });
     }
 
     handleChange(value, column, day) {
@@ -139,16 +173,34 @@ class HoursGrid extends React.Component {
         );
     }
 
-    handleClientInput(client) {
-        this.setState({ ...this.state.data, client: client });
+    handleClientInput(event) {
+        var value = event.target.value;
+        this.setState(prevState => {
+            prevState.data.client = value;
+            return prevState;
+        });
     }
 
-    handleProjectInput(project) {
-        this.setState({ ...this.state.data, project: project });
+    handleProjectInput(event) {
+        var value = event.target.value;
+        this.setState(prevState => {
+            prevState.data.project = value;
+            return prevState;
+        });
     }
 
     submitHours() {
         console.log(this.state);
+        this.db
+            .collection("months")
+            .add(this.state.data)
+            .then(function(docRef) {
+                console.log("Document written with ID: ", docRef.id);
+                this.snackbarOpen = true;
+            })
+            .catch(function(error) {
+                console.error("Error adding document: ", error);
+            });
     }
 
     render() {
@@ -211,12 +263,12 @@ class HoursGrid extends React.Component {
                             <TextField
                                 id="client"
                                 label="Klant"
-                                onChange={this.handleClientInput}
+                                onBlur={this.handleClientInput}
                             />
                             <TextField
                                 id="project"
                                 label="Project"
-                                onChange={this.handleProjectInput}
+                                onBlur={this.handleProjectInput}
                             />
 
                             <FormControlLabel
@@ -329,6 +381,15 @@ class HoursGrid extends React.Component {
                         </TableFooter>
                     </Table>
                 </TableContainer>
+                <Snackbar
+                    anchorOrigin={{
+                        vertical: "bottom",
+                        horizontal: "left"
+                    }}
+                    open={this.snackbarOpen}
+                    autoHideDuration={6000}
+                    message="Uren verstuurd"
+                />
             </form>
         );
     }

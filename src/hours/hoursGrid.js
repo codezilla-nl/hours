@@ -43,20 +43,34 @@ class HoursGrid extends React.Component {
 
         this.state = {
             data: {
-                days: this.getDaysInMonth(0, currentYear),
+                days: this.getDaysInMonth(currentMonth, currentYear),
                 expandColumns: this.isTemplate,
                 month: currentMonth,
                 year: currentYear,
                 client: "",
                 project: "",
                 profileId: props.profile.id
-            }
+            },
+            snackbarOpen: false
         };
+        this.fetchData(currentMonth, currentYear, props.profile.id);
     }
 
+    fetchData = async (month, year, profileId) => {
+        const db = firebase.firestore();
+        const response = await db.collection("months").get();
+        const hours = response.docs.find(
+            doc =>
+                doc.month === month &&
+                doc.year === year &&
+                doc.profileId === profileId
+        );
+    };
+
     handleChange(value, column, day) {
-        var days = this.state.data.days;
-        days[day][column] = Number(value);
+        const days = this.state.data.days;
+        const numberValue = Number(value);
+        days[day][column] = isNaN(numberValue) ? "" : numberValue;
         this.setState({ ...this.state.data, days: days });
     }
 
@@ -85,17 +99,17 @@ class HoursGrid extends React.Component {
             rows.push({
                 day: i,
                 dayOfTheWeek: new Date(year, month - 1, i).getDay(),
-                date: new Date(year, month, i),
-                worked: 0,
-                overtime: 0,
-                sick: 0,
-                holiday: 0,
-                publicHoliday: 0,
-                available: 0,
-                education: 0,
-                other: 0,
-                standBy: 0,
-                kilometers: 0,
+                date: new Date(year, month - 1, i),
+                worked: "",
+                overtime: "",
+                sick: "",
+                holiday: "",
+                publicHoliday: "",
+                available: "",
+                education: "",
+                other: "",
+                standBy: "",
+                kilometers: "",
                 explanation: ""
             });
         }
@@ -110,7 +124,7 @@ class HoursGrid extends React.Component {
     getTotal(column) {
         const values = this.state.data.days.map(x => x[column]);
         return values.reduce((total, currentValue) => {
-            return total + currentValue;
+            return Number(total) + Number(currentValue);
         });
     }
 
@@ -130,11 +144,12 @@ class HoursGrid extends React.Component {
                             },
                             day: row.day
                         }}
-                        onBlur={event =>
+                        value={row[column]}
+                        onChange={event =>
                             this.handleChange(
                                 event.target.value,
                                 column,
-                                row.day
+                                row.day - 1
                             )
                         }
                         size="small"
@@ -161,18 +176,30 @@ class HoursGrid extends React.Component {
     }
 
     submitHours() {
-        console.log(this.state.data);
         const db = firebase.firestore();
         db.collection("months")
             .add(this.state.data)
-            .then(function(docRef) {
-                console.log("Document written with ID: ", docRef.id);
-                this.snackbarOpen = true;
+            .then(docRef => {
+                this.setState(prevState => {
+                    prevState.snackbarOpen = true;
+                    return prevState;
+                });
             })
-            .catch(function(error) {
+            .catch(error => {
                 console.error("Error adding document: ", error);
             });
     }
+
+    handleClose = (event, reason) => {
+        if (reason === "clickaway") {
+            return;
+        }
+
+        this.setState(prevState => {
+            prevState.snackbarOpen = false;
+            return prevState;
+        });
+    };
 
     render() {
         return (
@@ -357,7 +384,8 @@ class HoursGrid extends React.Component {
                         vertical: "bottom",
                         horizontal: "left"
                     }}
-                    open={this.snackbarOpen}
+                    onClose={this.handleClose}
+                    open={this.state.snackbarOpen}
                     autoHideDuration={6000}
                     message="Uren verstuurd"
                 />

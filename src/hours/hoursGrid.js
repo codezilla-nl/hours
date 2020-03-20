@@ -19,30 +19,16 @@ import Toolbar from "@material-ui/core/Toolbar";
 import TableFooter from "@material-ui/core/TableFooter";
 import Snackbar from "@material-ui/core/Snackbar";
 
-import * as HoursConstants from "./hoursConstants";
+import firebase from "../firebase/firebase";
 
-import * as firebase from "firebase";
-import "firebase/firestore";
+import * as HoursConstants from "./hoursConstants";
 
 class HoursGrid extends React.Component {
     columns = HoursConstants.columns;
     months = HoursConstants.months;
     years = HoursConstants.years;
     isTemplate = false;
-    db;
     snackbarOpen = false;
-
-    // Your web app's Firebase configuration
-    firebaseConfig = {
-        apiKey: "AIzaSyAkvaF-lqt8ZxyBwcNlwrHhj-Pp3Ev54pI",
-        authDomain: "codezilla-hours.firebaseapp.com",
-        databaseURL: "https://codezilla-hours.firebaseio.com",
-        projectId: "codezilla-hours",
-        storageBucket: "codezilla-hours.appspot.com",
-        messagingSenderId: "634823174203",
-        appId: "1:634823174203:web:ca40af276111cfae66541e",
-        measurementId: "G-DR0KK33WCW"
-    };
 
     constructor(props) {
         super(props);
@@ -62,25 +48,10 @@ class HoursGrid extends React.Component {
                 month: currentMonth,
                 year: currentYear,
                 client: "",
-                project: ""
+                project: "",
+                profileId: props.profile.id
             }
         };
-
-        // Initialize Firebase
-        if (!firebase.apps.length) {
-            firebase.initializeApp(this.firebaseConfig);
-        }
-
-        this.db = firebase.firestore();
-
-        this.db
-            .collection("months")
-            .get()
-            .then(querySnapshot => {
-                querySnapshot.forEach(doc => {
-                    console.log(doc.data());
-                });
-            });
     }
 
     handleChange(value, column, day) {
@@ -114,7 +85,7 @@ class HoursGrid extends React.Component {
             rows.push({
                 day: i,
                 dayOfTheWeek: new Date(year, month - 1, i).getDay(),
-                date: new Date(year, month - 1, i),
+                date: new Date(year, month, i),
                 worked: 0,
                 overtime: 0,
                 sick: 0,
@@ -190,9 +161,9 @@ class HoursGrid extends React.Component {
     }
 
     submitHours() {
-        console.log(this.state);
-        this.db
-            .collection("months")
+        console.log(this.state.data);
+        const db = firebase.firestore();
+        db.collection("months")
             .add(this.state.data)
             .then(function(docRef) {
                 console.log("Document written with ID: ", docRef.id);

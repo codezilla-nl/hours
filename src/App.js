@@ -19,6 +19,8 @@ import AccountCircle from "@material-ui/icons/AccountCircle";
 import BookmarkBorder from "@material-ui/icons/BookmarkBorder";
 import Typography from "@material-ui/core/Typography";
 
+import firebase from "./firebase/firebase";
+
 import HoursGrid from "./hours/hoursGrid";
 import Profile from "./profile/profile";
 
@@ -76,9 +78,25 @@ const useStyles = makeStyles(theme => ({
     }
 }));
 
-export default function MiniDrawer() {
+export default function App() {
     const classes = useStyles();
     const [open] = React.useState(true);
+    const [profile, setProfile] = React.useState({});
+    const [isLoading, setIsLoading] = React.useState(true);
+
+    const fetchData = async () => {
+        const db = firebase.firestore();
+        const data = await db.collection("profile").get();
+        const firstProfile = data.docs.find((doc, index) => index === 0);
+        const profileData = firstProfile.data();
+        profileData.id = firstProfile.id;
+        setProfile(profileData);
+        setIsLoading(false);
+    };
+
+    React.useEffect(() => {
+        fetchData();
+    }, []);
 
     return (
         <div className={classes.root}>
@@ -115,7 +133,7 @@ export default function MiniDrawer() {
                             <ListItemIcon>
                                 <GridOn />
                             </ListItemIcon>
-                            <ListItemText primary="Maand" />
+                            <ListItemText primary="Urenstaat" />
                         </ListItem>
                         <ListItem
                             component={NavLink}
@@ -131,31 +149,33 @@ export default function MiniDrawer() {
                     </List>
                 </Drawer>
                 <main className={classes.content}>
-                    <Switch>
-                        <Route exact path="/">
-                            <HoursGrid type="month" />
-                        </Route>
-                        <Route path="/template">
-                            <Typography
-                                variant="h4"
-                                component="h4"
-                                className={classes.title}
-                            >
-                                Template
-                            </Typography>
-                            <HoursGrid type="template" />
-                        </Route>
-                        <Route path="/profile">
-                            <Typography
-                                variant="h4"
-                                component="h4"
-                                className={classes.title}
-                            >
-                                Profiel
-                            </Typography>
-                            <Profile />
-                        </Route>
-                    </Switch>
+                    {!isLoading ? (
+                        <Switch>
+                            <Route exact path="/">
+                                <HoursGrid type="month" profile={profile} />
+                            </Route>
+                            <Route path="/template">
+                                <Typography
+                                    variant="h4"
+                                    component="h4"
+                                    className={classes.title}
+                                >
+                                    Template
+                                </Typography>
+                                <HoursGrid type="template" profile={profile} />
+                            </Route>
+                            <Route path="/profile">
+                                <Typography
+                                    variant="h4"
+                                    component="h4"
+                                    className={classes.title}
+                                >
+                                    Profiel
+                                </Typography>
+                                <Profile profile={profile} />
+                            </Route>
+                        </Switch>
+                    ) : null}
                 </main>
             </Router>
 

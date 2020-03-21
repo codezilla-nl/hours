@@ -59,12 +59,16 @@ class HoursGrid extends React.Component {
     fetchData = async (month, year, profileId) => {
         const db = firebase.firestore();
         const response = await db.collection("months").get();
-        const hours = response.docs.find(
-            doc =>
-                doc.month === month &&
-                doc.year === year &&
-                doc.profileId === profileId
-        );
+        const instance = response.docs.find(doc => {
+            const data = doc.data();
+            return (
+                data.month === month &&
+                data.year === year &&
+                data.profileId === profileId
+            );
+        });
+
+        this.state = instance ? instance.data() : {};
     };
 
     handleChange(value, column, day) {

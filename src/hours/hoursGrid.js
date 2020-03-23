@@ -29,6 +29,7 @@ class HoursGrid extends React.Component {
     years = HoursConstants.years;
     isTemplate = false;
     snackbarOpen = false;
+    isLoading = true;
 
     constructor(props) {
         super(props);
@@ -43,16 +44,19 @@ class HoursGrid extends React.Component {
 
         this.state = {
             data: {
+                id: "",
                 days: this.getDaysInMonth(currentMonth, currentYear),
                 expandColumns: this.isTemplate,
                 month: currentMonth,
                 year: currentYear,
                 client: "",
                 project: "",
-                profileId: props.profile.id
+                profileId: props.profile.id,
+                profile: props.profile
             },
             snackbarOpen: false
         };
+
         this.fetchData(currentMonth, currentYear, props.profile.id);
     }
 
@@ -68,7 +72,15 @@ class HoursGrid extends React.Component {
             );
         });
 
-        this.state = instance ? instance.data() : {};
+        if (instance) {
+            this.setState(prevState => {
+                prevState.data = instance.data();
+                prevState.data.id = instance.id;
+                return prevState;
+            });
+        }
+
+        this.isLoading = false;
     };
 
     handleChange(value, column, day) {
@@ -163,16 +175,14 @@ class HoursGrid extends React.Component {
         );
     }
 
-    handleClientInput(event) {
-        var value = event.target.value;
+    handleClientInput(value) {
         this.setState(prevState => {
             prevState.data.client = value;
             return prevState;
         });
     }
 
-    handleProjectInput(event) {
-        var value = event.target.value;
+    handleProjectInput(value) {
         this.setState(prevState => {
             prevState.data.project = value;
             return prevState;
@@ -182,7 +192,16 @@ class HoursGrid extends React.Component {
     submitHours() {
         const db = firebase.firestore();
         db.collection("months")
-            .add(this.state.data)
+            .doc(
+                this.state.data.year +
+                    "-" +
+                    this.state.data.month +
+                    "-" +
+                    this.state.data.profile.firstName +
+                    "" +
+                    this.state.data.profile.lastName
+            )
+            .set(this.state.data)
             .then(docRef => {
                 this.setState(prevState => {
                     prevState.snackbarOpen = true;
@@ -265,12 +284,18 @@ class HoursGrid extends React.Component {
                             <TextField
                                 id="client"
                                 label="Klant"
-                                onBlur={this.handleClientInput}
+                                value={this.state.data.client}
+                                onChange={event =>
+                                    this.handleClientInput(event.target.value)
+                                }
                             />
                             <TextField
                                 id="project"
                                 label="Project"
-                                onBlur={this.handleProjectInput}
+                                value={this.state.data.project}
+                                onChange={event =>
+                                    this.handleProjectInput(event.target.value)
+                                }
                             />
 
                             <FormControlLabel

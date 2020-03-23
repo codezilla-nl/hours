@@ -58,17 +58,13 @@ Add additional notes about how to deploy this on a live system
 
 ## Built With
 
--   [Dropwizard](http://www.dropwizard.io/1.0.2/docs/) - The web framework used
--   [Maven](https://maven.apache.org/) - Dependency Management
--   [ROME](https://rometools.github.io/rome/) - Used to generate RSS Feeds
-
 ## Contributing
 
 Feel free to contribute.
 
 ## Authors
 
--   **Sander Leeffers ** - _Initial work_ - [PurpleBooth](https://github.com/sgleeffers)
+-   **Sander Leeffers** - _Initial work_ - [sgleeffers](https://github.com/sgleeffers)
 
 See also the list of [contributors](https://github.com/codezilla/hours/contributors) who participated in this project.
 

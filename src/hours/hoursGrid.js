@@ -105,6 +105,8 @@ class HoursGrid extends React.Component {
             prevState.data.days = days;
             return prevState;
         });
+
+        this.fetchData(month, year, this.props.profile.id);
     }
 
     getDaysInMonth(month, year) {
@@ -168,6 +170,7 @@ class HoursGrid extends React.Component {
                                 row.day - 1
                             )
                         }
+                        onBlur={this.submitHours}
                         size="small"
                     />
                 ) : null}
@@ -197,9 +200,7 @@ class HoursGrid extends React.Component {
                     "-" +
                     this.state.data.month +
                     "-" +
-                    this.state.data.profile.firstName +
-                    "" +
-                    this.state.data.profile.lastName
+                    this.state.data.profile.displayName
             )
             .set(this.state.data)
             .then(docRef => {
@@ -416,7 +417,7 @@ class HoursGrid extends React.Component {
                     onClose={this.handleClose}
                     open={this.state.snackbarOpen}
                     autoHideDuration={6000}
-                    message="Uren verstuurd"
+                    message="Opgeslagen"
                 />
             </form>
         );

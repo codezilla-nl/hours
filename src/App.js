@@ -15,7 +15,6 @@ import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
 import GridOn from "@material-ui/icons/GridOn";
-import AccountCircle from "@material-ui/icons/AccountCircle";
 import BookmarkBorder from "@material-ui/icons/BookmarkBorder";
 import Typography from "@material-ui/core/Typography";
 
@@ -84,72 +83,113 @@ export default function App() {
     const [profile, setProfile] = React.useState({});
     const [isLoading, setIsLoading] = React.useState(true);
 
-    const fetchData = async () => {
-        const db = firebase.firestore();
-        const data = await db.collection("profile").get();
-        const firstProfile = data.docs.find((doc, index) => index === 0);
-        const profileData = firstProfile.data();
-        profileData.id = firstProfile.id;
-        setProfile(profileData);
-        setIsLoading(false);
+    const goLogin = () => {
+        const provider = new firebase.auth.OAuthProvider("microsoft.com");
+
+        provider.setCustomParameters({
+            tenant: "45c0a280-6475-473d-a8ee-a5684b93879c"
+        });
+
+        firebase
+            .auth()
+            .signInWithPopup(provider)
+            .then(function(result) {
+                fetchProfile(result.user);
+            })
+            .catch(function(error) {
+                // Handle error.
+            });
     };
 
     React.useEffect(() => {
-        fetchData();
+        goLogin();
     }, []);
+
+    const fetchProfile = async user => {
+        const db = firebase.firestore();
+        const snapshot = await db.collection("profile").get();
+        const response = snapshot.docs.find(doc => {
+            return doc.data().microsoftId === user.uid;
+        });
+
+        if (!response) {
+            createNewProfile(user);
+            return;
+        }
+
+        const data = response.data();
+        data.id = response.id;
+        setProfile(data);
+        setIsLoading(false);
+    };
+
+    const createNewProfile = user => {
+        const db = firebase.firestore();
+        const newProfile = {
+            displayName: user.displayName,
+            microsoftId: user.uid,
+            email: user.email
+        };
+        db.collection("profile")
+            .add(newProfile)
+            .then(docRef => {
+                newProfile.id = docRef.id;
+                setProfile(newProfile);
+            })
+            .catch(error => {
+                console.error("Error adding document: ", error);
+            });
+
+        setIsLoading(false);
+    };
 
     return (
         <div className={classes.root}>
-            <Router>
-                <CssBaseline />
-                <Drawer
-                    variant="permanent"
-                    className={clsx(classes.drawer, {
-                        [classes.drawerOpen]: open,
-                        [classes.drawerClose]: !open
-                    })}
-                    classes={{
-                        paper: clsx({
+            {!isLoading ? (
+                <Router>
+                    <CssBaseline />
+                    <Drawer
+                        variant="permanent"
+                        className={clsx(classes.drawer, {
                             [classes.drawerOpen]: open,
                             [classes.drawerClose]: !open
-                        })
-                    }}
-                >
-                    <div className={classes.toolbar}>CODEZILLA Hours</div>
-                    <Divider />
-                    <List>
-                        <ListItem
-                            component={NavLink}
-                            button
-                            key="profile"
-                            to="/profile"
-                        >
-                            <ListItemIcon>
-                                <AccountCircle />
-                            </ListItemIcon>
-                            <ListItemText primary="Profiel" />
-                        </ListItem>
-                        <ListItem component={NavLink} button key="hours" to="/">
-                            <ListItemIcon>
-                                <GridOn />
-                            </ListItemIcon>
-                            <ListItemText primary="Urenstaat" />
-                        </ListItem>
-                        <ListItem
-                            component={NavLink}
-                            button
-                            key="template"
-                            to="/template"
-                        >
-                            <ListItemIcon>
-                                <BookmarkBorder />
-                            </ListItemIcon>
-                            <ListItemText primary="Template" />
-                        </ListItem>
-                    </List>
-                </Drawer>
-                <main className={classes.content}>
-                    {!isLoading ? (
+                        })}
+                        classes={{
+                            paper: clsx({
+                                [classes.drawerOpen]: open,
+                                [classes.drawerClose]: !open
+                            })
+                        }}
+                    >
+                        <div className={classes.toolbar}>CODEZILLA Hours</div>
+                        <Divider />
+                        <Profile profile={profile} />
+                        <List>
+                            <ListItem
+                                component={NavLink}
+                                button
+                                key="hours"
+                                to="/"
+                            >
+                                <ListItemIcon>
+                                    <GridOn />
+                                </ListItemIcon>
+                                <ListItemText primary="Urenstaat" />
+                            </ListItem>
+                            <ListItem
+                                component={NavLink}
+                                button
+                                key="template"
+                                to="/template"
+                            >
+                                <ListItemIcon>
+                                    <BookmarkBorder />
+                                </ListItemIcon>
+                                <ListItemText primary="Template" />
+                            </ListItem>
+                        </List>
+                    </Drawer>
+                    <main className={classes.content}>
                         <Switch>
                             <Route exact path="/">
                                 <HoursGrid type="month" profile={profile} />
@@ -164,20 +204,10 @@ export default function App() {
                                 </Typography>
                                 <HoursGrid type="template" profile={profile} />
                             </Route>
-                            <Route path="/profile">
-                                <Typography
-                                    variant="h4"
-                                    component="h4"
-                                    className={classes.title}
-                                >
-                                    Profiel
-                                </Typography>
-                                <Profile profile={profile} />
-                            </Route>
                         </Switch>
-                    ) : null}
-                </main>
-            </Router>
+                    </main>
+                </Router>
+            ) : null}
 
             <script src="https://www.gstatic.com/firebasejs/7.11.0/firebase-app.js"></script>
 

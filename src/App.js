@@ -20,15 +20,13 @@ import Typography from "@material-ui/core/Typography";
 
 import firebase from "./firebase/firebase";
 
+import Header from "./navigation/header";
 import HoursGrid from "./hours/hoursGrid";
 import Profile from "./profile/profile";
 
 const drawerWidth = 240;
 
 const useStyles = makeStyles(theme => ({
-    root: {
-        display: "flex"
-    },
     activeItem: {
         backgroundColor: theme.palette.primary[100]
     },
@@ -38,29 +36,6 @@ const useStyles = makeStyles(theme => ({
     },
     hide: {
         display: "none"
-    },
-    drawer: {
-        width: drawerWidth,
-        flexShrink: 0,
-        whiteSpace: "nowrap"
-    },
-    drawerOpen: {
-        width: drawerWidth,
-        transition: theme.transitions.create("width", {
-            easing: theme.transitions.easing.sharp,
-            duration: theme.transitions.duration.enteringScreen
-        })
-    },
-    drawerClose: {
-        transition: theme.transitions.create("width", {
-            easing: theme.transitions.easing.sharp,
-            duration: theme.transitions.duration.leavingScreen
-        }),
-        overflowX: "hidden",
-        width: theme.spacing(7) + 1,
-        [theme.breakpoints.up("sm")]: {
-            width: theme.spacing(9) + 1
-        }
     },
     toolbar: {
         display: "flex",
@@ -148,64 +123,22 @@ export default function App() {
             {!isLoading ? (
                 <Router>
                     <CssBaseline />
-                    <Drawer
-                        variant="permanent"
-                        className={clsx(classes.drawer, {
-                            [classes.drawerOpen]: open,
-                            [classes.drawerClose]: !open
-                        })}
-                        classes={{
-                            paper: clsx({
-                                [classes.drawerOpen]: open,
-                                [classes.drawerClose]: !open
-                            })
-                        }}
-                    >
-                        <div className={classes.toolbar}>CODEZILLA Hours</div>
-                        <Divider />
-                        <Profile profile={profile} />
-                        <List>
-                            <ListItem
-                                component={NavLink}
-                                button
-                                key="hours"
-                                to="/"
+                    <Header profile={profile} />
+                    <Switch>
+                        <Route exact path="/">
+                            <HoursGrid type="month" profile={profile} />
+                        </Route>
+                        <Route path="/template">
+                            <Typography
+                                variant="h4"
+                                component="h4"
+                                className={classes.title}
                             >
-                                <ListItemIcon>
-                                    <GridOn />
-                                </ListItemIcon>
-                                <ListItemText primary="Urenstaat" />
-                            </ListItem>
-                            <ListItem
-                                component={NavLink}
-                                button
-                                key="template"
-                                to="/template"
-                            >
-                                <ListItemIcon>
-                                    <BookmarkBorder />
-                                </ListItemIcon>
-                                <ListItemText primary="Template" />
-                            </ListItem>
-                        </List>
-                    </Drawer>
-                    <main className={classes.content}>
-                        <Switch>
-                            <Route exact path="/">
-                                <HoursGrid type="month" profile={profile} />
-                            </Route>
-                            <Route path="/template">
-                                <Typography
-                                    variant="h4"
-                                    component="h4"
-                                    className={classes.title}
-                                >
-                                    Template
-                                </Typography>
-                                <HoursGrid type="template" profile={profile} />
-                            </Route>
-                        </Switch>
-                    </main>
+                                Template
+                            </Typography>
+                            <HoursGrid type="template" profile={profile} />
+                        </Route>
+                    </Switch>
                 </Router>
             ) : null}
 

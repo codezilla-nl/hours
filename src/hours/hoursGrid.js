@@ -39,8 +39,10 @@ class HoursGrid extends React.Component {
         const currentMonth = new Date().getMonth() + 1;
 
         this.submitHours = this.submitHours.bind(this);
+        this.submitTemplate = this.submitTemplate.bind(this);
         this.handleClientInput = this.handleClientInput.bind(this);
         this.handleProjectInput = this.handleProjectInput.bind(this);
+        this.save = this.save.bind(this);
 
         this.state = {
             data: {
@@ -52,15 +54,20 @@ class HoursGrid extends React.Component {
                 client: "",
                 project: "",
                 profileId: props.profile.id,
-                profile: props.profile
+                profile: props.profile,
+                isFinal: false
             },
             snackbarOpen: false
         };
 
-        this.fetchData(currentMonth, currentYear, props.profile.id);
+        if (this.isTemplate) {
+            this.fetchTemplate(props.profile.id);
+        } else {
+            this.fetchMonth(currentMonth, currentYear, props.profile.id);
+        }
     }
 
-    fetchData = async (month, year, profileId) => {
+    fetchMonth = async (month, year, profileId) => {
         const db = firebase.firestore();
         const response = await db.collection("months").get();
         const instance = response.docs.find(doc => {
@@ -75,6 +82,25 @@ class HoursGrid extends React.Component {
         if (instance) {
             this.setState(prevState => {
                 prevState.data = instance.data();
+                prevState.data.id = instance.id;
+                console.log(prevState.data);
+                return prevState;
+            });
+        }
+
+        this.isLoading = false;
+    };
+
+    fetchTemplate = async profileId => {
+        const db = firebase.firestore();
+        const instance = await db
+            .collection("template")
+            .doc(profileId)
+            .get();
+
+        if (instance) {
+            this.setState(prevState => {
+                prevState.data.days = instance.data().days;
                 prevState.data.id = instance.id;
                 return prevState;
             });
@@ -106,7 +132,7 @@ class HoursGrid extends React.Component {
             return prevState;
         });
 
-        this.fetchData(month, year, this.props.profile.id);
+        this.fetchMonth(month, year, this.props.profile.id);
     }
 
     getDaysInMonth(month, year) {
@@ -170,7 +196,7 @@ class HoursGrid extends React.Component {
                                 row.day - 1
                             )
                         }
-                        onBlur={this.submitHours}
+                        onBlur={() => this.save(this.isTemplate)}
                         size="small"
                     />
                 ) : null}
@@ -193,6 +219,7 @@ class HoursGrid extends React.Component {
     }
 
     submitHours() {
+        console.log(this.state.data);
         const db = firebase.firestore();
         db.collection("months")
             .doc(
@@ -214,6 +241,36 @@ class HoursGrid extends React.Component {
             });
     }
 
+    submitTemplate() {
+        const data = this.state.data.days.map(day => {
+            delete day.date;
+            delete day.dayOfTheWeek;
+            return day;
+        });
+
+        const db = firebase.firestore();
+        db.collection("template")
+            .doc(this.props.profile.id)
+            .set({ days: data })
+            .then(docRef => {
+                this.setState(prevState => {
+                    prevState.snackbarOpen = true;
+                    return prevState;
+                });
+            })
+            .catch(error => {
+                console.error("Error adding document: ", error);
+            });
+    }
+
+    save(isTemplate) {
+        if (isTemplate) {
+            this.submitTemplate();
+            return;
+        }
+        this.submitHours();
+    }
+
     handleClose = (event, reason) => {
         if (reason === "clickaway") {
             return;
@@ -224,6 +281,13 @@ class HoursGrid extends React.Component {
             return prevState;
         });
     };
+
+    makeFinal(checked, isTemplate) {
+        this.setState(prevState => {
+            prevState.data.isFinal = checked;
+            return prevState;
+        }, this.save(isTemplate));
+    }
 
     render() {
         return (
@@ -313,13 +377,21 @@ class HoursGrid extends React.Component {
                                 }
                                 label="Toon alle velden"
                             />
-                            <Button
-                                variant="contained"
-                                color="primary"
-                                onClick={this.submitHours}
-                            >
-                                Verstuur
-                            </Button>
+                            <FormControlLabel
+                                control={
+                                    <Switch
+                                        checked={this.state.data.isFinal}
+                                        onChange={event =>
+                                            this.makeFinal(
+                                                event.target.checked,
+                                                this.isTemplate
+                                            )
+                                        }
+                                        color="primary"
+                                    />
+                                }
+                                label="Definitief"
+                            />
                         </Grid>
                     </Toolbar>
                 ) : null}

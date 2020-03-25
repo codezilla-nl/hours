@@ -1,30 +1,14 @@
 import React from "react";
-import {
-    BrowserRouter as Router,
-    Switch,
-    Route,
-    NavLink
-} from "react-router-dom";
-import clsx from "clsx";
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
-import Drawer from "@material-ui/core/Drawer";
-import List from "@material-ui/core/List";
 import CssBaseline from "@material-ui/core/CssBaseline";
-import Divider from "@material-ui/core/Divider";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemIcon from "@material-ui/core/ListItemIcon";
-import ListItemText from "@material-ui/core/ListItemText";
-import GridOn from "@material-ui/icons/GridOn";
-import BookmarkBorder from "@material-ui/icons/BookmarkBorder";
 import Typography from "@material-ui/core/Typography";
 
 import firebase from "./firebase/firebase";
 
 import Header from "./navigation/header";
+import PreLoad from "./navigation/preLoad";
 import HoursGrid from "./hours/hoursGrid";
-import Profile from "./profile/profile";
-
-const drawerWidth = 240;
 
 const useStyles = makeStyles(theme => ({
     activeItem: {
@@ -54,7 +38,6 @@ const useStyles = makeStyles(theme => ({
 
 export default function App() {
     const classes = useStyles();
-    const [open] = React.useState(true);
     const [profile, setProfile] = React.useState({});
     const [isLoading, setIsLoading] = React.useState(true);
 
@@ -140,7 +123,9 @@ export default function App() {
                         </Route>
                     </Switch>
                 </Router>
-            ) : null}
+            ) : (
+                <PreLoad />
+            )}
 
             <script src="https://www.gstatic.com/firebasejs/7.11.0/firebase-app.js"></script>
 

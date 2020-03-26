@@ -7,8 +7,6 @@ import Button from "@material-ui/core/Button";
 import { NavLink } from "react-router-dom";
 
 import AccountCircle from "@material-ui/icons/AccountCircle";
-import GridOn from "@material-ui/icons/GridOn";
-import BookmarkBorder from "@material-ui/icons/BookmarkBorder";
 
 const useStyles = makeStyles(theme => ({
     menuButton: {

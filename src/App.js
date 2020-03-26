@@ -1,55 +1,40 @@
 import React from "react";
-import {
-    BrowserRouter as Router,
-    Switch,
-    Route,
-    NavLink
-} from "react-router-dom";
-import clsx from "clsx";
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+
 import { makeStyles } from "@material-ui/core/styles";
-import Drawer from "@material-ui/core/Drawer";
-import List from "@material-ui/core/List";
+
 import CssBaseline from "@material-ui/core/CssBaseline";
-import Divider from "@material-ui/core/Divider";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemIcon from "@material-ui/core/ListItemIcon";
-import ListItemText from "@material-ui/core/ListItemText";
-import GridOn from "@material-ui/icons/GridOn";
-import BookmarkBorder from "@material-ui/icons/BookmarkBorder";
 import Typography from "@material-ui/core/Typography";
 
 import firebase from "./firebase/firebase";
 
 import Header from "./navigation/header";
-import HoursGrid from "./hours/hoursGrid";
-import Profile from "./profile/profile";
-
-const drawerWidth = 240;
+import HoursContainer from "./hours/HoursContainer";
 
 const useStyles = makeStyles(theme => ({
     activeItem: {
-        backgroundColor: theme.palette.primary[100]
+        backgroundColor: theme.palette.primary[100],
     },
     item: {},
     menuButton: {
-        marginRight: 36
+        marginRight: 36,
     },
     hide: {
-        display: "none"
+        display: "none",
     },
     toolbar: {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
         padding: theme.spacing(0, 1),
-        ...theme.mixins.toolbar
+        ...theme.mixins.toolbar,
     },
     content: {
-        flexGrow: 1
+        flexGrow: 1,
     },
     title: {
-        margin: theme.spacing(0, 1)
-    }
+        margin: theme.spacing(0, 1),
+    },
 }));
 
 export default function App() {
@@ -62,7 +47,7 @@ export default function App() {
         const provider = new firebase.auth.OAuthProvider("microsoft.com");
 
         provider.setCustomParameters({
-            tenant: "45c0a280-6475-473d-a8ee-a5684b93879c"
+            tenant: "45c0a280-6475-473d-a8ee-a5684b93879c",
         });
 
         firebase
@@ -103,7 +88,7 @@ export default function App() {
         const newProfile = {
             displayName: user.displayName,
             microsoftId: user.uid,
-            email: user.email
+            email: user.email,
         };
         db.collection("profile")
             .add(newProfile)
@@ -126,7 +111,7 @@ export default function App() {
                     <Header profile={profile} />
                     <Switch>
                         <Route exact path="/">
-                            <HoursGrid type="month" profile={profile} />
+                            <HoursContainer type="month" profile={profile} />
                         </Route>
                         <Route path="/template">
                             <Typography
@@ -136,7 +121,7 @@ export default function App() {
                             >
                                 Template
                             </Typography>
-                            <HoursGrid type="template" profile={profile} />
+                            <HoursContainer type="template" profile={profile} />
                         </Route>
                     </Switch>
                 </Router>

@@ -40,10 +40,14 @@ export default function PreLoad() {
                         width="100%"
                     ></img>
                 </Avatar>
-                <Typography component="h1" variant="h4">
+                <Typography id="preloadTitle" component="h1" variant="h4">
                     CODEZILLA Hours
                 </Typography>
-                <Typography component="subtitle1" variant="subtitle1">
+                <Typography
+                    id="preloadSubTitle"
+                    component="h2"
+                    variant="subtitle1"
+                >
                     Bezig met aanmelden...
                 </Typography>
             </div>

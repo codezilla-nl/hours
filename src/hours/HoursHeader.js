@@ -1,13 +1,16 @@
 import React from "react";
-import Toolbar from "@material-ui/core/Toolbar";
-import Grid from "@material-ui/core/Grid";
-import FormControl from "@material-ui/core/FormControl";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import InputLabel from "@material-ui/core/InputLabel";
-import MenuItem from "@material-ui/core/MenuItem";
-import Select from "@material-ui/core/Select";
-import Switch from "@material-ui/core/Switch";
-import TextField from "@material-ui/core/TextField";
+import {
+    Toolbar,
+    Grid,
+    FormControl,
+    FormControlLabel,
+    InputLabel,
+    MenuItem,
+    Select,
+    Switch,
+    TextField,
+} from "@material-ui/core";
+
 import * as HoursConstants from "./hoursConstants";
 
 const months = HoursConstants.months;
@@ -15,27 +18,14 @@ const years = HoursConstants.years;
 const currentYear = new Date().getFullYear();
 const currentMonth = new Date().getMonth() + 1;
 
-const HoursHeader = props => {
-    // handleInputChange = e => {
-    //     const { name, value, checked } = e.target;
-    //     checked
-    //         ? this.setState({ [name]: checked })
-    //         : this.setState({ [name]: value });
-    // };
-
-    const {
-        isTemplate,
-        setMonth,
-        client,
-        handleClientInput,
-        project,
-        handleProjectInput,
-        columnsExpanded,
-        expandColumns,
-        isFinal,
-        makeFinal,
-    } = props;
-
+const HoursHeader = ({
+    isTemplate,
+    client,
+    project,
+    expandColumns,
+    isFinal,
+    handleInputChange,
+}) => {
     if (!isTemplate) return null;
     return (
         <Toolbar>
@@ -45,9 +35,9 @@ const HoursHeader = props => {
                     <Select
                         labelId="select-month-label"
                         id="select-month-label"
-                        value={currentMonth}
+                        defaultValue={currentMonth}
                         onChange={event =>
-                            setMonth(event.target.value, currentYear)
+                            handleInputChange("month", event.target.value)
                         }
                     >
                         {months.map(month => {
@@ -64,9 +54,9 @@ const HoursHeader = props => {
                     <Select
                         labelId="select-year-label"
                         id="select-year-label"
-                        value={currentYear}
+                        defaultValue={currentYear}
                         onChange={event =>
-                            setMonth(currentMonth, event.target.value)
+                            handleInputChange("year", event.target.value)
                         }
                     >
                         {years.map(year => {
@@ -82,21 +72,28 @@ const HoursHeader = props => {
                     id="client"
                     label="Klant"
                     value={client}
-                    onChange={event => handleClientInput(event.target.value)}
+                    onChange={event =>
+                        handleInputChange("client", event.target.value)
+                    }
                 />
                 <TextField
                     id="project"
                     label="Project"
                     value={project}
-                    onChange={event => handleProjectInput(event.target.value)}
+                    onChange={event =>
+                        handleInputChange("project", event.target.value)
+                    }
                 />
 
                 <FormControlLabel
                     control={
                         <Switch
-                            checked={columnsExpanded}
+                            checked={expandColumns}
                             onChange={event =>
-                                expandColumns(event.target.checked)
+                                handleInputChange(
+                                    "expandColumns",
+                                    event.target.checked,
+                                )
                             }
                             color="primary"
                         />
@@ -108,7 +105,10 @@ const HoursHeader = props => {
                         <Switch
                             checked={isFinal}
                             onChange={event =>
-                                makeFinal(event.target.checked, isTemplate)
+                                handleInputChange(
+                                    "isFinal",
+                                    event.target.checked,
+                                )
                             }
                             color="primary"
                         />

@@ -8,27 +8,61 @@ import HoursGrid from "./HoursGrid";
 class HoursContainer extends Component {
     state = {
         id: "",
-        days: this.getDaysInMonth(),
+        days: [],
+        month: "",
+        year: "",
         expandColumns: true,
         client: "",
         project: "",
-        profileId: this.props.profile.id,
-        profile: this.props.profile,
+        profileId: "",
+        profile: "",
         isFinal: false,
         snackbarOpen: false,
         isLoading: false,
         isTemplate: false,
     };
 
-    componentDidUpdate() {
-        const currentYear = new Date().getFullYear();
-        const currentMonth = new Date().getMonth() + 1;
-        const isTemplate = this.props.type === "template";
+    componentDidMount() {
+        const year = new Date().getFullYear();
+        const month = new Date().getMonth() + 1;
+        const { type, profile } = this.props;
+        const isTemplate = type === "template";
+
+        this.setState({
+            isTemplate,
+            profile,
+            profileId: profile.id,
+            year,
+            month,
+        });
 
         if (isTemplate) {
-            this.fetchTemplate(this.props.profile.id);
+            this.fetchTemplate(profile.id);
         } else {
-            this.fetchMonth(currentMonth, currentYear, this.props.profile.id);
+            this.fetchMonth(month, year, profile.id);
+        }
+    }
+
+    componentDidUpdate(prevProps, prevState) {
+        if (
+            prevState.month !== this.state.month ||
+            (prevState.year !== this.state.year && !this.state.isTemplate)
+        ) {
+            this.fetchMonth(
+                this.state.month,
+                this.state.year,
+                this.state.profileId,
+            );
+        }
+        if (
+            prevState.month !== this.state.month ||
+            (prevState.year !== this.state.year && this.state.isTemplate)
+        ) {
+            this.fetchTemplate(
+                this.state.month,
+                this.state.year,
+                this.state.profileId,
+            );
         }
     }
 
@@ -36,17 +70,9 @@ class HoursContainer extends Component {
         this.setState({ isLoading: true });
         const db = firebase.firestore();
         const response = await db.collection("months").get();
-        const instance = response.docs.find(doc => {
-            const data = doc.data();
-            return (
-                data.month === month &&
-                data.year === year &&
-                data.profileId === profileId
-            );
-        });
-
-        if (instance) {
-            this.setState({ ...instance.data, id: instance.id });
+        const instance = response.docs.find(doc => doc.data());
+        if (instance && instance.exists) {
+            this.setState({ ...instance.data(), id: instance.id });
         }
 
         this.setState({ isLoading: false });
@@ -54,47 +80,28 @@ class HoursContainer extends Component {
 
     fetchTemplate = async profileId => {
         this.setState({ isLoading: true });
+
         const db = firebase.firestore();
         const instance = await db
             .collection("template")
             .doc(profileId)
             .get();
 
-        if (instance) {
+        if (instance && instance.exists) {
             this.setState({
                 days: instance.data().days,
                 id: instance.id,
             });
+        } else {
+            this.getDaysInMonth();
         }
 
         this.setState({ isLoading: false });
     };
 
-    handleChange(value, column, day) {
-        const { days } = this.state;
-        const numberValue = Number(value);
-        days[day][column] = isNaN(numberValue) ? "" : numberValue;
-        this.setState({ days });
-    }
+    handleInputChange = (name, value) => this.setState({ [name]: value });
 
-    expandColumns(checked) {
-        this.setState({ expandColumns: checked });
-    }
-
-    setMonth(month, year) {
-        const days = this.getDaysInMonth(month, year);
-        this.setState({
-            month,
-            year,
-            days,
-        });
-
-        this.fetchMonth(month, year, this.props.profile.id);
-    }
-
-    getDaysInMonth() {
-        const year = new Date().getFullYear();
-        const month = new Date().getMonth() + 1;
+    getDaysInMonth(month, year) {
         const daysInAMonth = new Date(year, month, 0).getDate();
         const rows = [];
 
@@ -120,23 +127,7 @@ class HoursContainer extends Component {
         return rows;
     }
 
-    isNotWeekend(dayOfTheWeek) {
-        return dayOfTheWeek !== 0 && dayOfTheWeek !== 6;
-    }
-
-    handleClientInput(value) {
-        this.setState({
-            client: value,
-        });
-    }
-
-    handleProjectInput(value) {
-        this.setState({
-            project: value,
-        });
-    }
-
-    submitHours() {
+    submitHours = () => {
         const db = firebase.firestore();
         db.collection("months")
             .doc(
@@ -146,7 +137,15 @@ class HoursContainer extends Component {
                     "-" +
                     this.state.profile.displayName,
             )
-            .set(this.state)
+            .set({
+                client: this.state.client,
+                days: this.state.days,
+                profile: this.state.profile,
+                profileId: this.state.profileId,
+                project: this.state.project,
+                year: this.state.year,
+                month: this.state.month,
+            })
             .then(docRef => {
                 this.setState(prevState => {
                     prevState.snackbarOpen = true;
@@ -156,10 +155,10 @@ class HoursContainer extends Component {
             .catch(error => {
                 console.error("Error adding document: ", error);
             });
-    }
+    };
 
-    submitTemplate() {
-        const data = this.state.days.map(day => {
+    submitTemplate = days => {
+        const data = days.map(day => {
             delete day.date;
             delete day.dayOfTheWeek;
             return day;
@@ -178,15 +177,15 @@ class HoursContainer extends Component {
             .catch(error => {
                 console.error("Error adding document: ", error);
             });
-    }
+    };
 
-    save(isTemplate) {
+    save = isTemplate => {
         if (isTemplate) {
-            this.submitTemplate();
+            this.submitTemplate(this.state.days);
             return;
         }
         this.submitHours();
-    }
+    };
 
     handleClose = (event, reason) => {
         if (reason === "clickaway") {
@@ -199,36 +198,27 @@ class HoursContainer extends Component {
         });
     };
 
-    makeFinal(checked, isTemplate) {
-        this.setState(prevState => {
-            prevState.isFinal = checked;
-            return prevState;
-        }, this.save(isTemplate));
-    }
-
     render() {
         if (!this.props.profile.id) return null;
-        console.log(this.state);
+
         return (
             <form noValidate autoComplete="off">
                 <HoursHeader
                     setMonth={this.setMonth}
-                    handleClientInput={this.handleClientInput}
+                    handleInputChange={this.handleInputChange}
                     client={this.state.client}
                     project={this.state.project}
-                    handleProjectInput={this.handleProjectInput}
-                    columnsExpanded={this.state.expandColumns}
-                    expandColumns={this.expandColumns}
+                    expandColumns={this.state.expandColumns}
                     isFinal={this.state.isFinal}
                     makeFinal={this.makeFinal}
-                    isTemplate={this.props.type === "template"}
+                    isTemplate={this.state.isTemplate}
                 />
                 <HoursGrid
-                    columnsExpanded={this.state.expandColumns}
+                    expandColumns={this.state.expandColumns}
                     days={this.state.days}
-                    handleChange={this.handleChange}
+                    handleChange={this.handleInputChange}
                     save={this.save}
-                    isTemplate={this.props.type === "template"}
+                    isTemplate={this.state.isTemplate}
                 />
 
                 <Snackbar

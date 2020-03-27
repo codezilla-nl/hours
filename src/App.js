@@ -11,7 +11,6 @@ import firebase from "./firebase/firebase";
 import Header from "./navigation/header";
 import HoursContainer from "./hours/HoursContainer";
 import PreLoad from "./navigation/preLoad";
-import HoursGrid from "./hours/hoursGrid";
 
 const useStyles = makeStyles(theme => ({
     activeItem: {

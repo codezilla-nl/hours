@@ -102,7 +102,6 @@ class HoursContainer extends Component {
         for (let i = 1; i < daysInAMonth; i++) {
             rows.push({
                 day: i,
-                dayOfTheWeek: new Date(year, month - 1, i).getDay(),
                 date: new Date(year, month - 1, i),
                 worked: "",
                 overtime: "",
@@ -210,6 +209,8 @@ class HoursContainer extends Component {
                     days={this.state.days}
                     handleChange={this.handleInputChange}
                     save={this.save}
+                    month={this.state.month}
+                    year={this.state.year}
                     isTemplate={this.state.isTemplate}
                 />
 

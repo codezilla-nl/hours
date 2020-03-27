@@ -16,13 +16,22 @@ import HoursTableHead from "./HoursTableHeader";
 
 const columns = HoursConstants.columns;
 
-const HoursGrid = ({ expandColumns, days, handleChange, save, isTemplate }) => {
-    const isNotWeekend = dayOfTheWeek => {
+const HoursGrid = ({
+    expandColumns,
+    days,
+    handleChange,
+    save,
+    month,
+    year,
+    isTemplate,
+}) => {
+    const isNotWeekend = dayNumber => {
+        const dayOfTheWeek = new Date(year, month - 1, dayNumber + 1).getDay();
         return dayOfTheWeek !== 0 && dayOfTheWeek !== 6;
     };
 
-    const getRowClass = dayOfTheWeek => {
-        return isNotWeekend(dayOfTheWeek) ? "" : "highlight";
+    const getRowClass = dayNumber => {
+        return isNotWeekend(dayNumber) ? "" : "highlight";
     };
 
     return (
@@ -30,11 +39,11 @@ const HoursGrid = ({ expandColumns, days, handleChange, save, isTemplate }) => {
             <Table stickyHeader size="small" aria-label="simple table">
                 <HoursTableHead expandColumns={expandColumns} />
                 <TableBody>
-                    {days.map(row => {
+                    {days.map((row, rowNumber) => {
                         return (
                             <TableRow
                                 key={row.day}
-                                className={getRowClass(row.dayOfTheWeek)}
+                                className={getRowClass(rowNumber)}
                             >
                                 <TableCell component="th" scope="row">
                                     {row.day}

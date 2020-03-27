@@ -33,7 +33,12 @@ export default function Header({ profile }) {
                     <Button component={NavLink} color="inherit" to="/template">
                         Template
                     </Button>
-                    <Button color="inherit" startIcon={<AccountCircle />}>
+                    <Button
+                        color="inherit"
+                        component={NavLink}
+                        to="/admin"
+                        startIcon={<AccountCircle />}
+                    >
                         {profile.displayName}
                     </Button>
                 </Toolbar>

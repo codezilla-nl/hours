@@ -9,6 +9,7 @@ import firebase from "./firebase/firebase";
 import Header from "./navigation/header";
 import PreLoad from "./navigation/preLoad";
 import HoursGrid from "./hours/hoursGrid";
+import Admin from "./admin/admin";
 
 const useStyles = makeStyles(theme => ({
     activeItem: {
@@ -108,19 +109,23 @@ export default function App() {
                     <CssBaseline />
                     <Header profile={profile} />
                     <Switch>
-                        <Route exact path="/">
-                            <HoursGrid type="month" profile={profile} />
-                        </Route>
-                        <Route path="/template">
-                            <Typography
-                                variant="h4"
-                                component="h4"
-                                className={classes.title}
-                            >
-                                Template
-                            </Typography>
-                            <HoursGrid type="template" profile={profile} />
-                        </Route>
+                        <Route
+                            path="/"
+                            exact
+                            component={() => (
+                                <HoursGrid profile={profile} type="month" />
+                            )}
+                        />
+                        <Route
+                            path="/template"
+                            component={() => (
+                                <HoursGrid profile={profile} type="template" />
+                            )}
+                        />
+                        <Route
+                            path="/admin"
+                            component={() => <Admin profile={profile} />}
+                        />
                     </Switch>
                 </Router>
             ) : (

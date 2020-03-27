@@ -26,7 +26,7 @@ const HoursHeader = ({
     isFinal,
     handleInputChange,
 }) => {
-    if (!isTemplate) return null;
+    if (isTemplate) return null;
     return (
         <Toolbar>
             <Grid container direction="row" alignItems="flex-start">

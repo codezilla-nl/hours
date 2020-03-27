@@ -10,11 +10,11 @@ import AccountCircle from "@material-ui/icons/AccountCircle";
 
 const useStyles = makeStyles(theme => ({
     menuButton: {
-        marginRight: theme.spacing(2)
+        marginRight: theme.spacing(2),
     },
     title: {
-        flexGrow: 1
-    }
+        flexGrow: 1,
+    },
 }));
 
 export default function Header({ profile }) {
@@ -30,9 +30,10 @@ export default function Header({ profile }) {
                     <Button component={NavLink} color="inherit" to="/">
                         Urenstaat
                     </Button>
-                    <Button component={NavLink} color="inherit" to="/template">
+                    {/* <Button component={NavLink} color="inherit" to="/template">
                         Template
                     </Button>
+                     */}
                     <Button
                         color="inherit"
                         component={NavLink}

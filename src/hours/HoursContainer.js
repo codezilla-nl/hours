@@ -27,34 +27,22 @@ class HoursContainer extends Component {
         const { type, profile } = this.props;
         const isTemplate = type === "template";
 
-        this.setState({
-            isTemplate,
-            profile,
-            profileId: profile.id,
-            year,
-            month,
-        });
-
-        if (isTemplate) {
-            this.fetchTemplate(profile.id);
-        } else {
-            this.fetchMonth();
-        }
-    }
-
-    componentDidUpdate(prevProps, prevState) {
-        if (
-            prevState.month !== this.state.month ||
-            (prevState.year !== this.state.year && !this.state.isTemplate)
-        ) {
-            this.fetchMonth();
-        }
-        if (
-            prevState.month !== this.state.month ||
-            (prevState.year !== this.state.year && this.state.isTemplate)
-        ) {
-            this.fetchTemplate(this.state.profileId);
-        }
+        this.setState(
+            {
+                isTemplate,
+                profile,
+                profileId: profile.id,
+                year,
+                month,
+            },
+            () => {
+                if (isTemplate) {
+                    this.fetchTemplate(profile.id);
+                } else {
+                    this.fetchMonth();
+                }
+            },
+        );
     }
 
     fetchMonth = async () => {
@@ -71,7 +59,9 @@ class HoursContainer extends Component {
         if (instance && instance.exists) {
             this.setState({ ...instance.data(), id: instance.id });
         } else {
-            this.getDaysInMonth();
+            this.setState({
+                days: this.getDaysInMonth(this.state.month, this.state.year),
+            });
         }
 
         this.setState({ isLoading: false });
@@ -98,7 +88,13 @@ class HoursContainer extends Component {
         this.setState({ isLoading: false });
     };
 
-    handleInputChange = (name, value) => this.setState({ [name]: value });
+    handleInputChange = (name, value) => {
+        this.setState({ [name]: value }, () => {
+            if (["month", "year"].includes(name)) {
+                this.fetchMonth();
+            }
+        });
+    };
 
     getDaysInMonth(month, year) {
         const daysInAMonth = new Date(year, month, 0).getDate();

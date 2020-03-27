@@ -11,18 +11,18 @@ const useStyles = makeStyles(theme => ({
         minHeight: "100%",
         width: "100%",
         position: "fixed",
-        background: "url('./bg-pattern-triangles.png') 0 0 repeat"
+        background: "url('./bg-pattern-triangles.png') 0 0 repeat",
     },
     paper: {
         marginTop: theme.spacing(8),
         display: "flex",
         flexDirection: "column",
-        alignItems: "center"
+        alignItems: "center",
     },
     avatar: {
         margin: theme.spacing(1),
-        backgroundColor: "transparent"
-    }
+        backgroundColor: "transparent",
+    },
 }));
 
 export default function PreLoad() {
@@ -43,7 +43,7 @@ export default function PreLoad() {
                 <Typography component="h1" variant="h4">
                     CODEZILLA Hours
                 </Typography>
-                <Typography component="subtitle1" variant="subtitle1">
+                <Typography component="h2" variant="subtitle1">
                     Bezig met aanmelden...
                 </Typography>
             </div>

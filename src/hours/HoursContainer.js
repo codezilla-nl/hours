@@ -58,11 +58,7 @@ class HoursContainer extends Component {
             prevState.month !== this.state.month ||
             (prevState.year !== this.state.year && this.state.isTemplate)
         ) {
-            this.fetchTemplate(
-                this.state.month,
-                this.state.year,
-                this.state.profileId,
-            );
+            this.fetchTemplate(this.state.profileId);
         }
     }
 

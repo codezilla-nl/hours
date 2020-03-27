@@ -23,7 +23,6 @@ const HoursHeader = ({
     client,
     project,
     expandColumns,
-    isFinal,
     handleInputChange,
 }) => {
     if (isTemplate) return null;
@@ -99,21 +98,6 @@ const HoursHeader = ({
                         />
                     }
                     label="Toon alle velden"
-                />
-                <FormControlLabel
-                    control={
-                        <Switch
-                            checked={isFinal}
-                            onChange={event =>
-                                handleInputChange(
-                                    "isFinal",
-                                    event.target.checked,
-                                )
-                            }
-                            color="primary"
-                        />
-                    }
-                    label="Definitief"
                 />
             </Grid>
         </Toolbar>

@@ -16,7 +16,6 @@ class HoursContainer extends Component {
         project: "",
         profileId: "",
         profile: "",
-        isFinal: false,
         snackbarOpen: false,
         isLoading: false,
         isTemplate: false,
@@ -204,8 +203,6 @@ class HoursContainer extends Component {
                     client={this.state.client}
                     project={this.state.project}
                     expandColumns={this.state.expandColumns}
-                    isFinal={this.state.isFinal}
-                    makeFinal={this.makeFinal}
                     isTemplate={this.state.isTemplate}
                 />
                 <HoursGrid

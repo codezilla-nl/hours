@@ -39,7 +39,7 @@ class HoursContainer extends Component {
         if (isTemplate) {
             this.fetchTemplate(profile.id);
         } else {
-            this.fetchMonth(month, year, profile.id);
+            this.fetchMonth();
         }
     }
 
@@ -48,11 +48,7 @@ class HoursContainer extends Component {
             prevState.month !== this.state.month ||
             (prevState.year !== this.state.year && !this.state.isTemplate)
         ) {
-            this.fetchMonth(
-                this.state.month,
-                this.state.year,
-                this.state.profileId,
-            );
+            this.fetchMonth();
         }
         if (
             prevState.month !== this.state.month ||
@@ -62,13 +58,16 @@ class HoursContainer extends Component {
         }
     }
 
-    fetchMonth = async (month, year, profileId) => {
+    fetchMonth = async () => {
         this.setState({ isLoading: true });
         const db = firebase.firestore();
         const response = await db.collection("months").get();
         const instance = response.docs.find(doc => doc.data());
+
         if (instance && instance.exists) {
             this.setState({ ...instance.data(), id: instance.id });
+        } else {
+            this.getDaysInMonth();
         }
 
         this.setState({ isLoading: false });

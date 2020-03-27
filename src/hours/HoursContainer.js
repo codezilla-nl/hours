@@ -3,7 +3,7 @@ import Snackbar from "@material-ui/core/Snackbar";
 import firebase from "../firebase/firebase";
 
 import HoursHeader from "./HoursHeader";
-import HoursGrid from "./HoursGrid";
+import HoursGrid from "./hoursGrid";
 
 class HoursContainer extends Component {
     state = {
@@ -81,8 +81,6 @@ class HoursContainer extends Component {
                 days: instance.data().days,
                 id: instance.id,
             });
-        } else {
-            this.getDaysInMonth();
         }
 
         this.setState({ isLoading: false });

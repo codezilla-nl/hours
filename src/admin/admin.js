@@ -231,7 +231,9 @@ const useToolbarStyles = makeStyles(theme => ({
 
 const EnhancedTableToolbar = props => {
     const classes = useToolbarStyles();
-    const { numSelected } = props;
+    const { numSelected, currentMonth, currentYear } = props;
+    const [month, setMonth] = React.useState(currentMonth);
+    const [year, setYear] = React.useState(currentYear);
 
     return (
         <Toolbar
@@ -262,10 +264,8 @@ const EnhancedTableToolbar = props => {
                 <Select
                     labelId="select-month-label"
                     id="select-month-label"
-                    value="3"
-                    // onChange={event =>
-                    //     this.setMonth(event.target.value, this.state.data.year)
-                    // }
+                    value={month}
+                    onChange={event => setMonth(event.target.value)}
                 >
                     {HoursConstants.months.map(month => {
                         return (
@@ -281,12 +281,10 @@ const EnhancedTableToolbar = props => {
                 <Select
                     labelId="select-year-label"
                     id="select-year-label"
-                    value={this.state.data.year}
-                    onChange={event =>
-                        this.setMonth(this.state.data.month, event.target.value)
-                    }
+                    value={year}
+                    onChange={event => setYear(event.target.value)}
                 >
-                    {this.years.map(year => {
+                    {HoursConstants.years.map(year => {
                         return (
                             <MenuItem value={year} key={year}>
                                 {year}
@@ -314,7 +312,9 @@ const EnhancedTableToolbar = props => {
 };
 
 EnhancedTableToolbar.propTypes = {
-    numSelected: PropTypes.number.isRequired
+    numSelected: PropTypes.number.isRequired,
+    currentMonth: PropTypes.number.isRequired,
+    currentYear: PropTypes.number.isRequired
 };
 
 const useStyles = makeStyles(theme => ({
@@ -346,7 +346,6 @@ export default function EnhancedTable() {
     const [order, setOrder] = React.useState("asc");
     const [orderBy, setOrderBy] = React.useState("calories");
     const [selected, setSelected] = React.useState([]);
-    const [dense, setDense] = React.useState(false);
     const [isLoading, setIsLoading] = React.useState(true);
 
     const currentYear = new Date().getFullYear();
@@ -416,7 +415,11 @@ export default function EnhancedTable() {
     return (
         <div className={classes.root}>
             <Paper className={classes.paper}>
-                <EnhancedTableToolbar numSelected={selected.length} />
+                <EnhancedTableToolbar
+                    numSelected={selected.length}
+                    currentMonth={currentMonth}
+                    currentYear={currentYear}
+                />
                 {isLoading ? null : (
                     <TableContainer>
                         <Table

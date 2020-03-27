@@ -60,7 +60,12 @@ class HoursContainer extends Component {
     fetchMonth = async () => {
         this.setState({ isLoading: true });
         const db = firebase.firestore();
-        const response = await db.collection("months").get();
+        const response = await db
+            .collection("months")
+            .where("month", "==", this.state.month)
+            .where("year", "==", this.state.year)
+            .where("profileId", "==", this.state.profileId)
+            .get();
         const instance = response.docs.find(doc => doc.data());
 
         if (instance && instance.exists) {

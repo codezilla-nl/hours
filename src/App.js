@@ -93,14 +93,11 @@ export default function App() {
         db.collection("profile")
             .add(newProfile)
             .then(docRef => {
-                newProfile.id = docRef.id;
-                setProfile(newProfile);
+                fetchProfile(user);
             })
             .catch(error => {
                 console.error("Error adding document: ", error);
             });
-
-        setIsLoading(false);
     };
 
     return (

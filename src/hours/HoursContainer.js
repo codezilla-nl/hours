@@ -98,7 +98,7 @@ class HoursContainer extends Component {
         const daysInAMonth = new Date(year, month, 0).getDate();
         const rows = [];
 
-        for (let i = 1; i < daysInAMonth; i++) {
+        for (let i = 1; i <= daysInAMonth; i++) {
             rows.push({
                 day: i,
                 date: new Date(year, month - 1, i),

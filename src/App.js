@@ -120,7 +120,9 @@ export default function App() {
     return (
         <ThemeProvider theme={theme}>
             <div className={classes.root}>
-                {!isLoading ? (
+                {isLoading ? (
+                    <PreLoad />
+                ) : (
                     <Router>
                         <CssBaseline />
                         <Header profile={profile} />
@@ -154,8 +156,6 @@ export default function App() {
                             )}
                         </Switch>
                     </Router>
-                ) : (
-                    <PreLoad />
                 )}
 
                 <script src="https://www.gstatic.com/firebasejs/7.11.0/firebase-app.js"></script>

@@ -11,7 +11,7 @@ import {
     TableFooter,
 } from "@material-ui/core/";
 
-import firebase from "../firebase/firebase";
+import getMonths from "../firebase/data";
 
 import * as Constants from "./overview/constants";
 
@@ -89,7 +89,7 @@ export default function OverviewTable() {
     const currentMonth = new Date().getMonth() + 1;
 
     const handleChangeDate = (month, year) => {
-        fetchMonth(month, year);
+        getData(month, year);
     };
 
     const handleRequestSort = (event, property) => {
@@ -129,19 +129,10 @@ export default function OverviewTable() {
 
     const isSelected = id => selected.indexOf(id) !== -1;
 
-    const fetchMonth = async (month, year) => {
+    const getData = async (month, year) => {
         setIsLoading(true);
-        rows = [];
-
-        const db = firebase.firestore();
-        const response = await db
-            .collection("months")
-            .where("month", "==", month)
-            .where("year", "==", year)
-            .get();
-        rows = response.docs.map(doc => {
-            const row = doc.data();
-            row.id = doc.id;
+        const list = await getMonths(month, year);
+        rows = list.map(row => {
             initRow(row);
             return row;
         });
@@ -168,7 +159,7 @@ export default function OverviewTable() {
     };
 
     React.useEffect(() => {
-        fetchMonth(currentMonth, currentYear);
+        getData(currentMonth, currentYear);
     }, [currentMonth, currentYear]);
 
     return (
@@ -197,7 +188,7 @@ export default function OverviewTable() {
                             onRequestSort={handleRequestSort}
                             rowCount={rows.length}
                         />
-                        {!isLoading && rows.length > 0 && (
+                        {isLoading || rows.length === 0 ? null : (
                             <>
                                 <TableBody>
                                     {stableSort(

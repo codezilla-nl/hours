@@ -1,18 +1,30 @@
 import React from "react";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 
-import { makeStyles } from "@material-ui/core/styles";
-
+import {
+    makeStyles,
+    ThemeProvider,
+    createMuiTheme,
+} from "@material-ui/core/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
-import Typography from "@material-ui/core/Typography";
 
 import firebase from "./firebase/firebase";
 
 import Header from "./navigation/header";
 import HoursContainer from "./hours/HoursContainer";
 import PreLoad from "./navigation/preLoad";
-import HoursGrid from "./hours/hoursGrid";
 import Admin from "./admin/admin";
+
+const theme = createMuiTheme({
+    palette: {
+        primary: {
+            // light: will be calculated from palette.primary.main,
+            main: "#67d518",
+            // dark: will be calculated from palette.primary.main,
+            // contrastText: will be calculated to contrast with palette.primary.main
+        },
+    },
+});
 
 const useStyles = makeStyles(theme => ({
     activeItem: {
@@ -106,47 +118,53 @@ export default function App() {
     };
 
     return (
-        <div className={classes.root}>
-            {!isLoading ? (
-                <Router>
-                    <CssBaseline />
-                    <Header profile={profile} />
-                    <Switch>
-                        <Route
-                            path="/"
-                            exact
-                            component={() => (
-                                <HoursContainer
-                                    profile={profile}
-                                    type="month"
+        <ThemeProvider theme={theme}>
+            <div className={classes.root}>
+                {!isLoading ? (
+                    <Router>
+                        <CssBaseline />
+                        <Header profile={profile} />
+                        <Switch>
+                            <Route
+                                path="/"
+                                exact
+                                component={() => (
+                                    <HoursContainer
+                                        profile={profile}
+                                        type="month"
+                                    />
+                                )}
+                            />
+                            <Route
+                                path="/template"
+                                component={() => (
+                                    <HoursContainer
+                                        profile={profile}
+                                        type="template"
+                                    />
+                                )}
+                            />
+                            {profile.isAdmin && (
+                                <Route
+                                    path="/admin"
+                                    component={() => (
+                                        <Admin profile={profile} />
+                                    )}
                                 />
                             )}
-                        />
-                        <Route
-                            path="/template"
-                            component={() => (
-                                <HoursContainer
-                                    profile={profile}
-                                    type="template"
-                                />
-                            )}
-                        />
-                        <Route
-                            path="/admin"
-                            component={() => <Admin profile={profile} />}
-                        />
-                    </Switch>
-                </Router>
-            ) : (
-                <PreLoad />
-            )}
+                        </Switch>
+                    </Router>
+                ) : (
+                    <PreLoad />
+                )}
 
-            <script src="https://www.gstatic.com/firebasejs/7.11.0/firebase-app.js"></script>
+                <script src="https://www.gstatic.com/firebasejs/7.11.0/firebase-app.js"></script>
 
-            <script src="https://www.gstatic.com/firebasejs/7.11.0/firebase-analytics.js"></script>
+                <script src="https://www.gstatic.com/firebasejs/7.11.0/firebase-analytics.js"></script>
 
-            <script src="https://www.gstatic.com/firebasejs/7.11.0/firebase-auth.js"></script>
-            <script src="https://www.gstatic.com/firebasejs/7.11.0/firebase-firestore.js"></script>
-        </div>
+                <script src="https://www.gstatic.com/firebasejs/7.11.0/firebase-auth.js"></script>
+                <script src="https://www.gstatic.com/firebasejs/7.11.0/firebase-firestore.js"></script>
+            </div>
+        </ThemeProvider>
     );
 }

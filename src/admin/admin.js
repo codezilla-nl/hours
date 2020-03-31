@@ -1,31 +1,22 @@
 import React from "react";
-import PropTypes from "prop-types";
-import clsx from "clsx";
-import { lighten, makeStyles } from "@material-ui/core/styles";
-import Table from "@material-ui/core/Table";
-import TableBody from "@material-ui/core/TableBody";
-import TableCell from "@material-ui/core/TableCell";
-import TableContainer from "@material-ui/core/TableContainer";
-import TableHead from "@material-ui/core/TableHead";
-import TableRow from "@material-ui/core/TableRow";
-import TableSortLabel from "@material-ui/core/TableSortLabel";
-import Toolbar from "@material-ui/core/Toolbar";
-import Typography from "@material-ui/core/Typography";
-import Paper from "@material-ui/core/Paper";
-import Checkbox from "@material-ui/core/Checkbox";
-import IconButton from "@material-ui/core/IconButton";
-import Tooltip from "@material-ui/core/Tooltip";
-import DeleteIcon from "@material-ui/icons/Delete";
-import FilterListIcon from "@material-ui/icons/FilterList";
-
-import FormControl from "@material-ui/core/FormControl";
-import InputLabel from "@material-ui/core/InputLabel";
-import Select from "@material-ui/core/Select";
-import MenuItem from "@material-ui/core/MenuItem";
+import { makeStyles } from "@material-ui/core/styles";
+import {
+    Checkbox,
+    Paper,
+    Table,
+    TableContainer,
+    TableBody,
+    TableRow,
+    TableCell,
+    TableFooter,
+} from "@material-ui/core/";
 
 import firebase from "../firebase/firebase";
 
-import * as HoursConstants from "../hours/hoursConstants";
+import * as Constants from "./overview/constants";
+
+import OverviewHeader from "./overview/overviewHeader";
+import OverviewToolbar from "./overview/overviewToolbar";
 
 let rows = [];
 
@@ -63,270 +54,16 @@ function getTotalHoursPerCategory(days, category) {
     return total;
 }
 
-const headCells = [
-    {
-        id: "name",
-        numeric: false,
-        disablePadding: true,
-        label: "Naam"
-    },
-    {
-        id: "client",
-        numeric: false,
-        disablePadding: false,
-        label: "Klant (project)"
-    },
-    {
-        id: "worked",
-        numeric: true,
-        disablePadding: true,
-        label: "Gewerkt"
-    },
-    {
-        id: "overtime",
-        numeric: true,
-        disablePadding: true,
-        label: "Overwerk"
-    },
-    {
-        id: "sick",
-        numeric: true,
-        disablePadding: true,
-        label: "Ziek"
-    },
-    {
-        id: "holiday",
-        numeric: true,
-        disablePadding: true,
-        label: "Verlof"
-    },
-    {
-        id: "publicHoliday",
-        numeric: true,
-        disablePadding: true,
-        label: "Feestdag"
-    },
-    {
-        id: "available",
-        numeric: true,
-        disablePadding: true,
-        label: "Beschikb."
-    },
-    {
-        id: "education",
-        numeric: true,
-        disablePadding: true,
-        label: "Opl."
-    },
-    {
-        id: "other",
-        numeric: true,
-        disablePadding: true,
-        label: "Overig"
-    },
-    {
-        id: "standBy",
-        numeric: true,
-        disablePadding: true,
-        label: "stand-by"
-    },
-    {
-        id: "kilometers",
-        numeric: true,
-        disablePadding: true,
-        label: "Km"
-    },
-    {
-        id: "final",
-        numeric: false,
-        disablePadding: false,
-        label: "Definitief"
-    }
-];
-
-function EnhancedTableHead(props) {
-    const {
-        classes,
-        onSelectAllClick,
-        order,
-        orderBy,
-        numSelected,
-        rowCount,
-        onRequestSort
-    } = props;
-    const createSortHandler = property => event => {
-        onRequestSort(event, property);
-    };
-
-    return (
-        <TableHead>
-            <TableRow>
-                <TableCell padding="checkbox">
-                    <Checkbox
-                        indeterminate={
-                            numSelected > 0 && numSelected < rowCount
-                        }
-                        checked={rowCount > 0 && numSelected === rowCount}
-                        onChange={onSelectAllClick}
-                        inputProps={{ "aria-label": "select all desserts" }}
-                    />
-                </TableCell>
-                {headCells.map(headCell => (
-                    <TableCell
-                        key={headCell.id}
-                        align={headCell.numeric ? "right" : "left"}
-                        padding={headCell.disablePadding ? "none" : "default"}
-                        sortDirection={orderBy === headCell.id ? order : false}
-                    >
-                        <TableSortLabel
-                            active={orderBy === headCell.id}
-                            direction={orderBy === headCell.id ? order : "asc"}
-                            onClick={createSortHandler(headCell.id)}
-                        >
-                            {headCell.label}
-                            {orderBy === headCell.id ? (
-                                <span className={classes.visuallyHidden}>
-                                    {order === "desc"
-                                        ? "sorted descending"
-                                        : "sorted ascending"}
-                                </span>
-                            ) : null}
-                        </TableSortLabel>
-                    </TableCell>
-                ))}
-            </TableRow>
-        </TableHead>
-    );
-}
-
-EnhancedTableHead.propTypes = {
-    classes: PropTypes.object.isRequired,
-    numSelected: PropTypes.number.isRequired,
-    onRequestSort: PropTypes.func.isRequired,
-    onSelectAllClick: PropTypes.func.isRequired,
-    order: PropTypes.oneOf(["asc", "desc"]).isRequired,
-    orderBy: PropTypes.string.isRequired,
-    rowCount: PropTypes.number.isRequired
-};
-
-const useToolbarStyles = makeStyles(theme => ({
-    root: {
-        paddingLeft: theme.spacing(2),
-        paddingRight: theme.spacing(1)
-    },
-    highlight:
-        theme.palette.type === "light"
-            ? {
-                  color: theme.palette.secondary.main,
-                  backgroundColor: lighten(theme.palette.secondary.light, 0.85)
-              }
-            : {
-                  color: theme.palette.text.primary,
-                  backgroundColor: theme.palette.secondary.dark
-              },
-    title: {
-        flex: "1 1 100%"
-    }
-}));
-
-const EnhancedTableToolbar = props => {
-    const classes = useToolbarStyles();
-    const { numSelected, currentMonth, currentYear } = props;
-    const [month, setMonth] = React.useState(currentMonth);
-    const [year, setYear] = React.useState(currentYear);
-
-    return (
-        <Toolbar
-            className={clsx(classes.root, {
-                [classes.highlight]: numSelected > 0
-            })}
-        >
-            {numSelected > 0 ? (
-                <Typography
-                    className={classes.title}
-                    color="inherit"
-                    variant="subtitle1"
-                >
-                    {numSelected} geselecteerd
-                </Typography>
-            ) : (
-                <Typography
-                    className={classes.title}
-                    variant="h6"
-                    id="tableTitle"
-                >
-                    Beheer
-                </Typography>
-            )}
-
-            <FormControl>
-                <InputLabel id="select-month-label">Maand</InputLabel>
-                <Select
-                    labelId="select-month-label"
-                    id="select-month-label"
-                    value={month}
-                    onChange={event => setMonth(event.target.value)}
-                >
-                    {HoursConstants.months.map(month => {
-                        return (
-                            <MenuItem value={month.id} key={month.id}>
-                                {month.description}
-                            </MenuItem>
-                        );
-                    })}
-                </Select>
-            </FormControl>
-            <FormControl>
-                <InputLabel id="select-year-label">Jaar</InputLabel>
-                <Select
-                    labelId="select-year-label"
-                    id="select-year-label"
-                    value={year}
-                    onChange={event => setYear(event.target.value)}
-                >
-                    {HoursConstants.years.map(year => {
-                        return (
-                            <MenuItem value={year} key={year}>
-                                {year}
-                            </MenuItem>
-                        );
-                    })}
-                </Select>
-            </FormControl>
-
-            {numSelected > 0 ? (
-                <Tooltip title="Delete">
-                    <IconButton aria-label="delete">
-                        <DeleteIcon />
-                    </IconButton>
-                </Tooltip>
-            ) : (
-                <Tooltip title="Filter list">
-                    <IconButton aria-label="filter list">
-                        <FilterListIcon />
-                    </IconButton>
-                </Tooltip>
-            )}
-        </Toolbar>
-    );
-};
-
-EnhancedTableToolbar.propTypes = {
-    numSelected: PropTypes.number.isRequired,
-    currentMonth: PropTypes.number.isRequired,
-    currentYear: PropTypes.number.isRequired
-};
-
 const useStyles = makeStyles(theme => ({
     root: {
-        width: "100%"
+        width: "100%",
     },
     paper: {
         width: "100%",
-        marginBottom: theme.spacing(2)
+        marginBottom: theme.spacing(2),
     },
     table: {
-        minWidth: 750
+        minWidth: 750,
     },
     visuallyHidden: {
         border: 0,
@@ -337,11 +74,11 @@ const useStyles = makeStyles(theme => ({
         padding: 0,
         position: "absolute",
         top: 20,
-        width: 1
-    }
+        width: 1,
+    },
 }));
 
-export default function EnhancedTable() {
+export default function OverviewTable() {
     const classes = useStyles();
     const [order, setOrder] = React.useState("asc");
     const [orderBy, setOrderBy] = React.useState("calories");
@@ -351,6 +88,10 @@ export default function EnhancedTable() {
     const currentYear = new Date().getFullYear();
     const currentMonth = new Date().getMonth() + 1;
 
+    const handleChangeDate = (month, year) => {
+        fetchMonth(month, year);
+    };
+
     const handleRequestSort = (event, property) => {
         const isAsc = orderBy === property && order === "asc";
         setOrder(isAsc ? "desc" : "asc");
@@ -359,19 +100,19 @@ export default function EnhancedTable() {
 
     const handleSelectAllClick = event => {
         if (event.target.checked) {
-            const newSelecteds = rows.map(n => n.name);
+            const newSelecteds = rows.map(row => row.id);
             setSelected(newSelecteds);
             return;
         }
         setSelected([]);
     };
 
-    const handleClick = (event, name) => {
-        const selectedIndex = selected.indexOf(name);
+    const handleClick = (event, id) => {
+        const selectedIndex = selected.indexOf(id);
         let newSelected = [];
 
         if (selectedIndex === -1) {
-            newSelected = newSelected.concat(selected, name);
+            newSelected = newSelected.concat(selected, id);
         } else if (selectedIndex === 0) {
             newSelected = newSelected.concat(selected.slice(1));
         } else if (selectedIndex === selected.length - 1) {
@@ -379,18 +120,25 @@ export default function EnhancedTable() {
         } else if (selectedIndex > 0) {
             newSelected = newSelected.concat(
                 selected.slice(0, selectedIndex),
-                selected.slice(selectedIndex + 1)
+                selected.slice(selectedIndex + 1),
             );
         }
 
         setSelected(newSelected);
     };
 
-    const isSelected = name => selected.indexOf(name) !== -1;
+    const isSelected = id => selected.indexOf(id) !== -1;
 
     const fetchMonth = async (month, year) => {
+        setIsLoading(true);
+        rows = [];
+
         const db = firebase.firestore();
-        const response = await db.collection("months").get();
+        const response = await db
+            .collection("months")
+            .where("month", "==", month)
+            .where("year", "==", year)
+            .get();
         rows = response.docs.map(doc => {
             const row = doc.data();
             row.id = doc.id;
@@ -401,151 +149,185 @@ export default function EnhancedTable() {
     };
 
     const initRow = row => {
-        headCells.forEach(cell => {
+        Constants.columns.forEach(cell => {
             if (cell.numeric) {
                 row[cell.id] = getTotalHoursPerCategory(row.days, cell.id);
             }
         });
     };
 
+    const getTotal = column => {
+        if (!column.numeric) {
+            return "";
+        }
+
+        const values = rows.map(x => x[column.id]);
+        return values.reduce((total, currentValue) => {
+            return Number(total) + Number(currentValue);
+        });
+    };
+
     React.useEffect(() => {
         fetchMonth(currentMonth, currentYear);
-    }, []);
+    }, [currentMonth, currentYear]);
 
     return (
         <div className={classes.root}>
             <Paper className={classes.paper}>
-                <EnhancedTableToolbar
+                <OverviewToolbar
                     numSelected={selected.length}
                     currentMonth={currentMonth}
                     currentYear={currentYear}
+                    onChangeDate={handleChangeDate}
                 />
-                {isLoading ? null : (
-                    <TableContainer>
-                        <Table
-                            className={classes.table}
-                            aria-labelledby="tableTitle"
-                            size="small"
-                            aria-label="enhanced table"
-                        >
-                            <EnhancedTableHead
-                                classes={classes}
-                                numSelected={selected.length}
-                                order={order}
-                                orderBy={orderBy}
-                                onSelectAllClick={handleSelectAllClick}
-                                onRequestSort={handleRequestSort}
-                                rowCount={rows.length}
-                            />
-                            <TableBody>
-                                {stableSort(
-                                    rows,
-                                    getComparator(order, orderBy)
-                                ).map((row, index) => {
-                                    const isItemSelected = isSelected(row.id);
-                                    const labelId = `enhanced-table-checkbox-${index}`;
 
-                                    return (
-                                        <TableRow
-                                            hover
-                                            onClick={event =>
-                                                handleClick(event, row.id)
-                                            }
-                                            role="checkbox"
-                                            aria-checked={isItemSelected}
-                                            tabIndex={-1}
-                                            key={row.id}
-                                            selected={isItemSelected}
-                                        >
-                                            <TableCell padding="checkbox">
-                                                <Checkbox
-                                                    checked={isItemSelected}
-                                                    inputProps={{
-                                                        "aria-labelledby": labelId
-                                                    }}
-                                                />
-                                            </TableCell>
-                                            <TableCell
-                                                component="th"
-                                                id={labelId}
-                                                scope="row"
-                                                padding="none"
+                <TableContainer>
+                    <Table
+                        className={classes.table}
+                        aria-labelledby="tableTitle"
+                        size="small"
+                        aria-label="enhanced table"
+                    >
+                        <OverviewHeader
+                            classes={classes}
+                            numSelected={selected.length}
+                            order={order}
+                            orderBy={orderBy}
+                            onSelectAllClick={handleSelectAllClick}
+                            onRequestSort={handleRequestSort}
+                            rowCount={rows.length}
+                        />
+                        {!isLoading && rows.length > 0 && (
+                            <>
+                                <TableBody>
+                                    {stableSort(
+                                        rows,
+                                        getComparator(order, orderBy),
+                                    ).map((row, index) => {
+                                        const isItemSelected = isSelected(
+                                            row.id,
+                                        );
+                                        const labelId = `enhanced-table-checkbox-${index}`;
+
+                                        return (
+                                            <TableRow
+                                                hover
+                                                onClick={event =>
+                                                    handleClick(event, row.id)
+                                                }
+                                                role="checkbox"
+                                                aria-checked={isItemSelected}
+                                                tabIndex={-1}
+                                                key={row.id}
+                                                selected={isItemSelected}
                                             >
-                                                {row.profile.displayName}
-                                            </TableCell>
-                                            <TableCell>
-                                                {row.client} ({row.project})
-                                            </TableCell>
-                                            <TableCell
-                                                align="right"
-                                                padding="none"
-                                            >
-                                                {row.worked}
-                                            </TableCell>
-                                            <TableCell
-                                                align="right"
-                                                padding="none"
-                                            >
-                                                {row.overtime}
-                                            </TableCell>
-                                            <TableCell
-                                                align="right"
-                                                padding="none"
-                                            >
-                                                {row.sick}
-                                            </TableCell>
-                                            <TableCell
-                                                align="right"
-                                                padding="none"
-                                            >
-                                                {row.holiday}
-                                            </TableCell>
-                                            <TableCell
-                                                align="right"
-                                                padding="none"
-                                            >
-                                                {row.publicHoliday}
-                                            </TableCell>
-                                            <TableCell
-                                                align="right"
-                                                padding="none"
-                                            >
-                                                {row.available}
-                                            </TableCell>
-                                            <TableCell
-                                                align="right"
-                                                padding="none"
-                                            >
-                                                {row.education}
-                                            </TableCell>
-                                            <TableCell
-                                                align="right"
-                                                padding="none"
-                                            >
-                                                {row.other}
-                                            </TableCell>
-                                            <TableCell
-                                                align="right"
-                                                padding="none"
-                                            >
-                                                {row.standBy}
-                                            </TableCell>
-                                            <TableCell
-                                                align="right"
-                                                padding="none"
-                                            >
-                                                {row.kilometers}
-                                            </TableCell>
-                                            <TableCell>
-                                                {row.isFinal ? "Ja" : "Nee"}
-                                            </TableCell>
-                                        </TableRow>
-                                    );
-                                })}
-                            </TableBody>
-                        </Table>
-                    </TableContainer>
-                )}
+                                                <TableCell padding="checkbox">
+                                                    <Checkbox
+                                                        checked={isItemSelected}
+                                                        inputProps={{
+                                                            "aria-labelledby": labelId,
+                                                        }}
+                                                    />
+                                                </TableCell>
+                                                <TableCell
+                                                    component="th"
+                                                    id={labelId}
+                                                    scope="row"
+                                                >
+                                                    {row.profile.displayName}
+                                                </TableCell>
+                                                <TableCell>
+                                                    {row.client}
+                                                </TableCell>
+                                                <TableCell>
+                                                    {row.project}
+                                                </TableCell>
+                                                <TableCell
+                                                    align="right"
+                                                    padding="none"
+                                                >
+                                                    {row.worked}
+                                                </TableCell>
+                                                <TableCell
+                                                    align="right"
+                                                    padding="none"
+                                                >
+                                                    {row.overtime}
+                                                </TableCell>
+                                                <TableCell
+                                                    align="right"
+                                                    padding="none"
+                                                >
+                                                    {row.sick}
+                                                </TableCell>
+                                                <TableCell
+                                                    align="right"
+                                                    padding="none"
+                                                >
+                                                    {row.holiday}
+                                                </TableCell>
+                                                <TableCell
+                                                    align="right"
+                                                    padding="none"
+                                                >
+                                                    {row.publicHoliday}
+                                                </TableCell>
+                                                <TableCell
+                                                    align="right"
+                                                    padding="none"
+                                                >
+                                                    {row.available}
+                                                </TableCell>
+                                                <TableCell
+                                                    align="right"
+                                                    padding="none"
+                                                >
+                                                    {row.education}
+                                                </TableCell>
+                                                <TableCell
+                                                    align="right"
+                                                    padding="none"
+                                                >
+                                                    {row.other}
+                                                </TableCell>
+                                                <TableCell
+                                                    align="right"
+                                                    padding="none"
+                                                >
+                                                    {row.standBy}
+                                                </TableCell>
+                                                <TableCell align="right">
+                                                    {row.kilometers}
+                                                </TableCell>
+                                            </TableRow>
+                                        );
+                                    })}
+                                </TableBody>
+                                <TableFooter>
+                                    <TableRow>
+                                        <TableCell padding="checkbox"></TableCell>
+
+                                        {Constants.columns.map(column => {
+                                            return (
+                                                <TableCell
+                                                    align="right"
+                                                    key={"footer-" + column.id}
+                                                    padding={
+                                                        column.disablePadding
+                                                            ? "none"
+                                                            : "default"
+                                                    }
+                                                >
+                                                    {getTotal(column)}
+                                                </TableCell>
+                                            );
+                                        })}
+                                    </TableRow>
+                                </TableFooter>
+                            </>
+                        )}
+                    </Table>
+                </TableContainer>
             </Paper>
         </div>
     );

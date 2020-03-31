@@ -9,6 +9,9 @@ import { NavLink } from "react-router-dom";
 import AccountCircle from "@material-ui/icons/AccountCircle";
 
 const useStyles = makeStyles(theme => ({
+    appBar: {
+        backgroundColor: "#7d518",
+    },
     menuButton: {
         marginRight: theme.spacing(2),
     },
@@ -22,7 +25,7 @@ export default function Header({ profile }) {
 
     return (
         <div className={classes.root}>
-            <AppBar position="static">
+            <AppBar position="static" className={classes.appBar}>
                 <Toolbar>
                     <Typography variant="h6" className={classes.title}>
                         CODEZILLA Hours

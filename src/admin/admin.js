@@ -11,7 +11,7 @@ import {
     TableFooter,
 } from "@material-ui/core/";
 
-import getMonths from "../firebase/data";
+import Hours from "../firebase/data/Hours";
 
 import * as Constants from "./overview/constants";
 
@@ -131,7 +131,8 @@ export default function OverviewTable() {
 
     const getData = async (month, year) => {
         setIsLoading(true);
-        const list = await getMonths(month, year);
+        const list = await Hours.getHours(month, year);
+        console.log(list);
         rows = list.map(row => {
             initRow(row);
             return row;

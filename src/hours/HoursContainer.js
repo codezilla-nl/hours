@@ -1,6 +1,8 @@
 import React, { Component } from "react";
 import Snackbar from "@material-ui/core/Snackbar";
+
 import firebase from "../firebase/firebase";
+import Hours from "../firebase/data/Hours";
 
 import HoursHeader from "./HoursHeader";
 import HoursGrid from "./hoursGrid";
@@ -47,17 +49,14 @@ class HoursContainer extends Component {
 
     fetchMonth = async () => {
         this.setState({ isLoading: true });
-        const db = firebase.firestore();
-        const response = await db
-            .collection("months")
-            .where("month", "==", this.state.month)
-            .where("year", "==", this.state.year)
-            .where("profileId", "==", this.state.profileId)
-            .get();
-        const instance = response.docs.find(doc => doc.data());
+        const instance = await Hours.getHoursForProfile(
+            this.state.month,
+            this.state.year,
+            this.state.profileId,
+        );
 
-        if (instance && instance.exists) {
-            this.setState({ ...instance.data(), id: instance.id });
+        if (instance.length === 1) {
+            this.setState({ ...instance[0], id: instance[0].id });
         } else {
             this.setState({
                 days: this.getDaysInMonth(this.state.month, this.state.year),
@@ -215,8 +214,8 @@ class HoursContainer extends Component {
 
                 <Snackbar
                     anchorOrigin={{
-                        vertical: "bottom",
-                        horizontal: "left",
+                        vertical: "top",
+                        horizontal: "right",
                     }}
                     onClose={this.handleClose}
                     open={this.state.snackbarOpen}

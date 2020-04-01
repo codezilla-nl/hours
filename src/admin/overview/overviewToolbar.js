@@ -27,8 +27,10 @@ OverviewToolbar.propTypes = {
 
 const useStyles = makeStyles(theme => ({
     root: {
-        paddingLeft: theme.spacing(2),
         paddingRight: theme.spacing(1),
+    },
+    formControl: {
+        marginLeft: theme.spacing(2),
     },
     highlight:
         theme.palette.type === "light"
@@ -85,7 +87,7 @@ export default function OverviewToolbar(props) {
                 </Typography>
             )}
 
-            <FormControl>
+            <FormControl className={classes.formControl}>
                 <InputLabel id="select-month-label">Maand</InputLabel>
                 <Select
                     labelId="select-month-label"
@@ -102,7 +104,7 @@ export default function OverviewToolbar(props) {
                     })}
                 </Select>
             </FormControl>
-            <FormControl>
+            <FormControl className={classes.formControl}>
                 <InputLabel id="select-year-label">Jaar</InputLabel>
                 <Select
                     labelId="select-year-label"

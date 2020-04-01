@@ -86,6 +86,35 @@ class HoursContainer extends Component {
         this.setState({ isLoading: false });
     };
 
+    applyTemplate = async () => {
+        this.setState({ isLoading: true });
+
+        const db = firebase.firestore();
+        const instance = await db
+            .collection("template")
+            .doc(this.state.profileId)
+            .get();
+
+        const templateDays = await instance.data().days;
+
+        const mergedDays = templateDays.map(day => {
+            const { days } = this.state;
+
+            const sameDay = days.find(monthDay => monthDay.day === day.day);
+
+            if (day !== sameDay) {
+                Object.keys(day).forEach(item => {
+                    if (day[item] === "") {
+                        day[item] = sameDay[item];
+                    }
+                });
+            }
+
+            return day;
+        });
+        this.setState({ isLoading: false, days: mergedDays });
+    };
+
     handleInputChange = (name, value) => {
         this.setState({ [name]: value }, () => {
             if (["month", "year"].includes(name)) {
@@ -96,6 +125,7 @@ class HoursContainer extends Component {
 
     getDaysInMonth(month, year) {
         const daysInAMonth = new Date(year, month, 0).getDate();
+
         const rows = [];
 
         for (let i = 1; i < daysInAMonth; i++) {
@@ -202,6 +232,7 @@ class HoursContainer extends Component {
                     project={this.state.project}
                     expandColumns={this.state.expandColumns}
                     isTemplate={this.state.isTemplate}
+                    applyTemplate={this.applyTemplate}
                 />
                 <HoursGrid
                     expandColumns={this.state.expandColumns}

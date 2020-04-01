@@ -9,6 +9,7 @@ import {
     Select,
     Switch,
     TextField,
+    Button,
 } from "@material-ui/core";
 
 import * as HoursConstants from "./hoursConstants";
@@ -24,6 +25,8 @@ const HoursHeader = ({
     project,
     expandColumns,
     handleInputChange,
+    applyTemplate,
+    profileId,
 }) => {
     if (isTemplate) return null;
     return (
@@ -99,6 +102,14 @@ const HoursHeader = ({
                     }
                     label="Toon alle velden"
                 />
+                <Button
+                    variant="contained"
+                    color="primary"
+                    disableElevation
+                    onClick={applyTemplate}
+                >
+                    {"Gebruik Template"}
+                </Button>
             </Grid>
         </Toolbar>
     );

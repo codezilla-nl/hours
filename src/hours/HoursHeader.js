@@ -9,6 +9,7 @@ import {
     Select,
     Switch,
     TextField,
+    Button,
 } from "@material-ui/core";
 
 import * as HoursConstants from "./hoursConstants";
@@ -24,11 +25,17 @@ const HoursHeader = ({
     project,
     expandColumns,
     handleInputChange,
+    applyTemplate,
 }) => {
     if (isTemplate) return null;
     return (
         <Toolbar>
-            <Grid container direction="row" alignItems="flex-start">
+            <Grid
+                container
+                direction="row"
+                alignItems="center"
+                justify="space-between"
+            >
                 <FormControl>
                     <InputLabel id="select-month-label">Maand</InputLabel>
                     <Select
@@ -99,6 +106,14 @@ const HoursHeader = ({
                     }
                     label="Toon alle velden"
                 />
+                <Button
+                    variant="contained"
+                    size="small"
+                    disableElevation
+                    onClick={applyTemplate}
+                >
+                    {"Gebruik Template"}
+                </Button>
             </Grid>
         </Toolbar>
     );

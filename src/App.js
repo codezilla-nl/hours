@@ -34,7 +34,7 @@ const useStyles = makeStyles(theme => ({
         flexGrow: 1,
     },
     title: {
-        margin: theme.spacing(0, 1),
+        margin: theme.spacing(1, 1),
     },
 }));
 
@@ -100,31 +100,23 @@ export default function App() {
             });
     };
 
+    if (isLoading) return <PreLoad />;
+
     return (
         <div className={classes.root}>
-            {!isLoading ? (
-                <Router>
-                    <CssBaseline />
-                    <Header profile={profile} />
-                    <Switch>
-                        <Route exact path="/">
-                            <HoursContainer type="month" profile={profile} />
-                        </Route>
-                        <Route path="/template">
-                            <Typography
-                                variant="h4"
-                                component="h4"
-                                className={classes.title}
-                            >
-                                Template
-                            </Typography>
-                            <HoursContainer type="template" profile={profile} />
-                        </Route>
-                    </Switch>
-                </Router>
-            ) : (
-                <PreLoad />
-            )}
+            <Router>
+                <CssBaseline />
+                <Header profile={profile} />
+                <Switch>
+                    <Route exact path="/">
+                        <HoursContainer type="month" profile={profile} />
+                    </Route>
+                    <Route path="/template">
+                        <TemplateHeader classes={classes} />
+                        <HoursContainer type="template" profile={profile} />
+                    </Route>
+                </Switch>
+            </Router>
 
             <script src="https://www.gstatic.com/firebasejs/7.11.0/firebase-app.js"></script>
 
@@ -135,3 +127,16 @@ export default function App() {
         </div>
     );
 }
+
+const TemplateHeader = ({ classes }) => (
+    <>
+        <Typography variant="body1" component="h4" className={classes.title}>
+            Maak hier een template voor je gemiddelde werkweek. Pas het template
+            toe op de hele urenstaat met een klik op de knop.
+        </Typography>
+
+        <Typography variant="body1" component="h4" className={classes.title}>
+            Uren die je al hebt ingevuld worden niet overschreven.
+        </Typography>
+    </>
+);

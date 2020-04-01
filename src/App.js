@@ -1,5 +1,6 @@
 import React from "react";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import { Typography } from "@material-ui/core";
 
 import {
     makeStyles,
@@ -168,12 +169,12 @@ export default function App() {
 
 const TemplateHeader = ({ classes }) => (
     <>
-        <Typography variant="body1" component="h4" className={classes.title}>
+        <Typography variant="body1" component="body" className={classes.title}>
             Maak hier een template voor je gemiddelde werkweek. Pas het template
             toe op de hele urenstaat met een klik op de knop.
         </Typography>
 
-        <Typography variant="body1" component="h4" className={classes.title}>
+        <Typography variant="body2" component="body" className={classes.title}>
             Uren die je al hebt ingevuld worden niet overschreven.
         </Typography>
     </>

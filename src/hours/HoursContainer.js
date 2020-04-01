@@ -277,7 +277,7 @@ class HoursContainer extends Component {
                     }}
                     onClose={this.handleClose}
                     open={this.state.snackbarOpen}
-                    autoHideDuration={6000}
+                    autoHideDuration={4000}
                     message="Opgeslagen"
                 />
             </form>

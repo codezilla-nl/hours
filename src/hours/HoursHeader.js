@@ -26,12 +26,16 @@ const HoursHeader = ({
     expandColumns,
     handleInputChange,
     applyTemplate,
-    profileId,
 }) => {
     if (isTemplate) return null;
     return (
         <Toolbar>
-            <Grid container direction="row" alignItems="flex-start">
+            <Grid
+                container
+                direction="row"
+                alignItems="center"
+                justify="space-between"
+            >
                 <FormControl>
                     <InputLabel id="select-month-label">Maand</InputLabel>
                     <Select
@@ -104,7 +108,7 @@ const HoursHeader = ({
                 />
                 <Button
                     variant="contained"
-                    color="primary"
+                    size="small"
                     disableElevation
                     onClick={applyTemplate}
                 >

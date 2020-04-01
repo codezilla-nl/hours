@@ -48,7 +48,7 @@ const useStyles = makeStyles(theme => ({
         flexGrow: 1,
     },
     title: {
-        margin: theme.spacing(0, 1),
+        margin: theme.spacing(1, 1),
     },
 }));
 
@@ -114,6 +114,8 @@ export default function App() {
             });
     };
 
+    if (isLoading) return <PreLoad />;
+
     return (
         <ThemeProvider theme={theme}>
             <div className={classes.root}>
@@ -134,15 +136,13 @@ export default function App() {
                                     />
                                 )}
                             />
-                            <Route
-                                path="/template"
-                                component={() => (
-                                    <HoursContainer
-                                        profile={profile}
-                                        type="template"
-                                    />
-                                )}
-                            />
+                            <Route path="/template">
+                                <TemplateHeader classes={classes} />
+                                <HoursContainer
+                                    type="template"
+                                    profile={profile}
+                                />
+                            </Route>
                             {profile.isAdmin && (
                                 <Route
                                     path="/admin"
@@ -165,3 +165,16 @@ export default function App() {
         </ThemeProvider>
     );
 }
+
+const TemplateHeader = ({ classes }) => (
+    <>
+        <Typography variant="body1" component="h4" className={classes.title}>
+            Maak hier een template voor je gemiddelde werkweek. Pas het template
+            toe op de hele urenstaat met een klik op de knop.
+        </Typography>
+
+        <Typography variant="body1" component="h4" className={classes.title}>
+            Uren die je al hebt ingevuld worden niet overschreven.
+        </Typography>
+    </>
+);

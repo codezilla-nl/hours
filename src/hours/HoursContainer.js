@@ -75,14 +75,48 @@ class HoursContainer extends Component {
             .doc(profileId)
             .get();
 
-        if (instance && instance.exists) {
+        if (instance && instance.exists && instance.data().days) {
             this.setState({
                 days: instance.data().days,
                 id: instance.id,
             });
+        } else {
+            this.getTemplateWeek();
         }
 
         this.setState({ isLoading: false });
+    };
+
+    applyTemplate = async () => {
+        this.setState({ isLoading: true });
+
+        const db = firebase.firestore();
+        const instance = await db
+            .collection("template")
+            .doc(this.state.profileId)
+            .get();
+
+        const templateDays = await instance.data().days;
+        const { days } = this.state;
+
+        const mergedDays = days.map(day => {
+            const sameDay = templateDays.find(templateDay => {
+                const monthDayOfTheWeek = new Date(day.date).getDay();
+
+                return monthDayOfTheWeek === templateDay.day - 1;
+            });
+
+            if (day !== sameDay) {
+                Object.keys(day).forEach(item => {
+                    if (day[item] === "") {
+                        day[item] = sameDay[item];
+                    }
+                });
+            }
+
+            return day;
+        });
+        this.setState({ isLoading: false, days: mergedDays });
     };
 
     handleInputChange = (name, value) => {
@@ -93,8 +127,33 @@ class HoursContainer extends Component {
         });
     };
 
+    getTemplateWeek = () => {
+        const rows = [];
+
+        for (let i = 1; i <= 7; i++) {
+            rows.push({
+                day: i,
+                date: i - 1,
+                worked: "",
+                overtime: "",
+                sick: "",
+                holiday: "",
+                publicHoliday: "",
+                available: "",
+                education: "",
+                other: "",
+                standBy: "",
+                kilometers: "",
+                explanation: "",
+            });
+        }
+
+        return this.setState({ days: rows });
+    };
+
     getDaysInMonth(month, year) {
         const daysInAMonth = new Date(year, month, 0).getDate();
+
         const rows = [];
 
         for (let i = 1; i <= daysInAMonth; i++) {
@@ -201,14 +260,13 @@ class HoursContainer extends Component {
                     project={this.state.project}
                     expandColumns={this.state.expandColumns}
                     isTemplate={this.state.isTemplate}
+                    applyTemplate={this.applyTemplate}
                 />
                 <HoursGrid
                     expandColumns={this.state.expandColumns}
                     days={this.state.days}
                     handleChange={this.handleInputChange}
                     save={this.save}
-                    month={this.state.month}
-                    year={this.state.year}
                     isTemplate={this.state.isTemplate}
                 />
 

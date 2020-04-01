@@ -33,10 +33,9 @@ export default function Header({ profile }) {
                     <Button component={NavLink} color="inherit" to="/">
                         Urenstaat
                     </Button>
-                    {/* <Button component={NavLink} color="inherit" to="/template">
+                    <Button component={NavLink} color="inherit" to="/template">
                         Template
                     </Button>
-                     */}
                     <Button
                         color="inherit"
                         component={NavLink}

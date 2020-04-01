@@ -76,11 +76,13 @@ class HoursContainer extends Component {
             .doc(profileId)
             .get();
 
-        if (instance && instance.exists) {
+        if (instance && instance.exists && instance.data().days) {
             this.setState({
                 days: instance.data().days,
                 id: instance.id,
             });
+        } else {
+            this.getTemplateWeek();
         }
 
         this.setState({ isLoading: false });
@@ -96,11 +98,14 @@ class HoursContainer extends Component {
             .get();
 
         const templateDays = await instance.data().days;
+        const { days } = this.state;
 
-        const mergedDays = templateDays.map(day => {
-            const { days } = this.state;
+        const mergedDays = days.map(day => {
+            const sameDay = templateDays.find(templateDay => {
+                const monthDayOfTheWeek = new Date(day.date).getDay();
 
-            const sameDay = days.find(monthDay => monthDay.day === day.day);
+                return monthDayOfTheWeek === templateDay.day - 1;
+            });
 
             if (day !== sameDay) {
                 Object.keys(day).forEach(item => {
@@ -121,6 +126,30 @@ class HoursContainer extends Component {
                 this.fetchMonth();
             }
         });
+    };
+
+    getTemplateWeek = () => {
+        const rows = [];
+
+        for (let i = 1; i <= 7; i++) {
+            rows.push({
+                day: i,
+                dayOfTheWeek: i - 1,
+                worked: "",
+                overtime: "",
+                sick: "",
+                holiday: "",
+                publicHoliday: "",
+                available: "",
+                education: "",
+                other: "",
+                standBy: "",
+                kilometers: "",
+                explanation: "",
+            });
+        }
+
+        return this.setState({ days: rows });
     };
 
     getDaysInMonth(month, year) {

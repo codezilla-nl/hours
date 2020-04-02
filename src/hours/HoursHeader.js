@@ -1,7 +1,6 @@
 import React from "react";
 import {
     Toolbar,
-    Grid,
     FormControl,
     FormControlLabel,
     InputLabel,
@@ -10,8 +9,8 @@ import {
     Switch,
     TextField,
     Button,
+    makeStyles,
 } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
 
 import * as HoursConstants from "./hoursConstants";
 
@@ -36,7 +35,15 @@ const HoursHeader = ({
 }) => {
     const classes = useStyles();
 
-    if (isTemplate) return null;
+    if (isTemplate)
+        return (
+            <ClientAndProject
+                classes={classes}
+                client={client}
+                project={project}
+                handleInputChange={handleInputChange}
+            />
+        );
     return (
         <Toolbar>
             <FormControl className={classes.formControl}>
@@ -77,25 +84,12 @@ const HoursHeader = ({
                     })}
                 </Select>
             </FormControl>
-            <TextField
-                className={classes.formControl}
-                id="client"
-                label="Klant"
-                value={client}
-                onChange={event =>
-                    handleInputChange("client", event.target.value)
-                }
+            <ClientAndProject
+                classes={classes}
+                client={client}
+                project={project}
+                handleInputChange={handleInputChange}
             />
-            <TextField
-                className={classes.formControl}
-                id="project"
-                label="Project"
-                value={project}
-                onChange={event =>
-                    handleInputChange("project", event.target.value)
-                }
-            />
-
             <FormControlLabel
                 className={classes.formControl}
                 control={
@@ -124,3 +118,23 @@ const HoursHeader = ({
 };
 
 export default HoursHeader;
+
+const ClientAndProject = ({ classes, client, project, handleInputChange }) => (
+    <>
+        <TextField
+            style={{ marginLeft: "8px" }}
+            className={classes.formControl}
+            id="client"
+            label="Klant"
+            value={client}
+            onChange={event => handleInputChange("client", event.target.value)}
+        />
+        <TextField
+            className={classes.formControl}
+            id="project"
+            label="Project"
+            value={project}
+            onChange={event => handleInputChange("project", event.target.value)}
+        />
+    </>
+);

@@ -16,7 +16,7 @@ jobs:
 
         strategy:
             matrix:
-                node-version: [10.x, 12.x]
+                node-version: [12.x]
 
         steps:
             - uses: actions/checkout@v2
@@ -39,7 +39,7 @@ jobs:
             - name: Download Artifact
               uses: actions/download-artifact@master
               with:
-                  name: dist
+                  name: build
             - name: Deploy to Firebase
               uses: w9jds/firebase-action@master
               with:

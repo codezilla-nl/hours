@@ -16,15 +16,7 @@ import HoursTableHead from "./HoursTableHeader";
 
 const columns = HoursConstants.columns;
 
-const HoursGrid = ({
-    expandColumns,
-    days,
-    handleChange,
-    save,
-    month,
-    year,
-    isTemplate,
-}) => {
+const HoursGrid = ({ expandColumns, days, handleChange, save, isTemplate }) => {
     const isNotWeekend = dayOfTheWeek => {
         return dayOfTheWeek !== 0 && dayOfTheWeek !== 6;
     };
@@ -41,9 +33,7 @@ const HoursGrid = ({
                     {days.map(row => {
                         const dayOfTheWeek = isTemplate
                             ? row.day - 1
-                            : new Date(
-                                  month + "-" + row.day + "-" + year,
-                              ).getDay();
+                            : new Date(row.date.toDate()).getDay();
                         return (
                             <TableRow
                                 key={row.day}

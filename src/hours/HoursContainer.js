@@ -280,7 +280,7 @@ class HoursContainer extends Component {
 
                 <Snackbar
                     anchorOrigin={{
-                        vertical: "top",
+                        vertical: "bottom",
                         horizontal: "right",
                     }}
                     onClose={this.handleClose}

@@ -267,12 +267,14 @@ class HoursContainer extends Component {
                     days={this.state.days}
                     handleChange={this.handleInputChange}
                     save={this.save}
+                    month={this.state.month}
+                    year={this.state.year}
                     isTemplate={this.state.isTemplate}
                 />
 
                 <Snackbar
                     anchorOrigin={{
-                        vertical: "top",
+                        vertical: "bottom",
                         horizontal: "right",
                     }}
                     onClose={this.handleClose}

@@ -5,8 +5,12 @@ import TextField from "@material-ui/core/TextField";
 const HoursCell = ({ row, column, days, handleChange, isTemplate, save }) => {
     const handleHoursInput = (value, column, day) => {
         const daysInput = [...days];
-        const numberValue = Number(value);
-        daysInput[day][column] = isNaN(numberValue) ? "" : numberValue;
+        let output = "";
+        if (value !== "") {
+            const numberValue = Number(value);
+            output = isNaN(numberValue) ? "" : numberValue;
+        }
+        daysInput[day][column] = output;
         handleChange("days", daysInput);
     };
 
@@ -39,12 +43,12 @@ const HoursCell = ({ row, column, days, handleChange, isTemplate, save }) => {
     if (!row) return null;
 
     return (
-        <TableCell align="right" key={row.day + "-" + column}>
+        <TableCell align="left" key={row.day + "-" + column}>
             <TextField
                 id={column}
                 inputProps={{
                     style: {
-                        textAlign: "right",
+                        textAlign: "left",
                     },
                     day: row.day,
                 }}

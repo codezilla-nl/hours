@@ -78,6 +78,8 @@ class HoursContainer extends Component {
         if (instance && instance.exists && instance.data().days) {
             this.setState({
                 days: instance.data().days,
+                client: instance.data().client,
+                project: instance.data().project,
                 id: instance.id,
             });
         } else {
@@ -101,7 +103,7 @@ class HoursContainer extends Component {
 
         const mergedDays = days.map(day => {
             const sameDay = templateDays.find(templateDay => {
-                const monthDayOfTheWeek = new Date(day.date).getDay();
+                const monthDayOfTheWeek = new Date(day.date.toDate()).getDay();
 
                 return monthDayOfTheWeek === templateDay.day - 1;
             });
@@ -116,7 +118,12 @@ class HoursContainer extends Component {
 
             return day;
         });
-        this.setState({ isLoading: false, days: mergedDays });
+        this.setState({
+            isLoading: false,
+            days: mergedDays,
+            client: instance.data().client,
+            project: instance.data().project,
+        });
     };
 
     handleInputChange = (name, value) => {
@@ -207,7 +214,7 @@ class HoursContainer extends Component {
             });
     };
 
-    submitTemplate = days => {
+    submitTemplate = (days, client, project) => {
         const data = days.map(day => {
             delete day.date;
             delete day.dayOfTheWeek;
@@ -217,7 +224,7 @@ class HoursContainer extends Component {
         const db = firebase.firestore();
         db.collection("template")
             .doc(this.props.profile.id)
-            .set({ days: data })
+            .set({ days: data, client, project })
             .then(docRef => {
                 this.setState(prevState => {
                     prevState.snackbarOpen = true;
@@ -231,7 +238,8 @@ class HoursContainer extends Component {
 
     save = isTemplate => {
         if (isTemplate) {
-            this.submitTemplate(this.state.days);
+            const { days, client, project } = this.state;
+            this.submitTemplate(days, client, project);
             return;
         }
         this.submitHours();

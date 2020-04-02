@@ -33,7 +33,7 @@ const HoursGrid = ({ expandColumns, days, handleChange, save, isTemplate }) => {
                     {days.map(row => {
                         const dayOfTheWeek = isTemplate
                             ? row.day - 1
-                            : new Date(row.date).getDay();
+                            : new Date(row.date.toDate()).getDay();
                         return (
                             <TableRow
                                 key={row.day}

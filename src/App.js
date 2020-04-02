@@ -58,26 +58,34 @@ export default function App() {
     const [profile, setProfile] = React.useState({});
     const [isLoading, setIsLoading] = React.useState(true);
 
-    const goLogin = () => {
+    const signIn = () => {
         const provider = new firebase.auth.OAuthProvider("microsoft.com");
 
         provider.setCustomParameters({
             tenant: "45c0a280-6475-473d-a8ee-a5684b93879c",
         });
 
+        firebase.auth().signInWithRedirect(provider);
+    };
+
+    const getAuth = () => {
         firebase
             .auth()
-            .signInWithPopup(provider)
+            .getRedirectResult()
             .then(function(result) {
+                if (result.user === null) {
+                    signIn();
+                    return;
+                }
                 fetchProfile(result.user);
             })
             .catch(function(error) {
-                // Handle error.
+                console.log(error);
             });
     };
 
     React.useEffect(() => {
-        goLogin();
+        getAuth();
     }, []);
 
     const fetchProfile = async user => {

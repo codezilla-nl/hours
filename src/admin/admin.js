@@ -132,7 +132,6 @@ export default function OverviewTable() {
     const getData = async (month, year) => {
         setIsLoading(true);
         const list = await Hours.getHours(month, year);
-        console.log(list);
         rows = list.map(row => {
             initRow(row);
             return row;

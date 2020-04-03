@@ -25,15 +25,29 @@ const HoursGrid = ({ expandColumns, days, handleChange, save, isTemplate }) => {
         return isNotWeekend(dayOfTheWeek) ? "" : "highlight";
     };
 
+    const getDayOfTheWeek = row => {
+        if (isTemplate) {
+            return row.day - 1;
+        }
+        if (row.date instanceof Date) {
+            /* row.date is valid date object */
+            return new Date(row.date).getDay();
+        }
+        if (row.date.toDate() instanceof Date) {
+            /* row.date is a timestamp */
+            return new Date(row.date.toDate()).getDay();
+        }
+        /* No valid date, return -1 */
+        return -1;
+    };
+
     return (
         <TableContainer component={Paper} className="hoursGrid">
             <Table stickyHeader size="small" aria-label="simple table">
                 <HoursTableHead expandColumns={expandColumns} />
                 <TableBody>
                     {days.map(row => {
-                        const dayOfTheWeek = isTemplate
-                            ? row.day - 1
-                            : new Date(row.date.toDate()).getDay();
+                        const dayOfTheWeek = getDayOfTheWeek(row);
                         return (
                             <TableRow
                                 key={row.day}

@@ -7,7 +7,7 @@ const HoursCell = ({ row, column, days, handleChange, save }) => {
 
     React.useEffect(() => {
         setValue(row[column]);
-    }, [row, column]);
+    }, [row, column, days]);
 
     const handleHoursInput = (value, column, day) => {
         const daysInput = [...days];

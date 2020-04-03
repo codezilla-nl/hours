@@ -2,7 +2,13 @@ import React from "react";
 import TableCell from "@material-ui/core/TableCell";
 import TextField from "@material-ui/core/TextField";
 
-const HoursCell = ({ row, column, days, handleChange, isTemplate, save }) => {
+const HoursCell = ({ row, column, days, handleChange, save }) => {
+    const [value, setValue] = React.useState(row[column]);
+
+    React.useEffect(() => {
+        setValue(row[column]);
+    }, [row, column]);
+
     const handleHoursInput = (value, column, day) => {
         const daysInput = [...days];
         let output = "";
@@ -11,7 +17,9 @@ const HoursCell = ({ row, column, days, handleChange, isTemplate, save }) => {
             output = isNaN(numberValue) ? "" : numberValue;
         }
         daysInput[day][column] = output;
+        setValue(output);
         handleChange("days", daysInput);
+        save();
     };
 
     /* Jump with arrow keys to another field */
@@ -52,11 +60,11 @@ const HoursCell = ({ row, column, days, handleChange, isTemplate, save }) => {
                     },
                     day: row.day,
                 }}
-                value={row[column]}
-                onChange={event =>
+                value={value}
+                onChange={event => setValue(event.target.value)}
+                onBlur={event =>
                     handleHoursInput(event.target.value, column, row.day - 1)
                 }
-                onBlur={() => save(isTemplate)}
                 onKeyDown={onKeyDown}
                 size="small"
             />

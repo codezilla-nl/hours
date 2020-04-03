@@ -118,12 +118,15 @@ class HoursContainer extends Component {
 
             return day;
         });
-        this.setState({
-            isLoading: false,
-            days: mergedDays,
-            client: instance.data().client,
-            project: instance.data().project,
-        });
+        this.setState(
+            {
+                isLoading: false,
+                days: mergedDays,
+                client: instance.data().client,
+                project: instance.data().project,
+            },
+            this.save(),
+        );
     };
 
     handleInputChange = (name, value) => {
@@ -236,8 +239,8 @@ class HoursContainer extends Component {
             });
     };
 
-    save = isTemplate => {
-        if (isTemplate) {
+    save = () => {
+        if (this.isTemplate) {
             const { days, client, project } = this.state;
             this.submitTemplate(days, client, project);
             return;

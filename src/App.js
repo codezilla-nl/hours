@@ -86,6 +86,7 @@ export default function App() {
 
     React.useEffect(() => {
         getAuth();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const fetchProfile = async user => {
@@ -177,12 +178,12 @@ export default function App() {
 
 const TemplateHeader = ({ classes }) => (
     <>
-        <Typography variant="body1" component="body" className={classes.title}>
+        <Typography variant="body1" className={classes.title}>
             Maak hier een template voor je gemiddelde werkweek. Pas het template
             toe op de hele urenstaat met een klik op de knop.
         </Typography>
 
-        <Typography variant="body2" component="body" className={classes.title}>
+        <Typography variant="body2" className={classes.title}>
             Uren die je al hebt ingevuld worden niet overschreven.
         </Typography>
     </>

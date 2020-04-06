@@ -5,7 +5,9 @@ import firebase from "../firebase/firebase";
 import Hours from "../firebase/data/Hours";
 
 import HoursHeader from "./HoursHeader";
-import HoursGrid from "./hoursGrid";
+import HoursGrid from "./HoursGrid";
+import Validators from "./validation/Validators";
+import Utils from "../utils/Utils";
 
 class HoursContainer extends Component {
     state = {
@@ -19,6 +21,7 @@ class HoursContainer extends Component {
         profileId: "",
         profile: "",
         snackbarOpen: false,
+        showValidationMessage: false,
         isLoading: false,
         isTemplate: false,
     };
@@ -56,37 +59,61 @@ class HoursContainer extends Component {
         );
 
         if (instance.length === 1) {
-            this.setState({ ...instance[0], id: instance[0].id });
-        } else {
-            this.setState({
-                days: this.getDaysInMonth(this.state.month, this.state.year),
+            this.setState({ ...instance[0], id: instance[0].id }, () => {
+                this.initData();
             });
+        } else {
+            this.setState(
+                {
+                    days: this.getDaysInMonth(
+                        this.state.month,
+                        this.state.year,
+                    ),
+                },
+                () => {
+                    this.initData();
+                },
+            );
         }
 
         this.setState({ isLoading: false });
     };
 
-    fetchTemplate = async profileId => {
+    fetchTemplate = async (profileId) => {
         this.setState({ isLoading: true });
 
         const db = firebase.firestore();
-        const instance = await db
-            .collection("template")
-            .doc(profileId)
-            .get();
+        const instance = await db.collection("template").doc(profileId).get();
 
         if (instance && instance.exists && instance.data().days) {
-            this.setState({
-                days: instance.data().days,
-                client: instance.data().client,
-                project: instance.data().project,
-                id: instance.id,
-            });
+            this.setState(
+                {
+                    days: instance.data().days,
+                    client: instance.data().client,
+                    project: instance.data().project,
+                    id: instance.id,
+                },
+                () => {
+                    this.initData();
+                },
+            );
         } else {
             this.getTemplateWeek();
         }
 
         this.setState({ isLoading: false });
+    };
+
+    initData = () => {
+        const days = this.state.days.map((x) => {
+            const day = x;
+
+            day.date = Utils.parseDate(x.date);
+            day.dayOfTheWeek = Utils.getDayOfTheWeek(x, this.state.isTemplate);
+            day.isWeekend = Utils.isWeekend(x);
+            return day;
+        });
+        this.setState({ days: days });
     };
 
     applyTemplate = async () => {
@@ -101,15 +128,15 @@ class HoursContainer extends Component {
         const templateDays = await instance.data().days;
         const { days } = this.state;
 
-        const mergedDays = days.map(day => {
-            const sameDay = templateDays.find(templateDay => {
+        const mergedDays = days.map((day) => {
+            const sameDay = templateDays.find((templateDay) => {
                 const monthDayOfTheWeek = new Date(day.date.toDate()).getDay();
 
                 return monthDayOfTheWeek === templateDay.day - 1;
             });
 
             if (day !== sameDay) {
-                Object.keys(day).forEach(item => {
+                Object.keys(day).forEach((item) => {
                     if (day[item] === "") {
                         day[item] = sameDay[item];
                     }
@@ -203,19 +230,19 @@ class HoursContainer extends Component {
                 year: this.state.year,
                 month: this.state.month,
             })
-            .then(docRef => {
-                this.setState(prevState => {
+            .then((docRef) => {
+                this.setState((prevState) => {
                     prevState.snackbarOpen = true;
                     return prevState;
                 });
             })
-            .catch(error => {
+            .catch((error) => {
                 console.error("Error adding document: ", error);
             });
     };
 
     submitTemplate = (days, client, project) => {
-        const data = days.map(day => {
+        const data = days.map((day) => {
             delete day.date;
             delete day.dayOfTheWeek;
             return day;
@@ -225,35 +252,71 @@ class HoursContainer extends Component {
         db.collection("template")
             .doc(this.props.profile.id)
             .set({ days: data, client, project })
-            .then(docRef => {
-                this.setState(prevState => {
+            .then((docRef) => {
+                this.setState((prevState) => {
                     prevState.snackbarOpen = true;
                     return prevState;
                 });
             })
-            .catch(error => {
+            .catch((error) => {
                 console.error("Error adding document: ", error);
             });
     };
 
-    save = isTemplate => {
+    save = (isTemplate) => {
         if (isTemplate) {
             const { days, client, project } = this.state;
             this.submitTemplate(days, client, project);
             return;
         }
+
+        this.isValid();
+
         this.submitHours();
     };
 
-    handleClose = (event, reason) => {
+    isValid = () => {
+        const validationMessages = [];
+        this.state.days.forEach((day) => {
+            const weekendValidation = Validators.validateWeekend(day);
+            if (weekendValidation) {
+                validationMessages.push(weekendValidation);
+            }
+        });
+
+        const totalHoursValidation = Validators.validateTotalHoursOfMonth(
+            this.state.days,
+        );
+        if (totalHoursValidation) {
+            validationMessages.push(totalHoursValidation);
+        }
+
+        if (validationMessages.length > 0) {
+            validationMessages.forEach((message) => {
+                this.setState({
+                    showValidationMessage: true,
+                    validationMessage: message,
+                });
+            });
+            return false;
+        }
+        return true;
+    };
+
+    closeSnackbar = (event, reason) => {
         if (reason === "clickaway") {
             return;
         }
 
-        this.setState(prevState => {
-            prevState.snackbarOpen = false;
-            return prevState;
-        });
+        this.setState({ snackbarOpen: false });
+    };
+
+    closeValidationMessage = (event, reason) => {
+        if (reason === "clickaway") {
+            return;
+        }
+
+        this.setState({ showValidationMessage: false });
     };
 
     render() {
@@ -283,11 +346,17 @@ class HoursContainer extends Component {
                         vertical: "bottom",
                         horizontal: "right",
                     }}
-                    onClose={this.handleClose}
+                    onClose={this.closeSnackbar}
                     open={this.state.snackbarOpen}
                     autoHideDuration={4000}
                     message="Opgeslagen"
                 />
+                <Snackbar
+                    open={this.state.showValidationMessage}
+                    autoHideDuration={6000}
+                    onClose={this.closeValidationMessage}
+                    message={this.state.validationMessage}
+                ></Snackbar>
             </form>
         );
     }

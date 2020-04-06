@@ -9,14 +9,18 @@ import {
     Switch,
     TextField,
     Button,
+    Typography,
     makeStyles,
 } from "@material-ui/core";
 
 import * as HoursConstants from "./hoursConstants";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
     formControl: {
         marginRight: theme.spacing(1),
+    },
+    savedText: {
+        marginLeft: "auto",
     },
 }));
 
@@ -32,6 +36,7 @@ const HoursHeader = ({
     expandColumns,
     handleInputChange,
     applyTemplate,
+    saved,
 }) => {
     const classes = useStyles();
 
@@ -52,11 +57,11 @@ const HoursHeader = ({
                     labelId="select-month-label"
                     id="select-month-label"
                     defaultValue={currentMonth}
-                    onChange={event =>
+                    onChange={(event) =>
                         handleInputChange("month", event.target.value)
                     }
                 >
-                    {months.map(month => {
+                    {months.map((month) => {
                         return (
                             <MenuItem value={month.id} key={month.id}>
                                 {month.description}
@@ -71,11 +76,11 @@ const HoursHeader = ({
                     labelId="select-year-label"
                     id="select-year-label"
                     defaultValue={currentYear}
-                    onChange={event =>
+                    onChange={(event) =>
                         handleInputChange("year", event.target.value)
                     }
                 >
-                    {years.map(year => {
+                    {years.map((year) => {
                         return (
                             <MenuItem value={year} key={year}>
                                 {year}
@@ -95,7 +100,7 @@ const HoursHeader = ({
                 control={
                     <Switch
                         checked={expandColumns}
-                        onChange={event =>
+                        onChange={(event) =>
                             handleInputChange(
                                 "expandColumns",
                                 event.target.checked,
@@ -113,6 +118,16 @@ const HoursHeader = ({
             >
                 {"Gebruik Template"}
             </Button>
+            {saved ? (
+                <Typography
+                    className={classes.savedText}
+                    variant="overline"
+                    display="block"
+                    gutterBottom
+                >
+                    Opgeslagen
+                </Typography>
+            ) : null}
         </Toolbar>
     );
 };
@@ -127,14 +142,18 @@ const ClientAndProject = ({ classes, client, project, handleInputChange }) => (
             id="client"
             label="Klant"
             value={client}
-            onChange={event => handleInputChange("client", event.target.value)}
+            onChange={(event) =>
+                handleInputChange("client", event.target.value)
+            }
         />
         <TextField
             className={classes.formControl}
             id="project"
             label="Project"
             value={project}
-            onChange={event => handleInputChange("project", event.target.value)}
+            onChange={(event) =>
+                handleInputChange("project", event.target.value)
+            }
         />
     </>
 );

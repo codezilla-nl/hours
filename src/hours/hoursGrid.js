@@ -16,7 +16,7 @@ import HoursTableHead from "./HoursTableHeader";
 
 const columns = HoursConstants.columns;
 
-const HoursGrid = ({ expandColumns, days, handleChange, save, isTemplate }) => {
+const HoursGrid = ({ expandColumns, days, handleChange, save }) => {
     const getRowClass = (row) => {
         return row.isWeekend ? "highlight" : "";
     };

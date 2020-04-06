@@ -21,7 +21,7 @@ class HoursContainer extends Component {
         project: "",
         profileId: "",
         profile: "",
-        snackbarOpen: false,
+        saved: false,
         showValidationMessage: false,
         isLoading: false,
         isTemplate: false,
@@ -152,6 +152,7 @@ class HoursContainer extends Component {
                 days: mergedDays,
                 client: instance.data().client,
                 project: instance.data().project,
+                saved: true,
             },
             () => this.save(),
         );
@@ -235,11 +236,8 @@ class HoursContainer extends Component {
                 year: this.state.year,
                 month: this.state.month,
             })
-            .then((docRef) => {
-                this.setState((prevState) => {
-                    prevState.snackbarOpen = true;
-                    return prevState;
-                });
+            .then(() => {
+                this.setState({ snackbarOpen: true, saved: true });
             })
             .catch((error) => {
                 console.error("Error adding document: ", error);
@@ -269,6 +267,8 @@ class HoursContainer extends Component {
     };
 
     save = () => {
+        this.setState({ saved: false });
+
         if (this.isTemplate) {
             const { days, client, project } = this.state;
             this.submitTemplate(days, client, project);
@@ -308,14 +308,6 @@ class HoursContainer extends Component {
         return true;
     };
 
-    closeSnackbar = (event, reason) => {
-        if (reason === "clickaway") {
-            return;
-        }
-
-        this.setState({ snackbarOpen: false });
-    };
-
     closeValidationMessage = (event, reason) => {
         if (reason === "clickaway") {
             return;
@@ -337,6 +329,7 @@ class HoursContainer extends Component {
                     expandColumns={this.state.expandColumns}
                     isTemplate={this.state.isTemplate}
                     applyTemplate={this.applyTemplate}
+                    saved={this.state.saved}
                 />
 
                 {this.state.isLoading ? (
@@ -350,17 +343,6 @@ class HoursContainer extends Component {
                         isTemplate={this.state.isTemplate}
                     />
                 )}
-
-                <Snackbar
-                    anchorOrigin={{
-                        vertical: "bottom",
-                        horizontal: "right",
-                    }}
-                    onClose={this.closeSnackbar}
-                    open={this.state.snackbarOpen}
-                    autoHideDuration={4000}
-                    message="Opgeslagen"
-                />
                 <Snackbar
                     open={this.state.showValidationMessage}
                     autoHideDuration={6000}

@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import Snackbar from "@material-ui/core/Snackbar";
+import LinearProgress from "@material-ui/core/LinearProgress";
 
 import firebase from "../firebase/firebase";
 import Hours from "../firebase/data/Hours";
@@ -159,6 +160,7 @@ class HoursContainer extends Component {
     handleInputChange = (name, value) => {
         this.setState({ [name]: value }, () => {
             if (["month", "year"].includes(name)) {
+                this.setState({ isLoading: true });
                 this.fetchMonth();
             }
         });
@@ -336,13 +338,18 @@ class HoursContainer extends Component {
                     isTemplate={this.state.isTemplate}
                     applyTemplate={this.applyTemplate}
                 />
-                <HoursGrid
-                    expandColumns={this.state.expandColumns}
-                    days={this.state.days}
-                    handleChange={this.handleInputChange}
-                    save={this.save}
-                    isTemplate={this.state.isTemplate}
-                />
+
+                {this.state.isLoading ? (
+                    <LinearProgress />
+                ) : (
+                    <HoursGrid
+                        expandColumns={this.state.expandColumns}
+                        days={this.state.days}
+                        handleChange={this.handleInputChange}
+                        save={this.save}
+                        isTemplate={this.state.isTemplate}
+                    />
+                )}
 
                 <Snackbar
                     anchorOrigin={{

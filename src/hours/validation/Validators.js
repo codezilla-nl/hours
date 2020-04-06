@@ -31,9 +31,19 @@ export default {
             return (
                 "Er zijn te weinig uren (" +
                 userTotalHours +
-                ") ingevuld ten opzichte van het aantal te werke uren deze maand (" +
+                ") ingevuld ten opzichte van het aantal te werken uren deze maand (" +
                 potentialTotalHours +
-                ")."
+                "). Klopt dat?"
+            );
+        }
+
+        if (userTotalHours > potentialTotalHours) {
+            return (
+                "Er zijn te veel uren (" +
+                userTotalHours +
+                ") ingevuld ten opzichte van het aantal te werken uren deze maand (" +
+                potentialTotalHours +
+                "). Klopt dat?"
             );
         }
         return;

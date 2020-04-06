@@ -86,6 +86,7 @@ export default function App() {
 
     React.useEffect(() => {
         getAuth();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const fetchProfile = async (user) => {

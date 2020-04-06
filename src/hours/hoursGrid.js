@@ -46,7 +46,6 @@ const HoursGrid = ({ expandColumns, days, handleChange, save, isTemplate }) => {
                                             column={column.id}
                                             handleChange={handleChange}
                                             save={save}
-                                            isTemplate={isTemplate}
                                             days={days}
                                         />
                                     );

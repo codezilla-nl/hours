@@ -160,6 +160,7 @@ export default function OverviewTable() {
 
     React.useEffect(() => {
         getData(currentMonth, currentYear);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [currentMonth, currentYear]);
 
     return (

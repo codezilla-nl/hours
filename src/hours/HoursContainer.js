@@ -108,7 +108,7 @@ class HoursContainer extends Component {
         const days = this.state.days.map((x) => {
             const day = x;
 
-            day.date = Utils.parseDate(x.date);
+            day.date = this.state.isTemplate ? null : Utils.parseDate(x.date);
             day.dayOfTheWeek = Utils.getDayOfTheWeek(x, this.state.isTemplate);
             day.isWeekend = Utils.isWeekend(x);
             return day;
@@ -130,7 +130,7 @@ class HoursContainer extends Component {
 
         const mergedDays = days.map((day) => {
             const sameDay = templateDays.find((templateDay) => {
-                const monthDayOfTheWeek = new Date(day.date.toDate()).getDay();
+                const monthDayOfTheWeek = new Date(day.date).getDay();
 
                 return monthDayOfTheWeek === templateDay.day - 1;
             });

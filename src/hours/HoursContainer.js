@@ -51,6 +51,12 @@ class HoursContainer extends Component {
         );
     }
 
+    componentWillUnmount() {
+        document
+            .querySelector("input")
+            .removeEventListener("blur", this.handleInputChange);
+    }
+
     fetchMonth = async () => {
         this.setState({ isLoading: true });
         const instance = await Hours.getHoursForProfile(
@@ -106,10 +112,18 @@ class HoursContainer extends Component {
     };
 
     initData = () => {
-        const days = this.state.days.map((x) => {
+        const days = this.state.days.map((x, index) => {
             const day = x;
 
-            day.date = this.state.isTemplate ? null : Utils.parseDate(x.date);
+            if (!day.date) {
+                day.date = new Date(
+                    this.state.year,
+                    this.state.month - 1,
+                    index,
+                );
+            }
+
+            day.date = Utils.parseDate(x.date);
             day.dayOfTheWeek = Utils.getDayOfTheWeek(x, this.state.isTemplate);
             day.isWeekend = Utils.isWeekend(x);
             return day;

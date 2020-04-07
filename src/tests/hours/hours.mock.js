@@ -108,3 +108,56 @@ export const mockWeekend = [
         explanation: "",
     },
 ];
+
+export const mockColumns = [
+    {
+        id: "worked",
+        description: "Gewerkt",
+        enabled: true,
+    },
+    {
+        id: "overtime",
+        description: "Overwerk",
+        enabled: true,
+    },
+    {
+        id: "sick",
+        description: "Ziek",
+        enabled: true,
+    },
+    {
+        id: "holiday",
+        description: "Verlof",
+        enabled: true,
+    },
+    {
+        id: "publicHoliday",
+        description: "Feestdag",
+        enabled: true,
+    },
+    {
+        id: "available",
+        description: "Beschikbaar",
+        enabled: false,
+    },
+    {
+        id: "education",
+        description: "Opleiding",
+        enabled: false,
+    },
+    {
+        id: "other",
+        description: "Overig",
+        enabled: false,
+    },
+    {
+        id: "standBy",
+        description: "StandBy",
+        enabled: false,
+    },
+    {
+        id: "kilometers",
+        description: "Kilometers",
+        enabled: false,
+    },
+];

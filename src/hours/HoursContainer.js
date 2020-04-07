@@ -5,7 +5,7 @@ import firebase from "../firebase/firebase";
 import Hours from "../firebase/data/Hours";
 
 import HoursHeader from "./HoursHeader";
-import HoursGrid from "./hoursGrid";
+import HoursGrid from "./HoursGrid";
 
 class HoursContainer extends Component {
     state = {

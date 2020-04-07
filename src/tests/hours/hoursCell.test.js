@@ -1,7 +1,7 @@
 import React from "react";
 import { unmountComponentAtNode } from "react-dom";
 import HoursCell from "../../hours/HoursCell";
-import { mockDays } from "./hours.mock";
+import { mockDays, mockDaysChanged } from "./hours.mock";
 import { createShallow, createMount } from "@material-ui/core/test-utils";
 
 let wrapper = null;
@@ -49,8 +49,8 @@ describe("HoursCell", () => {
             />,
         );
         const input = wrapper.find("input");
-        input.simulate("blur", { event: { target: { value: "8" } } });
-        expect(onChange).toHaveBeenCalledWith("days", [...mockDays]);
+        input.simulate("blur", { target: { value: 8 } });
+        expect(onChange).toHaveBeenCalledWith("days", mockDaysChanged);
         expect(onSave).toHaveBeenCalled();
     });
 });

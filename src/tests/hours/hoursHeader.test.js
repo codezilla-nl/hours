@@ -77,7 +77,7 @@ describe("HoursHeader", () => {
 
         const clientInput = wrapper.find("input").find("#client");
 
-        clientInput.simulate("change");
+        clientInput.simulate("change", { target: { value: client } });
 
         expect(handleInput).toHaveBeenCalledWith("client", client);
     });

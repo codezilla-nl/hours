@@ -1,6 +1,6 @@
 import React from "react";
 import { unmountComponentAtNode } from "react-dom";
-import { mockDays, mockWeekend } from "./hours.mock";
+import { mockDays, mockWeekend, mockDaysChanged } from "./hours.mock";
 import HoursGrid from "../../hours/hoursGrid";
 import { createShallow, createMount } from "@material-ui/core/test-utils";
 
@@ -67,9 +67,9 @@ describe("HoursGrid", () => {
             />,
         );
         const explanations = wrapper.find("input");
-        explanations.first().simulate("blur");
+        explanations.first().simulate("blur", { target: { value: 8 } });
 
-        expect(onBlur).toHaveBeenCalled();
+        expect(onBlur).toHaveBeenCalledWith("days", mockDaysChanged);
     });
 
     it("should add highlight for weekend day based on date when not a template", () => {

@@ -1,7 +1,7 @@
 import React from "react";
 import { unmountComponentAtNode } from "react-dom";
 import { mockDays, mockWeekend, mockDaysChanged } from "./hours.mock";
-import HoursGrid from "../../hours/hoursGrid";
+import HoursGrid from "../../hours/HoursGrid";
 import { createShallow, createMount } from "@material-ui/core/test-utils";
 
 let wrapper = null;

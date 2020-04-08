@@ -145,12 +145,13 @@ const HoursHeader = ({
                         aria-label="more"
                         aria-controls="header-menu"
                         aria-haspopup="true"
+                        id="headerMenuButton"
                         onClick={handleClick}
                     >
                         <MoreVertIcon />
                     </IconButton>
                     <Menu
-                        id="header-menu"
+                        id="headerMenu"
                         anchorEl={anchorEl}
                         keepMounted
                         open={open}
@@ -161,6 +162,7 @@ const HoursHeader = ({
                                 applyTemplate();
                                 handleClose();
                             }}
+                            id="applyTemplate"
                         >
                             Pas template toe
                         </MenuItem>
@@ -169,6 +171,7 @@ const HoursHeader = ({
                                 onExpandColumns();
                                 handleClose();
                             }}
+                            id="expandColumns"
                         >
                             Toon alle velden
                         </MenuItem>

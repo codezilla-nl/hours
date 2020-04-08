@@ -95,8 +95,15 @@ describe("HoursHeader", () => {
             />,
         );
 
-        const button = wrapper.find("button");
-        expect(button.text()).toEqual("Gebruik Template");
+        const headerMenuButton = wrapper.find("button");
+        headerMenuButton.simulate("click");
+
+        const button = wrapper
+            .find("#headerMenu")
+            .find("li")
+            .find("#applyTemplate");
+
+        expect(button.text()).toEqual("Pas template toe");
 
         button.simulate("click");
 

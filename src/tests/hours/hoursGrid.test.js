@@ -1,6 +1,11 @@
 import React from "react";
 import { unmountComponentAtNode } from "react-dom";
-import { mockDays, mockWeekend, mockDaysChanged } from "./hours.mock";
+import {
+    mockDays,
+    mockWeekend,
+    mockWeekendTemplate,
+    mockDaysChanged,
+} from "./hours.mock";
 import HoursGrid from "../../hours/HoursGrid";
 import { createShallow, createMount } from "@material-ui/core/test-utils";
 
@@ -91,7 +96,7 @@ describe("HoursGrid", () => {
         const wrapper = shallow(
             <HoursGrid
                 expandColumns="true"
-                days={mockWeekend}
+                days={mockWeekendTemplate}
                 handleChange={() => {}}
                 save={() => {}}
                 isTemplate

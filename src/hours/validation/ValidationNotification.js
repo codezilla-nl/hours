@@ -1,6 +1,13 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import { Badge, IconButton, Popover, Typography } from "@material-ui/core";
+import {
+    Badge,
+    IconButton,
+    Popover,
+    List,
+    ListItem,
+    ListItemText,
+} from "@material-ui/core";
 import WarningIcon from "@material-ui/icons/Warning";
 
 const useStyles = makeStyles((theme) => ({
@@ -45,13 +52,15 @@ export default function ValidationNotification({ messages }) {
                     horizontal: "center",
                 }}
             >
-                {messages.map((message, index) => {
-                    return (
-                        <Typography className={classes.typography} key={index}>
-                            {message}
-                        </Typography>
-                    );
-                })}
+                <List>
+                    {messages.map((message, index) => {
+                        return (
+                            <ListItem key={index}>
+                                <ListItemText primary={message} />
+                            </ListItem>
+                        );
+                    })}
+                </List>
             </Popover>
         </>
     );

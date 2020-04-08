@@ -49,18 +49,19 @@ export default {
         return;
     },
     getTotalHoursPerDay(day) {
-        return Number(
+        const output = Number(
             [
-                day.worked,
-                day.overtime,
-                day.sick,
-                day.holiday,
-                day.publicHoliday,
-                day.available,
-                day.education,
-                day.other,
-                day.standBy,
+                Number(day.worked),
+                Number(day.overtime),
+                Number(day.sick),
+                Number(day.holiday),
+                Number(day.publicHoliday),
+                Number(day.available),
+                Number(day.education),
+                Number(day.other),
+                Number(day.standBy),
             ].reduce((a, b) => a + b, 0),
         );
+        return output;
     },
 };

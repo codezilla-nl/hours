@@ -134,7 +134,9 @@ class HoursContainer extends Component {
             day.isWeekend = Utils.isWeekend(x);
             return day;
         });
-        this.setState({ days: days });
+        this.setState({ days: days }, () => {
+            this.isValid();
+        });
     };
 
     applyTemplate = async () => {
@@ -301,6 +303,10 @@ class HoursContainer extends Component {
     };
 
     isValid = () => {
+        if (this.state.isTemplate) {
+            return true;
+        }
+
         const validationMessages = [];
         this.state.days.forEach((day) => {
             const weekendValidation = Validators.validateWeekend(day);
@@ -316,13 +322,10 @@ class HoursContainer extends Component {
             validationMessages.push(totalHoursValidation);
         }
 
-        if (validationMessages.length > 0) {
-            this.setState({
-                validationMessages: validationMessages,
-            });
+        this.setState({
+            validationMessages: validationMessages,
+        });
 
-            return false;
-        }
         return true;
     };
 

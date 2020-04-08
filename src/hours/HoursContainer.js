@@ -66,14 +66,11 @@ class HoursContainer extends Component {
         this.setState({ isLoading: false });
     };
 
-    fetchTemplate = async profileId => {
+    fetchTemplate = async (profileId) => {
         this.setState({ isLoading: true });
 
         const db = firebase.firestore();
-        const instance = await db
-            .collection("template")
-            .doc(profileId)
-            .get();
+        const instance = await db.collection("template").doc(profileId).get();
 
         if (instance && instance.exists && instance.data().days) {
             this.setState({
@@ -101,7 +98,7 @@ class HoursContainer extends Component {
         const templateDays = await instance.data().days;
         const { days } = this.state;
 
-        const getDayOfTheWeek = item => {
+        const getDayOfTheWeek = (item) => {
             if (item.date instanceof Date) {
                 /* item.date is valid date object */
                 return new Date(item.date).getDay();
@@ -114,15 +111,15 @@ class HoursContainer extends Component {
             return -1;
         };
 
-        const mergedDays = days.map(day => {
-            const sameDay = templateDays.find(templateDay => {
+        const mergedDays = days.map((day) => {
+            const sameDay = templateDays.find((templateDay) => {
                 const monthDayOfTheWeek = getDayOfTheWeek(day);
 
                 return monthDayOfTheWeek === templateDay.day - 1;
             });
 
             if (day !== sameDay) {
-                Object.keys(day).forEach(item => {
+                Object.keys(day).forEach((item) => {
                     if (day[item] === "") {
                         day[item] = sameDay[item];
                     }
@@ -219,19 +216,19 @@ class HoursContainer extends Component {
                 year: this.state.year,
                 month: this.state.month,
             })
-            .then(docRef => {
-                this.setState(prevState => {
+            .then((docRef) => {
+                this.setState((prevState) => {
                     prevState.snackbarOpen = true;
                     return prevState;
                 });
             })
-            .catch(error => {
+            .catch((error) => {
                 console.error("Error adding document: ", error);
             });
     };
 
     submitTemplate = (days, client, project) => {
-        const data = days.map(day => {
+        const data = days.map((day) => {
             delete day.date;
             delete day.dayOfTheWeek;
             return day;
@@ -241,13 +238,13 @@ class HoursContainer extends Component {
         db.collection("template")
             .doc(this.props.profile.id)
             .set({ days: data, client, project })
-            .then(docRef => {
-                this.setState(prevState => {
+            .then((docRef) => {
+                this.setState((prevState) => {
                     prevState.snackbarOpen = true;
                     return prevState;
                 });
             })
-            .catch(error => {
+            .catch((error) => {
                 console.error("Error adding document: ", error);
             });
     };
@@ -266,7 +263,7 @@ class HoursContainer extends Component {
             return;
         }
 
-        this.setState(prevState => {
+        this.setState((prevState) => {
             prevState.snackbarOpen = false;
             return prevState;
         });

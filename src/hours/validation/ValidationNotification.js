@@ -1,5 +1,4 @@
 import React from "react";
-import { makeStyles } from "@material-ui/core/styles";
 import {
     Badge,
     IconButton,
@@ -10,14 +9,7 @@ import {
 } from "@material-ui/core";
 import WarningIcon from "@material-ui/icons/Warning";
 
-const useStyles = makeStyles((theme) => ({
-    typography: {
-        padding: theme.spacing(1),
-    },
-}));
-
 export default function ValidationNotification({ messages }) {
-    const classes = useStyles();
     const [anchorEl, setAnchorEl] = React.useState(null);
 
     const handleClick = (event) => {

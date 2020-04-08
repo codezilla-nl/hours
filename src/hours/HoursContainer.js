@@ -153,8 +153,7 @@ class HoursContainer extends Component {
 
         const mergedDays = days.map((day) => {
             const sameDay = templateDays.find((templateDay) => {
-                const monthDayOfTheWeek = new Date(day.date).getDay();
-
+                const monthDayOfTheWeek = day.dayOfTheWeek;
                 return monthDayOfTheWeek === templateDay.day - 1;
             });
 
@@ -343,7 +342,6 @@ class HoursContainer extends Component {
         return (
             <form noValidate autoComplete="off">
                 <HoursHeader
-                    setMonth={this.setMonth}
                     handleInputChange={this.handleInputChange}
                     client={this.state.client}
                     project={this.state.project}

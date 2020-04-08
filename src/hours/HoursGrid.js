@@ -17,15 +17,15 @@ import HoursTableHead from "./HoursTableHeader";
 const columns = HoursConstants.columns;
 
 const HoursGrid = ({ expandColumns, days, handleChange, save, isTemplate }) => {
-    const isNotWeekend = dayOfTheWeek => {
+    const isNotWeekend = (dayOfTheWeek) => {
         return dayOfTheWeek !== 0 && dayOfTheWeek !== 6;
     };
 
-    const getRowClass = dayOfTheWeek => {
+    const getRowClass = (dayOfTheWeek) => {
         return isNotWeekend(dayOfTheWeek) ? "" : "highlight";
     };
 
-    const getDayOfTheWeek = row => {
+    const getDayOfTheWeek = (row) => {
         if (isTemplate) {
             return row.day - 1;
         }
@@ -46,7 +46,7 @@ const HoursGrid = ({ expandColumns, days, handleChange, save, isTemplate }) => {
             <Table stickyHeader size="small" aria-label="simple table">
                 <HoursTableHead expandColumns={expandColumns} />
                 <TableBody>
-                    {days.map(row => {
+                    {days.map((row) => {
                         const dayOfTheWeek = getDayOfTheWeek(row);
                         return (
                             <TableRow
@@ -78,7 +78,7 @@ const HoursGrid = ({ expandColumns, days, handleChange, save, isTemplate }) => {
                                             inputProps={{
                                                 day: row.day,
                                             }}
-                                            onBlur={event =>
+                                            onBlur={(event) =>
                                                 handleChange(
                                                     event.target.value,
                                                     "explanation",

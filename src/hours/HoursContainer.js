@@ -1,11 +1,14 @@
 import React, { Component } from "react";
 import Snackbar from "@material-ui/core/Snackbar";
+import LinearProgress from "@material-ui/core/LinearProgress";
 
 import firebase from "../firebase/firebase";
 import Hours from "../firebase/data/Hours";
 
 import HoursHeader from "./HoursHeader";
 import HoursGrid from "./HoursGrid";
+import Validators from "./validation/Validators";
+import Utils from "../utils/Utils";
 
 class HoursContainer extends Component {
     state = {
@@ -18,7 +21,8 @@ class HoursContainer extends Component {
         project: "",
         profileId: "",
         profile: "",
-        snackbarOpen: false,
+        saved: false,
+        showValidationMessages: [],
         isLoading: false,
         isTemplate: false,
     };
@@ -47,6 +51,12 @@ class HoursContainer extends Component {
         );
     }
 
+    componentWillUnmount() {
+        document
+            .querySelector("input")
+            .removeEventListener("blur", this.handleInputChange);
+    }
+
     fetchMonth = async () => {
         this.setState({ isLoading: true });
         const instance = await Hours.getHoursForProfile(
@@ -56,11 +66,21 @@ class HoursContainer extends Component {
         );
 
         if (instance.length === 1) {
-            this.setState({ ...instance[0], id: instance[0].id });
-        } else {
-            this.setState({
-                days: this.getDaysInMonth(this.state.month, this.state.year),
+            this.setState({ ...instance[0], id: instance[0].id }, () => {
+                this.initData();
             });
+        } else {
+            this.setState(
+                {
+                    days: this.getDaysInMonth(
+                        this.state.month,
+                        this.state.year,
+                    ),
+                },
+                () => {
+                    this.initData();
+                },
+            );
         }
 
         this.setState({ isLoading: false });
@@ -73,17 +93,50 @@ class HoursContainer extends Component {
         const instance = await db.collection("template").doc(profileId).get();
 
         if (instance && instance.exists && instance.data().days) {
-            this.setState({
-                days: instance.data().days,
-                client: instance.data().client,
-                project: instance.data().project,
-                id: instance.id,
-            });
+            this.setState(
+                {
+                    days: instance.data().days,
+                    client: instance.data().client,
+                    project: instance.data().project,
+                    id: instance.id,
+                },
+                () => {
+                    this.initData();
+                },
+            );
         } else {
             this.getTemplateWeek();
         }
 
         this.setState({ isLoading: false });
+    };
+
+    initData = () => {
+        const days = this.state.days.map((x, index) => {
+            const day = x;
+
+            if (this.state.isTemplate) {
+                day.dayOfTheWeek = index;
+                day.isWeekend = Utils.isWeekend(x);
+                return day;
+            }
+
+            if (!day.date) {
+                day.date = new Date(
+                    this.state.year,
+                    this.state.month - 1,
+                    index,
+                );
+            }
+
+            day.date = Utils.parseDate(x.date);
+            day.dayOfTheWeek = Utils.getDayOfTheWeek(x, this.state.isTemplate);
+            day.isWeekend = Utils.isWeekend(x);
+            return day;
+        });
+        this.setState({ days: days }, () => {
+            this.isValid();
+        });
     };
 
     applyTemplate = async () => {
@@ -98,23 +151,9 @@ class HoursContainer extends Component {
         const templateDays = await instance.data().days;
         const { days } = this.state;
 
-        const getDayOfTheWeek = (item) => {
-            if (item.date instanceof Date) {
-                /* item.date is valid date object */
-                return new Date(item.date).getDay();
-            }
-            if (item.date.toDate() instanceof Date) {
-                /* item.date is a timestamp */
-                return new Date(item.date.toDate()).getDay();
-            }
-            /* No valid date, return -1 */
-            return -1;
-        };
-
         const mergedDays = days.map((day) => {
             const sameDay = templateDays.find((templateDay) => {
-                const monthDayOfTheWeek = getDayOfTheWeek(day);
-
+                const monthDayOfTheWeek = day.dayOfTheWeek;
                 return monthDayOfTheWeek === templateDay.day - 1;
             });
 
@@ -134,6 +173,7 @@ class HoursContainer extends Component {
                 days: mergedDays,
                 client: instance.data().client,
                 project: instance.data().project,
+                saved: true,
             },
             () => this.save(),
         );
@@ -142,6 +182,7 @@ class HoursContainer extends Component {
     handleInputChange = (name, value) => {
         this.setState({ [name]: value }, () => {
             if (["month", "year"].includes(name)) {
+                this.setState({ isLoading: true });
                 this.fetchMonth();
             }
         });
@@ -216,11 +257,8 @@ class HoursContainer extends Component {
                 year: this.state.year,
                 month: this.state.month,
             })
-            .then((docRef) => {
-                this.setState((prevState) => {
-                    prevState.snackbarOpen = true;
-                    return prevState;
-                });
+            .then(() => {
+                this.setState({ snackbarOpen: true, saved: true });
             })
             .catch((error) => {
                 console.error("Error adding document: ", error);
@@ -250,23 +288,52 @@ class HoursContainer extends Component {
     };
 
     save = () => {
-        if (this.isTemplate) {
+        this.setState({ saved: false });
+
+        if (this.state.isTemplate) {
             const { days, client, project } = this.state;
             this.submitTemplate(days, client, project);
             return;
         }
+
+        this.isValid();
+
         this.submitHours();
     };
 
-    handleClose = (event, reason) => {
+    isValid = () => {
+        if (this.state.isTemplate) {
+            return true;
+        }
+
+        const validationMessages = [];
+        this.state.days.forEach((day) => {
+            const weekendValidation = Validators.validateWeekend(day);
+            if (weekendValidation) {
+                validationMessages.push(weekendValidation);
+            }
+        });
+
+        const totalHoursValidation = Validators.validateTotalHoursOfMonth(
+            this.state.days,
+        );
+        if (totalHoursValidation) {
+            validationMessages.push(totalHoursValidation);
+        }
+
+        this.setState({
+            validationMessages: validationMessages,
+        });
+
+        return true;
+    };
+
+    closeValidationMessage = (event, reason) => {
         if (reason === "clickaway") {
             return;
         }
 
-        this.setState((prevState) => {
-            prevState.snackbarOpen = false;
-            return prevState;
-        });
+        this.setState({ showValidationMessage: false });
     };
 
     render() {
@@ -281,25 +348,27 @@ class HoursContainer extends Component {
                     expandColumns={this.state.expandColumns}
                     isTemplate={this.state.isTemplate}
                     applyTemplate={this.applyTemplate}
-                />
-                <HoursGrid
-                    expandColumns={this.state.expandColumns}
-                    days={this.state.days}
-                    handleChange={this.handleInputChange}
-                    save={this.save}
-                    isTemplate={this.state.isTemplate}
+                    validationMessages={this.state.validationMessages}
+                    saved={this.state.saved}
                 />
 
+                {this.state.isLoading ? (
+                    <LinearProgress />
+                ) : (
+                    <HoursGrid
+                        expandColumns={this.state.expandColumns}
+                        days={this.state.days}
+                        handleChange={this.handleInputChange}
+                        save={this.save}
+                        isTemplate={this.state.isTemplate}
+                    />
+                )}
                 <Snackbar
-                    anchorOrigin={{
-                        vertical: "bottom",
-                        horizontal: "right",
-                    }}
-                    onClose={this.handleClose}
-                    open={this.state.snackbarOpen}
-                    autoHideDuration={4000}
-                    message="Opgeslagen"
-                />
+                    open={this.state.showValidationMessage}
+                    autoHideDuration={6000}
+                    onClose={this.closeValidationMessage}
+                    message={this.state.validationMessage}
+                ></Snackbar>
             </form>
         );
     }

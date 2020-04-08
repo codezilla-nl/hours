@@ -27,7 +27,7 @@ const theme = createMuiTheme({
     },
 });
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
     activeItem: {
         backgroundColor: theme.palette.primary[100],
     },
@@ -72,14 +72,14 @@ export default function App() {
         firebase
             .auth()
             .getRedirectResult()
-            .then(function(result) {
+            .then(function (result) {
                 if (result.user === null) {
                     signIn();
                     return;
                 }
                 fetchProfile(result.user);
             })
-            .catch(function(error) {
+            .catch(function (error) {
                 console.log(error);
             });
     };
@@ -89,10 +89,10 @@ export default function App() {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    const fetchProfile = async user => {
+    const fetchProfile = async (user) => {
         const db = firebase.firestore();
         const snapshot = await db.collection("profile").get();
-        const response = snapshot.docs.find(doc => {
+        const response = snapshot.docs.find((doc) => {
             return doc.data().microsoftId === user.uid;
         });
 
@@ -107,7 +107,7 @@ export default function App() {
         setIsLoading(false);
     };
 
-    const createNewProfile = user => {
+    const createNewProfile = (user) => {
         const db = firebase.firestore();
         const newProfile = {
             displayName: user.displayName,
@@ -116,10 +116,10 @@ export default function App() {
         };
         db.collection("profile")
             .add(newProfile)
-            .then(docRef => {
+            .then((docRef) => {
                 fetchProfile(user);
             })
-            .catch(error => {
+            .catch((error) => {
                 console.error("Error adding document: ", error);
             });
     };

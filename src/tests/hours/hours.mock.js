@@ -169,6 +169,7 @@ export const mockWeekend = [
         standBy: "",
         kilometers: "",
         explanation: "",
+        isWeekend: true,
     },
     {
         day: 5,
@@ -184,6 +185,42 @@ export const mockWeekend = [
         standBy: "",
         kilometers: "",
         explanation: "",
+        isWeekend: true,
+    },
+];
+
+export const mockWeekendTemplate = [
+    {
+        day: 1,
+        date: new Date(2020, 3, 4),
+        worked: "",
+        overtime: "",
+        sick: "",
+        holiday: "",
+        publicHoliday: "",
+        available: "",
+        education: "",
+        other: "",
+        standBy: "",
+        kilometers: "",
+        explanation: "",
+        isWeekend: false,
+    },
+    {
+        day: 2,
+        date: new Date(2020, 3, 5),
+        worked: "",
+        overtime: "",
+        sick: "",
+        holiday: "",
+        publicHoliday: "",
+        available: "",
+        education: "",
+        other: "",
+        standBy: "",
+        kilometers: "",
+        explanation: "",
+        isWeekend: false,
     },
 ];
 

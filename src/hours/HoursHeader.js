@@ -2,21 +2,35 @@ import React from "react";
 import {
     Toolbar,
     FormControl,
-    FormControlLabel,
+    IconButton,
     InputLabel,
+    Menu,
     MenuItem,
     Select,
-    Switch,
     TextField,
-    Button,
+    Typography,
     makeStyles,
 } from "@material-ui/core";
+import MoreVertIcon from "@material-ui/icons/MoreVert";
 
+import ValidationNotification from "./validation/ValidationNotification";
 import * as HoursConstants from "./hoursConstants";
 
-const useStyles = makeStyles(theme => ({
-    formControl: {
-        marginRight: theme.spacing(1),
+const useStyles = makeStyles((theme) => ({
+    alert: {
+        color: "red",
+    },
+    spacingLeft: {
+        marginLeft: theme.spacing(2),
+    },
+    spacingRight: {
+        marginRight: theme.spacing(2),
+    },
+    right: {
+        marginLeft: "auto",
+        display: "inline-flex",
+        justifyContent: "flex-end",
+        alignItems: "center",
     },
 }));
 
@@ -32,8 +46,26 @@ const HoursHeader = ({
     expandColumns,
     handleInputChange,
     applyTemplate,
+    validationMessages,
+    saved,
 }) => {
     const classes = useStyles();
+
+    const [anchorEl, setAnchorEl] = React.useState(null);
+    const open = Boolean(anchorEl);
+
+    const handleClick = (event) => {
+        setAnchorEl(event.currentTarget);
+    };
+
+    const handleClose = () => {
+        setAnchorEl(null);
+    };
+
+    const onExpandColumns = () => {
+        expandColumns = !expandColumns;
+        handleInputChange("expandColumns", expandColumns);
+    };
 
     if (isTemplate)
         return (
@@ -45,18 +77,18 @@ const HoursHeader = ({
             />
         );
     return (
-        <Toolbar>
-            <FormControl className={classes.formControl}>
+        <Toolbar disableGutters>
+            <FormControl className={classes.spacingLeft}>
                 <InputLabel id="select-month-label">Maand</InputLabel>
                 <Select
                     labelId="select-month-label"
                     id="select-month-label"
                     defaultValue={currentMonth}
-                    onChange={event =>
+                    onChange={(event) =>
                         handleInputChange("month", event.target.value)
                     }
                 >
-                    {months.map(month => {
+                    {months.map((month) => {
                         return (
                             <MenuItem value={month.id} key={month.id}>
                                 {month.description}
@@ -65,17 +97,17 @@ const HoursHeader = ({
                     })}
                 </Select>
             </FormControl>
-            <FormControl className={classes.formControl}>
+            <FormControl className={classes.spacingLeft}>
                 <InputLabel id="select-year-label">Jaar</InputLabel>
                 <Select
                     labelId="select-year-label"
                     id="select-year-label"
                     defaultValue={currentYear}
-                    onChange={event =>
+                    onChange={(event) =>
                         handleInputChange("year", event.target.value)
                     }
                 >
-                    {years.map(year => {
+                    {years.map((year) => {
                         return (
                             <MenuItem value={year} key={year}>
                                 {year}
@@ -90,29 +122,62 @@ const HoursHeader = ({
                 project={project}
                 handleInputChange={handleInputChange}
             />
-            <FormControlLabel
-                className={classes.formControl}
-                control={
-                    <Switch
-                        checked={expandColumns}
-                        onChange={event =>
-                            handleInputChange(
-                                "expandColumns",
-                                event.target.checked,
-                            )
-                        }
-                        color="primary"
-                    />
-                }
-                label="Toon alle velden"
-            />
-            <Button
-                className={classes.formControl}
-                variant="contained"
-                onClick={applyTemplate}
-            >
-                {"Gebruik Template"}
-            </Button>
+
+            {validationMessages?.length > 0 ? (
+                <ValidationNotification
+                    className={classes.spacingLeft}
+                    messages={validationMessages}
+                />
+            ) : null}
+            <div className={classes.right}>
+                {saved ? (
+                    <Typography
+                        variant="overline"
+                        display="block"
+                        className={classes.spacingLeft}
+                    >
+                        Opgeslagen
+                    </Typography>
+                ) : null}
+
+                <div>
+                    <IconButton
+                        aria-label="more"
+                        aria-controls="header-menu"
+                        aria-haspopup="true"
+                        id="headerMenuButton"
+                        onClick={handleClick}
+                    >
+                        <MoreVertIcon />
+                    </IconButton>
+                    <Menu
+                        id="headerMenu"
+                        anchorEl={anchorEl}
+                        keepMounted
+                        open={open}
+                        onClose={handleClose}
+                    >
+                        <MenuItem
+                            onClick={() => {
+                                applyTemplate();
+                                handleClose();
+                            }}
+                            id="applyTemplate"
+                        >
+                            Pas template toe
+                        </MenuItem>
+                        <MenuItem
+                            onClick={() => {
+                                onExpandColumns();
+                                handleClose();
+                            }}
+                            id="expandColumns"
+                        >
+                            Toon alle velden
+                        </MenuItem>
+                    </Menu>
+                </div>
+            </div>
         </Toolbar>
     );
 };
@@ -122,19 +187,22 @@ export default HoursHeader;
 const ClientAndProject = ({ classes, client, project, handleInputChange }) => (
     <>
         <TextField
-            style={{ marginLeft: "8px" }}
-            className={classes.formControl}
+            className={classes.spacingLeft}
             id="client"
             label="Klant"
             value={client}
-            onChange={event => handleInputChange("client", event.target.value)}
+            onChange={(event) =>
+                handleInputChange("client", event.target.value)
+            }
         />
         <TextField
-            className={classes.formControl}
+            className={classes.spacingLeft}
             id="project"
             label="Project"
             value={project}
-            onChange={event => handleInputChange("project", event.target.value)}
+            onChange={(event) =>
+                handleInputChange("project", event.target.value)
+            }
         />
     </>
 );

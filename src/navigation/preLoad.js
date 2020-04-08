@@ -1,11 +1,14 @@
 import React from "react";
-import Avatar from "@material-ui/core/Avatar";
-import CssBaseline from "@material-ui/core/CssBaseline";
-import Typography from "@material-ui/core/Typography";
+import {
+    Avatar,
+    Container,
+    CssBaseline,
+    LinearProgress,
+    Typography,
+} from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import Container from "@material-ui/core/Container";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
     root: {
         height: "100%",
         minHeight: "100%",
@@ -29,28 +32,31 @@ export default function PreLoad() {
     const classes = useStyles();
 
     return (
-        <Container component="main" maxWidth="xs">
-            <CssBaseline />
-            <div className={classes.paper}>
-                <Avatar className={classes.avatar}>
-                    <img
-                        src="./Icon-green.svg"
-                        alt="CODEZILLA logo"
-                        height="100%"
-                        width="100%"
-                    ></img>
-                </Avatar>
-                <Typography id="preloadTitle" component="h1" variant="h4">
-                    CODEZILLA Hours
-                </Typography>
-                <Typography
-                    id="preloadSubTitle"
-                    component="h2"
-                    variant="subtitle1"
-                >
-                    Bezig met aanmelden...
-                </Typography>
-            </div>
-        </Container>
+        <>
+            <LinearProgress />
+            <Container component="main" maxWidth="xs">
+                <CssBaseline />
+                <div className={classes.paper}>
+                    <Avatar className={classes.avatar}>
+                        <img
+                            src="./Icon-green.svg"
+                            alt="CODEZILLA logo"
+                            height="100%"
+                            width="100%"
+                        ></img>
+                    </Avatar>
+                    <Typography id="preloadTitle" component="h1" variant="h4">
+                        CODEZILLA Hours
+                    </Typography>
+                    <Typography
+                        id="preloadSubTitle"
+                        component="h2"
+                        variant="subtitle1"
+                    >
+                        Bezig met aanmelden...
+                    </Typography>
+                </div>
+            </Container>
+        </>
     );
 }

@@ -22,7 +22,7 @@ class HoursContainer extends Component {
         profileId: "",
         profile: "",
         saved: false,
-        showValidationMessage: false,
+        showValidationMessages: [],
         isLoading: false,
         isTemplate: false,
     };
@@ -114,6 +114,12 @@ class HoursContainer extends Component {
     initData = () => {
         const days = this.state.days.map((x, index) => {
             const day = x;
+
+            if (this.state.isTemplate) {
+                day.dayOfTheWeek = index;
+                day.isWeekend = Utils.isWeekend(x);
+                return day;
+            }
 
             if (!day.date) {
                 day.date = new Date(
@@ -283,7 +289,7 @@ class HoursContainer extends Component {
     save = () => {
         this.setState({ saved: false });
 
-        if (this.isTemplate) {
+        if (this.state.isTemplate) {
             const { days, client, project } = this.state;
             this.submitTemplate(days, client, project);
             return;
@@ -311,12 +317,10 @@ class HoursContainer extends Component {
         }
 
         if (validationMessages.length > 0) {
-            validationMessages.forEach((message) => {
-                this.setState({
-                    showValidationMessage: true,
-                    validationMessage: message,
-                });
+            this.setState({
+                validationMessages: validationMessages,
             });
+
             return false;
         }
         return true;
@@ -343,6 +347,7 @@ class HoursContainer extends Component {
                     expandColumns={this.state.expandColumns}
                     isTemplate={this.state.isTemplate}
                     applyTemplate={this.applyTemplate}
+                    validationMessages={this.state.validationMessages}
                     saved={this.state.saved}
                 />
 

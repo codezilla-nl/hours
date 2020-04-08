@@ -51,21 +51,19 @@ const HoursGrid = ({ expandColumns, days, handleChange, save }) => {
                                     );
                                 })}
                                 <TableCell align="right">
-                                    {row.isWeekend ? null : (
-                                        <TextField
-                                            id="explanation"
-                                            inputProps={{
-                                                day: row.day,
-                                            }}
-                                            onBlur={(event) =>
-                                                handleChange(
-                                                    event.target.value,
-                                                    "explanation",
-                                                    row.day,
-                                                )
-                                            }
-                                        />
-                                    )}
+                                    <TextField
+                                        id="explanation"
+                                        inputProps={{
+                                            day: row.day,
+                                        }}
+                                        onBlur={(event) =>
+                                            handleChange(
+                                                event.target.value,
+                                                "explanation",
+                                                row.day,
+                                            )
+                                        }
+                                    />
                                 </TableCell>
                             </TableRow>
                         );

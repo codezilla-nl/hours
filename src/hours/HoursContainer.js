@@ -278,7 +278,6 @@ class HoursContainer extends Component {
         return (
             <form noValidate autoComplete="off">
                 <HoursHeader
-                    setMonth={this.setMonth}
                     handleInputChange={this.handleInputChange}
                     client={this.state.client}
                     project={this.state.project}

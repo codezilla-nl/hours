@@ -239,3 +239,10 @@ export const mockColumns = [
         enabled: false,
     },
 ];
+
+export const mockProfile = {
+    displayName: "Test Codezilla",
+    email: "test@codezilla.nl",
+    microsoftId: "testMicrosoftId",
+    id: "testId",
+};

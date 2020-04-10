@@ -2,7 +2,7 @@ import React from "react";
 import TableCell from "@material-ui/core/TableCell";
 import TextField from "@material-ui/core/TextField";
 
-const HoursCell = ({ row, column, days, handleChange, save }) => {
+const HoursCell = ({ row, column, days, handleChange, save, readOnly }) => {
     const [value, setValue] = React.useState(row[column]);
 
     React.useEffect(() => {
@@ -23,7 +23,7 @@ const HoursCell = ({ row, column, days, handleChange, save }) => {
     };
 
     /* Jump with arrow keys to another field */
-    const onKeyDown = event => {
+    const onKeyDown = (event) => {
         const column = event.target.closest("td");
         const row = column.parentNode;
         const index = Array.from(row.children).indexOf(column);
@@ -61,12 +61,13 @@ const HoursCell = ({ row, column, days, handleChange, save }) => {
                     day: row.day,
                 }}
                 value={value}
-                onChange={event => setValue(event.target.value)}
-                onBlur={event =>
+                onChange={(event) => setValue(event.target.value)}
+                onBlur={(event) =>
                     handleHoursInput(event.target.value, column, row.day - 1)
                 }
                 onKeyDown={onKeyDown}
                 size="small"
+                disabled={Boolean(readOnly)}
             />
         </TableCell>
     );

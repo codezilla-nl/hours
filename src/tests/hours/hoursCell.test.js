@@ -9,7 +9,7 @@ let shallow;
 let mount;
 beforeEach(() => {
     // setup a DOM element as a render target
-    wrapper = document.createElement("div");
+    wrapper = document.createElement("tr");
     document.body.appendChild(wrapper);
     mount = createMount();
     shallow = createShallow();

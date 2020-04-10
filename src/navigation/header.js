@@ -1,16 +1,14 @@
 import React from "react";
 import { makeStyles, darken } from "@material-ui/core/styles";
-import AppBar from "@material-ui/core/AppBar";
-import Toolbar from "@material-ui/core/Toolbar";
-import Typography from "@material-ui/core/Typography";
-import Button from "@material-ui/core/Button";
+import { Avatar, AppBar, Toolbar, Typography, Button } from "@material-ui/core";
 import { NavLink } from "react-router-dom";
 
 import AccountCircle from "@material-ui/icons/AccountCircle";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
     appBar: {
         backgroundColor: "#7d518",
+        color: "#fff",
     },
     menuButton: {
         marginRight: theme.spacing(2),
@@ -21,6 +19,10 @@ const useStyles = makeStyles(theme => ({
     title: {
         flexGrow: 1,
     },
+    avatar: {
+        marginRight: theme.spacing(2),
+        backgroundColor: "transparent",
+    },
 }));
 
 export default function Header({ profile }) {
@@ -30,6 +32,14 @@ export default function Header({ profile }) {
         <div className={classes.root}>
             <AppBar position="static" className={classes.appBar}>
                 <Toolbar>
+                    <Avatar className={classes.avatar}>
+                        <img
+                            src="./Icon-white.svg"
+                            alt="CODEZILLA logo"
+                            height="100%"
+                            width="100%"
+                        ></img>
+                    </Avatar>
                     <Typography variant="h6" className={classes.title}>
                         CODEZILLA Hours
                     </Typography>

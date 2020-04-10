@@ -2,6 +2,7 @@ import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import {
     Checkbox,
+    Link,
     Paper,
     Table,
     TableContainer,
@@ -10,6 +11,7 @@ import {
     TableCell,
     TableFooter,
 } from "@material-ui/core/";
+import { NavLink } from "react-router-dom";
 
 import Hours from "../firebase/data/Hours";
 
@@ -43,18 +45,18 @@ function stableSort(array, comparator) {
         if (order !== 0) return order;
         return a[1] - b[1];
     });
-    return stabilizedThis.map(el => el[0]);
+    return stabilizedThis.map((el) => el[0]);
 }
 
 function getTotalHoursPerCategory(days, category) {
     let total = 0;
-    days.forEach(day => {
+    days.forEach((day) => {
         total += Number(day[category]);
     });
     return total;
 }
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
     root: {
         width: "100%",
     },
@@ -98,9 +100,9 @@ export default function OverviewTable() {
         setOrderBy(property);
     };
 
-    const handleSelectAllClick = event => {
+    const handleSelectAllClick = (event) => {
         if (event.target.checked) {
-            const newSelecteds = rows.map(row => row.id);
+            const newSelecteds = rows.map((row) => row.id);
             setSelected(newSelecteds);
             return;
         }
@@ -127,32 +129,32 @@ export default function OverviewTable() {
         setSelected(newSelected);
     };
 
-    const isSelected = id => selected.indexOf(id) !== -1;
+    const isSelected = (id) => selected.indexOf(id) !== -1;
 
     const getData = async (month, year) => {
         setIsLoading(true);
         const list = await Hours.getHours(month, year);
-        rows = list.map(row => {
+        rows = list.map((row) => {
             initRow(row);
             return row;
         });
         setIsLoading(false);
     };
 
-    const initRow = row => {
-        Constants.columns.forEach(cell => {
+    const initRow = (row) => {
+        Constants.columns.forEach((cell) => {
             if (cell.numeric) {
                 row[cell.id] = getTotalHoursPerCategory(row.days, cell.id);
             }
         });
     };
 
-    const getTotal = column => {
+    const getTotal = (column) => {
         if (!column.numeric) {
             return "";
         }
 
-        const values = rows.map(x => x[column.id]);
+        const values = rows.map((x) => x[column.id]);
         return values.reduce((total, currentValue) => {
             return Number(total) + Number(currentValue);
         });
@@ -204,7 +206,7 @@ export default function OverviewTable() {
                                         return (
                                             <TableRow
                                                 hover
-                                                onClick={event =>
+                                                onClick={(event) =>
                                                     handleClick(event, row.id)
                                                 }
                                                 role="checkbox"
@@ -226,7 +228,18 @@ export default function OverviewTable() {
                                                     id={labelId}
                                                     scope="row"
                                                 >
-                                                    {row.profile.displayName}
+                                                    <Link
+                                                        component={NavLink}
+                                                        to={
+                                                            "/admin/detail/" +
+                                                            row.id
+                                                        }
+                                                    >
+                                                        {
+                                                            row.profile
+                                                                .displayName
+                                                        }
+                                                    </Link>
                                                 </TableCell>
                                                 <TableCell>
                                                     {row.client}
@@ -299,7 +312,7 @@ export default function OverviewTable() {
                                     <TableRow>
                                         <TableCell padding="checkbox"></TableCell>
 
-                                        {Constants.columns.map(column => {
+                                        {Constants.columns.map((column) => {
                                             return (
                                                 <TableCell
                                                     align="right"

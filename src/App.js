@@ -15,6 +15,7 @@ import Header from "./navigation/header";
 import HoursContainer from "./hours/HoursContainer";
 import PreLoad from "./navigation/preLoad";
 import Admin from "./admin/admin";
+import AdminDetail from "./admin/detail/Detail";
 
 const theme = createMuiTheme({
     palette: {
@@ -154,12 +155,19 @@ export default function App() {
                                 />
                             </Route>
                             {profile.isAdmin && (
-                                <Route
-                                    path="/admin"
-                                    component={() => (
-                                        <Admin profile={profile} />
-                                    )}
-                                />
+                                <>
+                                    <Route
+                                        path="/admin"
+                                        exact
+                                        component={() => (
+                                            <Admin profile={profile} />
+                                        )}
+                                    />
+                                    <Route
+                                        path="/admin/detail/:id"
+                                        component={() => <AdminDetail />}
+                                    />
+                                </>
                             )}
                         </Switch>
                     </Router>

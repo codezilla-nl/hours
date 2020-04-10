@@ -195,7 +195,7 @@ class HoursContainer extends Component {
             rows.push({
                 day: i,
                 dayOfTheWeek: i,
-                isWeekend: i == 1 || i == 7,
+                isWeekend: i === 1 || i === 7,
                 worked: "",
                 overtime: "",
                 sick: "",

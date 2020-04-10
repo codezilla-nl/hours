@@ -194,7 +194,8 @@ class HoursContainer extends Component {
         for (let i = 1; i <= 7; i++) {
             rows.push({
                 day: i,
-                date: i - 1,
+                dayOfTheWeek: i,
+                isWeekend: i == 1 || i == 7,
                 worked: "",
                 overtime: "",
                 sick: "",
@@ -265,7 +266,7 @@ class HoursContainer extends Component {
             });
     };
 
-    submitTemplate = (days, client, project) => {
+    submitTemplate = (days, client, project, profile) => {
         const data = days.map((day) => {
             delete day.date;
             delete day.dayOfTheWeek;
@@ -275,7 +276,12 @@ class HoursContainer extends Component {
         const db = firebase.firestore();
         db.collection("template")
             .doc(this.props.profile.id)
-            .set({ days: data, client, project })
+            .set({
+                days: data,
+                client,
+                project,
+                profileName: profile.displayName,
+            })
             .then((docRef) => {
                 this.setState((prevState) => {
                     prevState.snackbarOpen = true;
@@ -291,8 +297,8 @@ class HoursContainer extends Component {
         this.setState({ saved: false });
 
         if (this.state.isTemplate) {
-            const { days, client, project } = this.state;
-            this.submitTemplate(days, client, project);
+            const { days, client, project, profile } = this.state;
+            this.submitTemplate(days, client, project, profile);
             return;
         }
 

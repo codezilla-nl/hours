@@ -16,7 +16,7 @@ import HoursTableHead from "./HoursTableHeader";
 
 const columns = HoursConstants.columns;
 
-const HoursGrid = ({ expandColumns, days, handleChange, save }) => {
+const HoursGrid = ({ expandColumns, days, handleChange, save, readOnly }) => {
     const getRowClass = (row) => {
         return row.isWeekend ? "highlight" : "";
     };
@@ -47,12 +47,14 @@ const HoursGrid = ({ expandColumns, days, handleChange, save }) => {
                                             handleChange={handleChange}
                                             save={save}
                                             days={days}
+                                            readOnly={readOnly}
                                         />
                                     );
                                 })}
                                 <TableCell align="right">
                                     <TextField
                                         id="explanation"
+                                        disabled={Boolean(readOnly)}
                                         inputProps={{
                                             day: row.day,
                                         }}

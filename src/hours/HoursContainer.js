@@ -4,6 +4,7 @@ import LinearProgress from "@material-ui/core/LinearProgress";
 
 import firebase from "../firebase/firebase";
 import Hours from "../firebase/data/Hours";
+import JSReport from "../pdf/JSReport";
 
 import HoursHeader from "./HoursHeader";
 import HoursGrid from "./HoursGrid";
@@ -342,6 +343,14 @@ class HoursContainer extends Component {
         this.setState({ showValidationMessage: false });
     };
 
+    getReport = () => {
+        this.setState({ isLoading: true });
+
+        JSReport.getReport(this.state).then(() => {
+            this.setState({ isLoading: false });
+        });
+    };
+
     render() {
         if (!this.props.profile.id) return null;
 
@@ -354,6 +363,7 @@ class HoursContainer extends Component {
                     expandColumns={this.state.expandColumns}
                     isTemplate={this.state.isTemplate}
                     applyTemplate={this.applyTemplate}
+                    getReport={this.getReport}
                     validationMessages={this.state.validationMessages}
                     saved={this.state.saved}
                 />

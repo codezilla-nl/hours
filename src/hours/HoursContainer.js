@@ -22,6 +22,7 @@ class HoursContainer extends Component {
         profileId: "",
         profile: "",
         saved: false,
+        approved: false,
         showValidationMessages: [],
         isLoading: false,
         isTemplate: false,
@@ -66,12 +67,20 @@ class HoursContainer extends Component {
         );
 
         if (instance.length === 1) {
-            this.setState({ ...instance[0], id: instance[0].id }, () => {
-                this.initData();
-            });
+            this.setState(
+                {
+                    ...instance[0],
+                    id: instance[0].id,
+                    approved: instance[0].approved,
+                },
+                () => {
+                    this.initData();
+                },
+            );
         } else {
             this.setState(
                 {
+                    approved: false,
                     days: this.getDaysInMonth(
                         this.state.month,
                         this.state.year,
@@ -356,6 +365,7 @@ class HoursContainer extends Component {
                     applyTemplate={this.applyTemplate}
                     validationMessages={this.state.validationMessages}
                     saved={this.state.saved}
+                    readOnly={this.state.approved}
                 />
 
                 {this.state.isLoading ? (
@@ -367,6 +377,7 @@ class HoursContainer extends Component {
                         handleChange={this.handleInputChange}
                         save={this.save}
                         isTemplate={this.state.isTemplate}
+                        readOnly={this.state.approved}
                     />
                 )}
                 <Snackbar

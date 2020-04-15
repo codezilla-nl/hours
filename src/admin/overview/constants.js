@@ -77,4 +77,10 @@ export const columns = [
         disablePadding: false,
         label: "Km",
     },
+    {
+        id: "approved",
+        numeric: false,
+        disablePadding: false,
+        label: "Akkoord",
+    },
 ];

@@ -48,6 +48,7 @@ const HoursHeader = ({
     applyTemplate,
     validationMessages,
     saved,
+    readOnly,
 }) => {
     const classes = useStyles();
 
@@ -73,6 +74,7 @@ const HoursHeader = ({
                 classes={classes}
                 client={client}
                 project={project}
+                readOnly={readOnly}
                 handleInputChange={handleInputChange}
             />
         );
@@ -120,6 +122,7 @@ const HoursHeader = ({
                 classes={classes}
                 client={client}
                 project={project}
+                readOnly={readOnly}
                 handleInputChange={handleInputChange}
             />
 
@@ -162,6 +165,7 @@ const HoursHeader = ({
                                 applyTemplate();
                                 handleClose();
                             }}
+                            disabled={Boolean(readOnly)}
                             id="applyTemplate"
                         >
                             Pas template toe
@@ -184,13 +188,20 @@ const HoursHeader = ({
 
 export default HoursHeader;
 
-const ClientAndProject = ({ classes, client, project, handleInputChange }) => (
+const ClientAndProject = ({
+    classes,
+    client,
+    project,
+    handleInputChange,
+    readOnly,
+}) => (
     <>
         <TextField
             className={classes.spacingLeft}
             id="client"
             label="Klant"
             value={client}
+            disabled={Boolean(readOnly)}
             onChange={(event) =>
                 handleInputChange("client", event.target.value)
             }
@@ -200,6 +211,7 @@ const ClientAndProject = ({ classes, client, project, handleInputChange }) => (
             id="project"
             label="Project"
             value={project}
+            disabled={Boolean(readOnly)}
             onChange={(event) =>
                 handleInputChange("project", event.target.value)
             }

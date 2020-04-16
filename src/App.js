@@ -17,6 +17,8 @@ import PreLoad from "./navigation/preLoad";
 import Admin from "./admin/admin";
 import AdminDetail from "./admin/detail/Detail";
 
+require("dotenv").config();
+
 const theme = createMuiTheme({
     palette: {
         primary: {

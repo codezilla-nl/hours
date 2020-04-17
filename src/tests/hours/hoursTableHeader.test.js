@@ -34,7 +34,7 @@ describe("HoursTableHeader", () => {
 
         const cells = wrapper.find("th");
         // add 2 for empty starter cell and toelichtingen
-        expect(cells).toHaveLength(mockColumns.length + 2);
+        expect(cells).toHaveLength(mockColumns.length + 3);
         expect(cells.last().text()).toEqual("Toelichting");
     });
 });

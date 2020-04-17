@@ -43,6 +43,18 @@ const HoursCell = ({ row, column, days, handleChange, save, readOnly }) => {
                     prevRow.children[index].querySelector("input").focus();
                 }
                 break;
+            case 37:
+                /* arrow key left */
+                if(column.previousElementSibling.tagName === 'TD') {
+                    column.previousElementSibling.querySelector("input").focus();
+                }
+                break;
+            case 39:
+                /* arrow key right */
+                if(column.nextElementSibling.tagName === 'TD') {
+                    column.nextElementSibling.querySelector("input").focus();
+                }
+                break;
             default:
                 break;
         }

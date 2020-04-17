@@ -46,6 +46,7 @@ const HoursHeader = ({
     expandColumns,
     handleInputChange,
     applyTemplate,
+    getReport,
     validationMessages,
     saved,
     readOnly,
@@ -178,6 +179,15 @@ const HoursHeader = ({
                             id="expandColumns"
                         >
                             Toon alle velden
+                        </MenuItem>
+                        <MenuItem
+                            onClick={() => {
+                                getReport();
+                                handleClose();
+                            }}
+                            id="getReport"
+                        >
+                            Maak PDF
                         </MenuItem>
                     </Menu>
                 </div>

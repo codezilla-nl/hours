@@ -32,4 +32,46 @@ export default {
         const db = firebase.firestore();
         return await db.collection("months").doc(id).get();
     },
+
+    async updateHours(id, document) {
+        const db = firebase.firestore();
+        return await db
+            .collection("months")
+            .doc(id)
+            .set({
+                client: this.transformToString(document.client),
+                days: this.processDays(document.days),
+                profile: document.profile,
+                profileId: this.transformToString(document.profileId),
+                project: this.transformToString(document.project),
+                year: this.transformToString(document.year),
+                month: this.transformToString(document.month),
+                approved: document.approved ? document.approved : false,
+            });
+    },
+
+    processDays(days) {
+        return days.map((x, index) => {
+            return {
+                day: x.day ? x.day : index + 1,
+                dayOfTheWeek: x.dayOfTheWeek ? x.dayOfTheWeek : index + 1,
+                isWeekend: x.isWeekend ? x.isWeekend : false,
+                worked: this.transformToString(x.worked),
+                overtime: this.transformToString(x.overtime),
+                sick: this.transformToString(x.sick),
+                holiday: this.transformToString(x.holiday),
+                publicHoliday: this.transformToString(x.publicHoliday),
+                available: this.transformToString(x.available),
+                education: this.transformToString(x.education),
+                other: this.transformToString(x.other),
+                standBy: this.transformToString(x.standBy),
+                kilometers: this.transformToString(x.kilometers),
+                explanation: this.transformToString(x.explanation),
+            };
+        });
+    },
+
+    transformToString(value) {
+        return value ? value : "";
+    },
 };

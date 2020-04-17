@@ -2,6 +2,8 @@ import React from "react";
 import { useParams, NavLink } from "react-router-dom";
 import { Button, makeStyles, Toolbar, Typography } from "@material-ui/core";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
+import DoneIcon from "@material-ui/icons/Done";
+import UndoIcon from "@material-ui/icons/Undo";
 
 import HoursGrid from "../../hours/HoursGrid";
 
@@ -33,13 +35,37 @@ export default function AdminDetail() {
     const { id } = useParams();
     const [data, setData] = React.useState({});
     const [isLoading, setIsLoading] = React.useState(true);
+    const [saved, setSaved] = React.useState(false);
 
     const classes = useStyles();
 
-    const fetchMonth = async (instanceId) => {
-        const instance = await Hours.getHoursWithId(instanceId);
+    const fetchMonth = async (documentId) => {
+        const instance = await Hours.getHoursWithId(documentId);
         setData(instance.data());
+
         setIsLoading(false);
+    };
+
+    const saveMonth = async (documentId, document) => {
+        setSaved(false);
+
+        Hours.updateHours(documentId, document)
+            .then(() => {
+                setSaved(true);
+            })
+            .catch((error) => {
+                console.error("Error adding document: ", error);
+            });
+    };
+
+    const onApprove = () => {
+        const approved = !Boolean(data.approved);
+        setData({ ...data, approved: approved });
+
+        const document = data;
+        document.approved = approved;
+
+        saveMonth(id, document);
     };
 
     React.useEffect(() => {
@@ -73,6 +99,35 @@ export default function AdminDetail() {
                 <Typography className={classes.spacingRight}>
                     {data.project}
                 </Typography>
+                <div className={classes.right}>
+                    {saved ? (
+                        <Typography
+                            variant="overline"
+                            display="block"
+                            className={classes.spacingRight}
+                        >
+                            Opgeslagen
+                        </Typography>
+                    ) : null}
+                    {data.approved ? (
+                        <Button
+                            variant="outlined"
+                            startIcon={<UndoIcon />}
+                            onClick={onApprove}
+                        >
+                            Niet akkoord
+                        </Button>
+                    ) : (
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            startIcon={<DoneIcon />}
+                            onClick={onApprove}
+                        >
+                            Akkoord
+                        </Button>
+                    )}
+                </div>
             </Toolbar>
             <HoursGrid
                 expandColumns="false"

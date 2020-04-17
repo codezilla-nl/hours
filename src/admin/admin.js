@@ -66,6 +66,9 @@ const useStyles = makeStyles((theme) => ({
     table: {
         minWidth: 750,
     },
+    small: {
+        fontSize: "0.75rem",
+    },
     visuallyHidden: {
         border: 0,
         clip: "rect(0 0 0 0)",
@@ -232,7 +235,10 @@ export default function OverviewTable() {
                                                 key={row.id}
                                                 selected={isItemSelected}
                                             >
-                                                <TableCell padding="checkbox">
+                                                <TableCell
+                                                    padding="checkbox"
+                                                    className={classes.small}
+                                                >
                                                     <Checkbox
                                                         checked={isItemSelected}
                                                         inputProps={{
@@ -244,6 +250,7 @@ export default function OverviewTable() {
                                                     component="th"
                                                     id={labelId}
                                                     scope="row"
+                                                    className={classes.small}
                                                 >
                                                     <Link
                                                         component={NavLink}
@@ -258,76 +265,101 @@ export default function OverviewTable() {
                                                         }
                                                     </Link>
                                                 </TableCell>
-                                                <TableCell>
+                                                <TableCell
+                                                    className={classes.small}
+                                                >
                                                     {row.client}
                                                 </TableCell>
-                                                <TableCell>
+                                                <TableCell
+                                                    className={classes.small}
+                                                >
                                                     {row.project}
                                                 </TableCell>
                                                 <TableCell
-                                                    align="right"
                                                     padding="none"
+                                                    className={classes.small}
                                                 >
-                                                    {row.worked}
-                                                </TableCell>
-                                                <TableCell
-                                                    align="right"
-                                                    padding="none"
-                                                >
-                                                    {row.overtime}
-                                                </TableCell>
-                                                <TableCell
-                                                    align="right"
-                                                    padding="none"
-                                                >
-                                                    {row.sick}
-                                                </TableCell>
-                                                <TableCell
-                                                    align="right"
-                                                    padding="none"
-                                                >
-                                                    {row.holiday}
-                                                </TableCell>
-                                                <TableCell
-                                                    align="right"
-                                                    padding="none"
-                                                >
-                                                    {row.publicHoliday}
-                                                </TableCell>
-                                                <TableCell
-                                                    align="right"
-                                                    padding="none"
-                                                >
-                                                    {row.available}
-                                                </TableCell>
-                                                <TableCell
-                                                    align="right"
-                                                    padding="none"
-                                                >
-                                                    {row.education}
-                                                </TableCell>
-                                                <TableCell
-                                                    align="right"
-                                                    padding="none"
-                                                >
-                                                    {row.other}
-                                                </TableCell>
-                                                <TableCell
-                                                    align="right"
-                                                    padding="none"
-                                                >
-                                                    {row.standBy}
-                                                </TableCell>
-                                                <TableCell align="right">
-                                                    {row.kilometers}
-                                                </TableCell>
-                                                <TableCell>
                                                     {row.approved ? (
                                                         <DoneIcon
                                                             color="primary"
                                                             fontSize="small"
                                                         />
                                                     ) : null}
+                                                </TableCell>
+                                                <TableCell
+                                                    align="right"
+                                                    padding="none"
+                                                    className={classes.small}
+                                                >
+                                                    {row.worked}
+                                                </TableCell>
+                                                <TableCell
+                                                    align="right"
+                                                    padding="none"
+                                                    className={classes.small}
+                                                >
+                                                    {row.overtime}
+                                                </TableCell>
+                                                <TableCell
+                                                    align="right"
+                                                    padding="none"
+                                                    className={classes.small}
+                                                >
+                                                    {row.sick}
+                                                </TableCell>
+                                                <TableCell
+                                                    align="right"
+                                                    padding="none"
+                                                    className={classes.small}
+                                                >
+                                                    {row.holiday}
+                                                </TableCell>
+                                                <TableCell
+                                                    align="right"
+                                                    padding="none"
+                                                    className={classes.small}
+                                                >
+                                                    {row.publicHoliday}
+                                                </TableCell>
+                                                <TableCell
+                                                    align="right"
+                                                    padding="none"
+                                                    className={classes.small}
+                                                >
+                                                    {row.available}
+                                                </TableCell>
+                                                <TableCell
+                                                    align="right"
+                                                    padding="none"
+                                                    className={classes.small}
+                                                >
+                                                    {row.education}
+                                                </TableCell>
+                                                <TableCell
+                                                    align="right"
+                                                    padding="none"
+                                                    className={classes.small}
+                                                >
+                                                    {row.other}
+                                                </TableCell>
+                                                <TableCell
+                                                    align="right"
+                                                    padding="none"
+                                                    className={classes.small}
+                                                >
+                                                    {row.standBy}
+                                                </TableCell>
+                                                <TableCell
+                                                    align="right"
+                                                    padding="none"
+                                                    className={classes.small}
+                                                >
+                                                    {row.kilometers}
+                                                </TableCell>
+                                                <TableCell
+                                                    className={classes.small}
+                                                >
+                                                    {row.explanation}
                                                 </TableCell>
                                             </TableRow>
                                         );

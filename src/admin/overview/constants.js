@@ -18,6 +18,12 @@ export const columns = [
         label: "Project",
     },
     {
+        id: "approved",
+        numeric: false,
+        disablePadding: true,
+        label: "Akkoord",
+    },
+    {
         id: "worked",
         numeric: true,
         disablePadding: true,
@@ -51,7 +57,7 @@ export const columns = [
         id: "available",
         numeric: true,
         disablePadding: true,
-        label: "Beschikb.",
+        label: "Beschikbaar",
     },
     {
         id: "education",
@@ -74,13 +80,13 @@ export const columns = [
     {
         id: "kilometers",
         numeric: true,
-        disablePadding: false,
+        disablePadding: true,
         label: "Km",
     },
     {
-        id: "approved",
+        id: "explanation",
         numeric: false,
         disablePadding: false,
-        label: "Akkoord",
+        label: "Toelichting",
     },
 ];

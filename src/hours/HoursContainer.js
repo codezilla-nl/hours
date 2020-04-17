@@ -249,24 +249,24 @@ class HoursContainer extends Component {
     }
 
     submitHours = () => {
-        const db = firebase.firestore();
-        db.collection("months")
-            .doc(
-                this.state.year +
-                    "-" +
-                    this.state.month +
-                    "-" +
-                    this.state.profile.displayName,
-            )
-            .set({
-                client: this.state.client,
-                days: this.state.days,
-                profile: this.state.profile,
-                profileId: this.state.profileId,
-                project: this.state.project,
-                year: this.state.year,
-                month: this.state.month,
-            })
+        const id =
+            this.state.year +
+            "-" +
+            this.state.month +
+            "-" +
+            this.state.profile.displayName;
+
+        const document = {
+            client: this.state.client,
+            days: this.state.days,
+            profile: this.state.profile,
+            profileId: this.state.profileId,
+            project: this.state.project,
+            year: this.state.year,
+            month: this.state.month,
+        };
+
+        Hours.updateHours(id, document)
             .then(() => {
                 this.setState({ snackbarOpen: true, saved: true });
             })

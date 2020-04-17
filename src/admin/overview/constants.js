@@ -63,7 +63,7 @@ export const columns = [
         id: "education",
         numeric: true,
         disablePadding: true,
-        label: "Opl.",
+        label: "Opleiding",
     },
     {
         id: "other",
@@ -80,13 +80,7 @@ export const columns = [
     {
         id: "kilometers",
         numeric: true,
-        disablePadding: true,
-        label: "Km",
-    },
-    {
-        id: "explanation",
-        numeric: false,
         disablePadding: false,
-        label: "Toelichting",
+        label: "Km",
     },
 ];

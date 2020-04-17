@@ -1,8 +1,16 @@
 import React from "react";
+import { makeStyles } from "@material-ui/core/styles";
 import TableCell from "@material-ui/core/TableCell";
 import TextField from "@material-ui/core/TextField";
 
+const useStyles = makeStyles((theme) => ({
+    textField: {
+        width: "90%",
+    },
+}));
+
 const HoursCell = ({ row, column, days, handleChange, save, readOnly }) => {
+    const classes = useStyles();
     const [value, setValue] = React.useState(row[column]);
 
     React.useEffect(() => {
@@ -45,13 +53,15 @@ const HoursCell = ({ row, column, days, handleChange, save, readOnly }) => {
                 break;
             case 37:
                 /* arrow key left */
-                if(column.previousElementSibling.tagName === 'TD') {
-                    column.previousElementSibling.querySelector("input").focus();
+                if (column.previousElementSibling.tagName === "TD") {
+                    column.previousElementSibling
+                        .querySelector("input")
+                        .focus();
                 }
                 break;
             case 39:
                 /* arrow key right */
-                if(column.nextElementSibling.tagName === 'TD') {
+                if (column.nextElementSibling.tagName === "TD") {
                     column.nextElementSibling.querySelector("input").focus();
                 }
                 break;
@@ -63,24 +73,33 @@ const HoursCell = ({ row, column, days, handleChange, save, readOnly }) => {
     if (!row) return null;
 
     return (
-        <TableCell align="left" key={row.day + "-" + column}>
-            <TextField
-                id={column}
-                inputProps={{
-                    style: {
-                        textAlign: "left",
-                    },
-                    day: row.day,
-                }}
-                value={value}
-                onChange={(event) => setValue(event.target.value)}
-                onBlur={(event) =>
-                    handleHoursInput(event.target.value, column, row.day - 1)
-                }
-                onKeyDown={onKeyDown}
-                size="small"
-                disabled={Boolean(readOnly)}
-            />
+        <TableCell align="left" key={row.day + "-" + column} padding="none">
+            {Boolean(readOnly) ? (
+                value
+            ) : (
+                <TextField
+                    id={column}
+                    className={classes.textField}
+                    fullWidth={false}
+                    type="number"
+                    inputProps={{
+                        style: {
+                            textAlign: "left",
+                        },
+                        day: row.day,
+                    }}
+                    value={value}
+                    onChange={(event) => setValue(event.target.value)}
+                    onBlur={(event) =>
+                        handleHoursInput(
+                            event.target.value,
+                            column,
+                            row.day - 1,
+                        )
+                    }
+                    onKeyDown={onKeyDown}
+                />
+            )}
         </TableCell>
     );
 };

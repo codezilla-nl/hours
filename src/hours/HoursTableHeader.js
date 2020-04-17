@@ -7,17 +7,17 @@ const HoursTableHead = ({ expandColumns }) => {
         <TableHead>
             <TableRow>
                 <TableCell></TableCell>
-                {columns.map(column => {
+                {columns.map((column) => {
                     if (!column.enabled && !expandColumns) {
                         return null;
                     }
                     return (
-                        <TableCell align="right" key={"header-" + column.id}>
+                        <TableCell key={"header-" + column.id} padding="none">
                             {column.description}
                         </TableCell>
                     );
                 })}
-                <TableCell align="right">Toelichting</TableCell>
+                <TableCell>Toelichting</TableCell>
             </TableRow>
         </TableHead>
     );

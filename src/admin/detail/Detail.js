@@ -100,23 +100,23 @@ export default function AdminDetail() {
                     {data.project}
                 </Typography>
                 <div className={classes.right}>
-                    {saved ? (
-                        <Typography
-                            variant="overline"
-                            display="block"
-                            className={classes.spacingRight}
-                        >
-                            Opgeslagen
-                        </Typography>
-                    ) : null}
                     {data.approved ? (
-                        <Button
-                            variant="outlined"
-                            startIcon={<UndoIcon />}
-                            onClick={onApprove}
-                        >
-                            Niet akkoord
-                        </Button>
+                        <>
+                            <DoneIcon
+                                color="primary"
+                                className={classes.spacingRight}
+                            />
+                            <Typography className={classes.spacingRight}>
+                                Akkoord
+                            </Typography>
+                            <Button
+                                variant="outlined"
+                                startIcon={<UndoIcon />}
+                                onClick={onApprove}
+                            >
+                                Herstel
+                            </Button>
+                        </>
                     ) : (
                         <Button
                             variant="contained"

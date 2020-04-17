@@ -50,6 +50,20 @@ export default {
             });
     },
 
+    async updateHourList(documents) {
+        const db = firebase.firestore();
+        const batch = db.batch();
+
+        documents.forEach((document) => {
+            if (!document.id || document.id === "") {
+                const reference = db.collection("months").doc(document.id);
+                batch.update(reference, document);
+            }
+        });
+
+        return batch.commit();
+    },
+
     processDays(days) {
         return days.map((x, index) => {
             return {

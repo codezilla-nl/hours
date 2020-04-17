@@ -135,17 +135,15 @@ export default function OverviewTable() {
     const isSelected = (id) => selected.indexOf(id) !== -1;
 
     const approve = () => {
-        const list = rows;
         selected.forEach((item) => {
-            const row = list.find((x) => x.id === item);
+            const row = rows.find((x) => x.id === item);
             if (row) {
                 row.approved = true;
-                row.project = "bla bla";
             }
         });
 
-        setRows(list);
-        console.log(list);
+        setRows([...rows]);
+        saveData();
     };
 
     const getData = async (month, year) => {
@@ -158,6 +156,17 @@ export default function OverviewTable() {
             }),
         );
         setIsLoading(false);
+    };
+
+    const saveData = async () => {
+        setIsLoading(true);
+        Hours.updateHourList(rows)
+            .then(() => {
+                setIsLoading(false);
+            })
+            .catch((error) => {
+                console.error("Error updating documents: ", error);
+            });
     };
 
     const initRow = (row) => {
@@ -254,6 +263,7 @@ export default function OverviewTable() {
                                                 >
                                                     <Link
                                                         component={NavLink}
+                                                        color="secondary"
                                                         to={
                                                             "/admin/detail/" +
                                                             row.id
@@ -351,15 +361,9 @@ export default function OverviewTable() {
                                                 </TableCell>
                                                 <TableCell
                                                     align="right"
-                                                    padding="none"
                                                     className={classes.small}
                                                 >
                                                     {row.kilometers}
-                                                </TableCell>
-                                                <TableCell
-                                                    className={classes.small}
-                                                >
-                                                    {row.explanation}
                                                 </TableCell>
                                             </TableRow>
                                         );

@@ -51,21 +51,25 @@ const HoursGrid = ({ expandColumns, days, handleChange, save, readOnly }) => {
                                         />
                                     );
                                 })}
-                                <TableCell align="right">
-                                    <TextField
-                                        id="explanation"
-                                        disabled={Boolean(readOnly)}
-                                        inputProps={{
-                                            day: row.day,
-                                        }}
-                                        onBlur={(event) =>
-                                            handleChange(
-                                                event.target.value,
-                                                "explanation",
-                                                row.day,
-                                            )
-                                        }
-                                    />
+                                <TableCell>
+                                    {Boolean(readOnly) ? (
+                                        row.explanation
+                                    ) : (
+                                        <TextField
+                                            id="explanation"
+                                            inputProps={{
+                                                day: row.day,
+                                            }}
+                                            value={row.explanation}
+                                            onBlur={(event) =>
+                                                handleChange(
+                                                    event.target.value,
+                                                    "explanation",
+                                                    row.day,
+                                                )
+                                            }
+                                        />
+                                    )}
                                 </TableCell>
                             </TableRow>
                         );

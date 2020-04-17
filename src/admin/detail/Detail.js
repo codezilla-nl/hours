@@ -35,7 +35,6 @@ export default function AdminDetail() {
     const { id } = useParams();
     const [data, setData] = React.useState({});
     const [isLoading, setIsLoading] = React.useState(true);
-    const [saved, setSaved] = React.useState(false);
 
     const classes = useStyles();
 
@@ -47,11 +46,11 @@ export default function AdminDetail() {
     };
 
     const saveMonth = async (documentId, document) => {
-        setSaved(false);
+        setIsLoading(true);
 
         Hours.updateHours(documentId, document)
             .then(() => {
-                setSaved(true);
+                setIsLoading(false);
             })
             .catch((error) => {
                 console.error("Error adding document: ", error);

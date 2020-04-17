@@ -21,17 +21,39 @@ const HoursGrid = ({ expandColumns, days, handleChange, save, readOnly }) => {
         return row.isWeekend ? "highlight" : "";
     };
 
+    const getDayName = (date, index) => {
+        const days = [
+            "Zondag",
+            "Maandag",
+            "Dinsdag",
+            "Woensdag",
+            "Donderdag",
+            "Vrijdag",
+            "Zaterdag",
+        ];
+
+        if (!date) {
+            return days[index];
+        }
+
+        const dateObj = new Date(date);
+        return days[dateObj.getDay()];
+    };
+
     return (
         <TableContainer component={Paper} className="hoursGrid">
             <Table stickyHeader size="small" aria-label="simple table">
                 <HoursTableHead expandColumns={expandColumns} />
                 <TableBody>
-                    {days.map((row) => {
+                    {days.map((row, index) => {
                         return (
                             <TableRow
                                 key={row.day}
                                 className={getRowClass(row)}
                             >
+                                <TableCell component="th" scope="row">
+                                    {getDayName(row.date, index)}
+                                </TableCell>
                                 <TableCell component="th" scope="row">
                                     {row.day}
                                 </TableCell>

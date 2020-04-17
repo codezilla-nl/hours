@@ -7,6 +7,7 @@ const HoursTableHead = ({ expandColumns }) => {
         <TableHead>
             <TableRow>
                 <TableCell></TableCell>
+                <TableCell></TableCell>
                 {columns.map((column) => {
                     if (!column.enabled && !expandColumns) {
                         return null;

@@ -56,9 +56,10 @@ export default {
 
         documents.forEach((document) => {
             if (!document.id || document.id === "") {
-                const reference = db.collection("months").doc(document.id);
-                batch.update(reference, document);
+                return;
             }
+            const reference = db.collection("months").doc(document.id);
+            batch.update(reference, document);
         });
 
         return batch.commit();

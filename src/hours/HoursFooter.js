@@ -8,8 +8,8 @@ import * as HoursConstants from "./hoursConstants";
 const columns = HoursConstants.columns;
 
 const HoursFooter = ({ expandColumns, days }) => {
-    const getTotal = column => {
-        const values = days.map(x => x[column]);
+    const getTotal = (column) => {
+        const values = days.map((x) => x[column]);
         return values.reduce((total, currentValue) => {
             return Number(total) + Number(currentValue);
         });
@@ -21,7 +21,8 @@ const HoursFooter = ({ expandColumns, days }) => {
         <TableFooter>
             <TableRow>
                 <TableCell> Totaal</TableCell>
-                {columns.map(column => {
+                <TableCell></TableCell>
+                {columns.map((column) => {
                     if (!column.enabled && !expandColumns) {
                         return null;
                     }

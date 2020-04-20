@@ -11,6 +11,7 @@ import {
     Typography,
     makeStyles,
 } from "@material-ui/core";
+import DoneIcon from "@material-ui/icons/Done";
 import MoreVertIcon from "@material-ui/icons/MoreVert";
 
 import ValidationNotification from "./validation/ValidationNotification";
@@ -49,6 +50,7 @@ const HoursHeader = ({
     getReport,
     validationMessages,
     saved,
+    approved,
 }) => {
     const classes = useStyles();
 
@@ -74,6 +76,7 @@ const HoursHeader = ({
                 classes={classes}
                 client={client}
                 project={project}
+                readOnly={approved}
                 handleInputChange={handleInputChange}
             />
         );
@@ -121,6 +124,7 @@ const HoursHeader = ({
                 classes={classes}
                 client={client}
                 project={project}
+                approved={approved}
                 handleInputChange={handleInputChange}
             />
 
@@ -139,6 +143,17 @@ const HoursHeader = ({
                     >
                         Opgeslagen
                     </Typography>
+                ) : null}
+                {approved ? (
+                    <>
+                        <DoneIcon
+                            color="primary"
+                            className={classes.spacingRight}
+                        />
+                        <Typography className={classes.spacingRight}>
+                            Akkoord
+                        </Typography>
+                    </>
                 ) : null}
 
                 <div>
@@ -163,6 +178,7 @@ const HoursHeader = ({
                                 applyTemplate();
                                 handleClose();
                             }}
+                            disabled={Boolean(approved)}
                             id="applyTemplate"
                         >
                             Pas template toe
@@ -194,13 +210,20 @@ const HoursHeader = ({
 
 export default HoursHeader;
 
-const ClientAndProject = ({ classes, client, project, handleInputChange }) => (
+const ClientAndProject = ({
+    classes,
+    client,
+    project,
+    handleInputChange,
+    approved,
+}) => (
     <>
         <TextField
             className={classes.spacingLeft}
             id="client"
             label="Klant"
             value={client}
+            disabled={Boolean(approved)}
             onChange={(event) =>
                 handleInputChange("client", event.target.value)
             }
@@ -210,6 +233,7 @@ const ClientAndProject = ({ classes, client, project, handleInputChange }) => (
             id="project"
             label="Project"
             value={project}
+            disabled={Boolean(approved)}
             onChange={(event) =>
                 handleInputChange("project", event.target.value)
             }

@@ -3,8 +3,7 @@ import { lighten, makeStyles } from "@material-ui/core/styles";
 import PropTypes from "prop-types";
 import clsx from "clsx";
 import {
-    IconButton,
-    Tooltip,
+    Button,
     MenuItem,
     Select,
     InputLabel,
@@ -13,8 +12,7 @@ import {
     Toolbar,
 } from "@material-ui/core/";
 
-import DeleteIcon from "@material-ui/icons/Delete";
-import FilterListIcon from "@material-ui/icons/FilterList";
+import DoneIcon from "@material-ui/icons/Done";
 
 import * as HoursConstants from "../../hours/hoursConstants";
 
@@ -25,7 +23,7 @@ OverviewToolbar.propTypes = {
     onChangeDate: PropTypes.func.isRequired,
 };
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
     root: {
         paddingRight: theme.spacing(1),
     },
@@ -47,20 +45,29 @@ const useStyles = makeStyles(theme => ({
     },
 }));
 
-export default function OverviewToolbar(props) {
+export default function OverviewToolbar({
+    numSelected,
+    currentMonth,
+    currentYear,
+    onChangeDate,
+    approve,
+}) {
     const classes = useStyles();
-    const { numSelected, currentMonth, currentYear, onChangeDate } = props;
     const [month, setMonth] = React.useState(currentMonth);
     const [year, setYear] = React.useState(currentYear);
 
-    const onChangeMonth = value => {
+    const onChangeMonth = (value) => {
         setMonth(value);
         onChangeDate(value, year);
     };
 
-    const onChangeYear = value => {
+    const onChangeYear = (value) => {
         setYear(value);
         onChangeDate(month, value);
+    };
+
+    const onApprove = () => {
+        approve();
     };
 
     return (
@@ -87,53 +94,55 @@ export default function OverviewToolbar(props) {
                 </Typography>
             )}
 
-            <FormControl className={classes.formControl}>
-                <InputLabel id="select-month-label">Maand</InputLabel>
-                <Select
-                    labelId="select-month-label"
-                    id="select-month-label"
-                    value={month}
-                    onChange={event => onChangeMonth(event.target.value)}
-                >
-                    {HoursConstants.months.map(month => {
-                        return (
-                            <MenuItem value={month.id} key={month.id}>
-                                {month.description}
-                            </MenuItem>
-                        );
-                    })}
-                </Select>
-            </FormControl>
-            <FormControl className={classes.formControl}>
-                <InputLabel id="select-year-label">Jaar</InputLabel>
-                <Select
-                    labelId="select-year-label"
-                    id="select-year-label"
-                    value={year}
-                    onChange={event => onChangeYear(event.target.value)}
-                >
-                    {HoursConstants.years.map(year => {
-                        return (
-                            <MenuItem value={year} key={year}>
-                                {year}
-                            </MenuItem>
-                        );
-                    })}
-                </Select>
-            </FormControl>
-
             {numSelected > 0 ? (
-                <Tooltip title="Delete">
-                    <IconButton aria-label="delete">
-                        <DeleteIcon />
-                    </IconButton>
-                </Tooltip>
+                <Button
+                    variant="outlined"
+                    startIcon={<DoneIcon />}
+                    onClick={onApprove}
+                >
+                    Akkoord
+                </Button>
             ) : (
-                <Tooltip title="Filter list">
-                    <IconButton aria-label="filter list">
-                        <FilterListIcon />
-                    </IconButton>
-                </Tooltip>
+                <>
+                    <FormControl className={classes.formControl}>
+                        <InputLabel id="select-month-label">Maand</InputLabel>
+                        <Select
+                            labelId="select-month-label"
+                            id="select-month-label"
+                            value={month}
+                            onChange={(event) =>
+                                onChangeMonth(event.target.value)
+                            }
+                        >
+                            {HoursConstants.months.map((month) => {
+                                return (
+                                    <MenuItem value={month.id} key={month.id}>
+                                        {month.description}
+                                    </MenuItem>
+                                );
+                            })}
+                        </Select>
+                    </FormControl>
+                    <FormControl className={classes.formControl}>
+                        <InputLabel id="select-year-label">Jaar</InputLabel>
+                        <Select
+                            labelId="select-year-label"
+                            id="select-year-label"
+                            value={year}
+                            onChange={(event) =>
+                                onChangeYear(event.target.value)
+                            }
+                        >
+                            {HoursConstants.years.map((year) => {
+                                return (
+                                    <MenuItem value={year} key={year}>
+                                        {year}
+                                    </MenuItem>
+                                );
+                            })}
+                        </Select>
+                    </FormControl>
+                </>
             )}
         </Toolbar>
     );

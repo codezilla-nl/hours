@@ -23,6 +23,7 @@ class HoursContainer extends Component {
         profileId: "",
         profile: "",
         saved: false,
+        approved: false,
         showValidationMessages: [],
         isLoading: false,
         isTemplate: false,
@@ -67,12 +68,20 @@ class HoursContainer extends Component {
         );
 
         if (instance.length === 1) {
-            this.setState({ ...instance[0], id: instance[0].id }, () => {
-                this.initData();
-            });
+            this.setState(
+                {
+                    ...instance[0],
+                    id: instance[0].id,
+                    approved: instance[0].approved,
+                },
+                () => {
+                    this.initData();
+                },
+            );
         } else {
             this.setState(
                 {
+                    approved: false,
                     days: this.getDaysInMonth(
                         this.state.month,
                         this.state.year,
@@ -113,28 +122,12 @@ class HoursContainer extends Component {
     };
 
     initData = () => {
-        const days = this.state.days.map((x, index) => {
-            const day = x;
-
-            if (this.state.isTemplate) {
-                day.dayOfTheWeek = index;
-                day.isWeekend = Utils.isWeekend(x);
-                return day;
-            }
-
-            if (!day.date) {
-                day.date = new Date(
-                    this.state.year,
-                    this.state.month - 1,
-                    index,
-                );
-            }
-
-            day.date = Utils.parseDate(x.date);
-            day.dayOfTheWeek = Utils.getDayOfTheWeek(x, this.state.isTemplate);
-            day.isWeekend = Utils.isWeekend(x);
-            return day;
-        });
+        const days = Utils.initDays(
+            this.state.days,
+            this.state.isTemplate,
+            this.state.year,
+            this.state.month,
+        );
         this.setState({ days: days }, () => {
             this.isValid();
         });
@@ -241,24 +234,24 @@ class HoursContainer extends Component {
     }
 
     submitHours = () => {
-        const db = firebase.firestore();
-        db.collection("months")
-            .doc(
-                this.state.year +
-                    "-" +
-                    this.state.month +
-                    "-" +
-                    this.state.profile.displayName,
-            )
-            .set({
-                client: this.state.client,
-                days: this.state.days,
-                profile: this.state.profile,
-                profileId: this.state.profileId,
-                project: this.state.project,
-                year: this.state.year,
-                month: this.state.month,
-            })
+        const id =
+            this.state.year +
+            "-" +
+            this.state.month +
+            "-" +
+            this.state.profile.displayName;
+
+        const document = {
+            client: this.state.client,
+            days: this.state.days,
+            profile: this.state.profile,
+            profileId: this.state.profileId,
+            project: this.state.project,
+            year: this.state.year,
+            month: this.state.month,
+        };
+
+        Hours.updateHours(id, document)
             .then(() => {
                 this.setState({ snackbarOpen: true, saved: true });
             })
@@ -366,6 +359,7 @@ class HoursContainer extends Component {
                     getReport={this.getReport}
                     validationMessages={this.state.validationMessages}
                     saved={this.state.saved}
+                    approved={this.state.approved}
                 />
 
                 {this.state.isLoading ? (
@@ -377,6 +371,7 @@ class HoursContainer extends Component {
                         handleChange={this.handleInputChange}
                         save={this.save}
                         isTemplate={this.state.isTemplate}
+                        readOnly={this.state.approved}
                     />
                 )}
                 <Snackbar

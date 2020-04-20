@@ -30,7 +30,7 @@ export default function OverviewHeader(props) {
         rowCount,
         onRequestSort,
     } = props;
-    const createSortHandler = property => event => {
+    const createSortHandler = (property) => (event) => {
         onRequestSort(event, property);
     };
 
@@ -47,12 +47,13 @@ export default function OverviewHeader(props) {
                         inputProps={{ "aria-label": "select all desserts" }}
                     />
                 </TableCell>
-                {Constants.columns.map(headCell => (
+                {Constants.columns.map((headCell) => (
                     <TableCell
                         key={headCell.id}
                         align={headCell.numeric ? "right" : "left"}
                         padding={headCell.disablePadding ? "none" : "default"}
                         sortDirection={orderBy === headCell.id ? order : false}
+                        className={classes.small}
                     >
                         <TableSortLabel
                             active={orderBy === headCell.id}

@@ -18,6 +18,12 @@ export const columns = [
         label: "Project",
     },
     {
+        id: "approved",
+        numeric: false,
+        disablePadding: true,
+        label: "Akkoord",
+    },
+    {
         id: "worked",
         numeric: true,
         disablePadding: true,
@@ -51,13 +57,13 @@ export const columns = [
         id: "available",
         numeric: true,
         disablePadding: true,
-        label: "Beschikb.",
+        label: "Beschikbaar",
     },
     {
         id: "education",
         numeric: true,
         disablePadding: true,
-        label: "Opl.",
+        label: "Opleiding",
     },
     {
         id: "other",

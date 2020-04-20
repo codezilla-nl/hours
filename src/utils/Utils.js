@@ -23,4 +23,24 @@ export default {
             return new Date(date.toDate());
         }
     },
+    initDays(days, isTemplate, year, month) {
+        return days.map((x, index) => {
+            const day = x;
+
+            if (isTemplate) {
+                day.dayOfTheWeek = index;
+                day.isWeekend = this.isWeekend(x);
+                return day;
+            }
+
+            if (!day.date) {
+                day.date = new Date(year, month - 1, index);
+            }
+
+            day.date = this.parseDate(x.date);
+            day.dayOfTheWeek = this.getDayOfTheWeek(x, isTemplate);
+            day.isWeekend = this.isWeekend(x);
+            return day;
+        });
+    },
 };

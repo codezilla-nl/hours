@@ -6,7 +6,7 @@ import DoneIcon from "@material-ui/icons/Done";
 import UndoIcon from "@material-ui/icons/Undo";
 
 import HoursGrid from "../../hours/HoursGrid";
-
+import Utils from "../../utils/Utils";
 import Hours from "../../firebase/data/Hours";
 
 const useStyles = makeStyles((theme) => ({
@@ -40,7 +40,10 @@ export default function AdminDetail() {
 
     const fetchMonth = async (documentId) => {
         const instance = await Hours.getHoursWithId(documentId);
-        setData(instance.data());
+
+        const data = instance.data();
+        data.days = Utils.initDays(data.days, false, data.year, data.month);
+        setData(data);
 
         setIsLoading(false);
     };

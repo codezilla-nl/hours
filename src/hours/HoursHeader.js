@@ -11,6 +11,7 @@ import {
     Typography,
     makeStyles,
 } from "@material-ui/core";
+import DoneIcon from "@material-ui/icons/Done";
 import MoreVertIcon from "@material-ui/icons/MoreVert";
 
 import ValidationNotification from "./validation/ValidationNotification";
@@ -49,7 +50,7 @@ const HoursHeader = ({
     getReport,
     validationMessages,
     saved,
-    readOnly,
+    approved,
 }) => {
     const classes = useStyles();
 
@@ -75,7 +76,7 @@ const HoursHeader = ({
                 classes={classes}
                 client={client}
                 project={project}
-                readOnly={readOnly}
+                readOnly={approved}
                 handleInputChange={handleInputChange}
             />
         );
@@ -123,7 +124,7 @@ const HoursHeader = ({
                 classes={classes}
                 client={client}
                 project={project}
-                readOnly={readOnly}
+                approved={approved}
                 handleInputChange={handleInputChange}
             />
 
@@ -142,6 +143,17 @@ const HoursHeader = ({
                     >
                         Opgeslagen
                     </Typography>
+                ) : null}
+                {approved ? (
+                    <>
+                        <DoneIcon
+                            color="primary"
+                            className={classes.spacingRight}
+                        />
+                        <Typography className={classes.spacingRight}>
+                            Akkoord
+                        </Typography>
+                    </>
                 ) : null}
 
                 <div>
@@ -166,7 +178,7 @@ const HoursHeader = ({
                                 applyTemplate();
                                 handleClose();
                             }}
-                            disabled={Boolean(readOnly)}
+                            disabled={Boolean(approved)}
                             id="applyTemplate"
                         >
                             Pas template toe
@@ -203,7 +215,7 @@ const ClientAndProject = ({
     client,
     project,
     handleInputChange,
-    readOnly,
+    approved,
 }) => (
     <>
         <TextField
@@ -211,7 +223,7 @@ const ClientAndProject = ({
             id="client"
             label="Klant"
             value={client}
-            disabled={Boolean(readOnly)}
+            disabled={Boolean(approved)}
             onChange={(event) =>
                 handleInputChange("client", event.target.value)
             }
@@ -221,7 +233,7 @@ const ClientAndProject = ({
             id="project"
             label="Project"
             value={project}
-            disabled={Boolean(readOnly)}
+            disabled={Boolean(approved)}
             onChange={(event) =>
                 handleInputChange("project", event.target.value)
             }

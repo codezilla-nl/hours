@@ -6,7 +6,7 @@ import DoneIcon from "@material-ui/icons/Done";
 import UndoIcon from "@material-ui/icons/Undo";
 
 import HoursGrid from "../../hours/HoursGrid";
-import Utils from "../../utils/Utils";
+import Utils from "../../common/Utils";
 import Hours from "../../firebase/data/Hours";
 
 const useStyles = makeStyles((theme) => ({
@@ -31,7 +31,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export default function AdminDetail() {
+export default function AdminDetail({ notification }) {
     const { id } = useParams();
     const [data, setData] = React.useState({});
     const [isLoading, setIsLoading] = React.useState(true);
@@ -54,9 +54,10 @@ export default function AdminDetail() {
         Hours.updateHours(documentId, document)
             .then(() => {
                 setIsLoading(false);
+                notification("Opgeslagen");
             })
             .catch((error) => {
-                console.error("Error adding document: ", error);
+                notification("Niet gelukt om te bewaren: " + error);
             });
     };
 

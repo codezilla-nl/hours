@@ -1,13 +1,12 @@
 import React from "react";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
-import { Typography } from "@material-ui/core";
+import { CssBaseline, Snackbar, Typography } from "@material-ui/core";
 
 import {
     makeStyles,
     ThemeProvider,
     createMuiTheme,
 } from "@material-ui/core/styles";
-import CssBaseline from "@material-ui/core/CssBaseline";
 
 import firebase from "./firebase/firebase";
 
@@ -60,6 +59,7 @@ export default function App() {
     const classes = useStyles();
     const [profile, setProfile] = React.useState({});
     const [isLoading, setIsLoading] = React.useState(true);
+    const [notificationMessage, setNotificationMessage] = React.useState("");
 
     const signIn = () => {
         const provider = new firebase.auth.OAuthProvider("microsoft.com");
@@ -69,6 +69,18 @@ export default function App() {
         });
 
         firebase.auth().signInWithRedirect(provider);
+    };
+
+    const notification = (message) => {
+        setNotificationMessage(message);
+    };
+
+    const closeNotification = (event, reason) => {
+        if (reason === "clickaway") {
+            return;
+        }
+
+        setNotificationMessage("");
     };
 
     const getAuth = () => {
@@ -83,7 +95,7 @@ export default function App() {
                 fetchProfile(result.user);
             })
             .catch(function (error) {
-                console.log(error);
+                notification("Het is niet gelukt om in te loggen: " + error);
             });
     };
 
@@ -123,7 +135,9 @@ export default function App() {
                 fetchProfile(user);
             })
             .catch((error) => {
-                console.error("Error adding document: ", error);
+                notification(
+                    "Het is niet gelukt om een profiel op te halen: " + error,
+                );
             });
     };
 
@@ -146,6 +160,7 @@ export default function App() {
                                     <HoursContainer
                                         profile={profile}
                                         type="month"
+                                        notification={notification}
                                     />
                                 )}
                             />
@@ -154,6 +169,7 @@ export default function App() {
                                 <HoursContainer
                                     type="template"
                                     profile={profile}
+                                    notification={notification}
                                 />
                             </Route>
                             {profile.isAdmin && (
@@ -162,16 +178,33 @@ export default function App() {
                                         path="/admin"
                                         exact
                                         component={() => (
-                                            <Admin profile={profile} />
+                                            <Admin
+                                                profile={profile}
+                                                notification={notification}
+                                            />
                                         )}
                                     />
                                     <Route
                                         path="/admin/detail/:id"
-                                        component={() => <AdminDetail />}
+                                        component={() => (
+                                            <AdminDetail
+                                                notification={notification}
+                                            />
+                                        )}
                                     />
                                 </>
                             )}
                         </Switch>
+                        <Snackbar
+                            open={notificationMessage !== ""}
+                            autoHideDuration={6000}
+                            onClose={closeNotification}
+                            message={notificationMessage}
+                            anchorOrigin={{
+                                vertical: "bottom",
+                                horizontal: "right",
+                            }}
+                        ></Snackbar>
                     </Router>
                 )}
 

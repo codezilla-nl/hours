@@ -82,7 +82,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export default function OverviewTable() {
+export default function OverviewTable({ notification }) {
     const classes = useStyles();
     const [order, setOrder] = React.useState("asc");
     const [orderBy, setOrderBy] = React.useState("calories");
@@ -135,14 +135,13 @@ export default function OverviewTable() {
     const isSelected = (id) => selected.indexOf(id) !== -1;
 
     const approve = () => {
-        selected.forEach((item) => {
-            const row = rows.find((x) => x.id === item);
-            if (row) {
-                row.approved = true;
+        const newRows = rows.map((item) => {
+            if (selected.includes(item.id)) {
+                return Object.assign({}, item, { approved: true });
             }
+            return item;
         });
-
-        setRows([...rows]);
+        setRows(newRows);
         saveData();
     };
 
@@ -163,9 +162,10 @@ export default function OverviewTable() {
         Hours.updateHourList(rows)
             .then(() => {
                 setIsLoading(false);
+                notification("Opgeslagen");
             })
             .catch((error) => {
-                console.error("Error updating documents: ", error);
+                notification("Niet gelukt om te bewaren: " + error);
             });
     };
 

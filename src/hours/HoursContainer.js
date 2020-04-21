@@ -9,7 +9,7 @@ import JSReport from "../pdf/JSReport";
 import HoursHeader from "./HoursHeader";
 import HoursGrid from "./HoursGrid";
 import Validators from "./validation/Validators";
-import Utils from "../utils/Utils";
+import Utils from "../common/Utils";
 
 class HoursContainer extends Component {
     state = {
@@ -253,10 +253,12 @@ class HoursContainer extends Component {
 
         Hours.updateHours(id, document)
             .then(() => {
-                this.setState({ snackbarOpen: true, saved: true });
+                this.setState({ saved: true });
             })
             .catch((error) => {
-                console.error("Error adding document: ", error);
+                this.props.notification(
+                    "Het is niet gelukt om de uren te bewaren: " + error,
+                );
             });
     };
 
@@ -283,7 +285,9 @@ class HoursContainer extends Component {
                 });
             })
             .catch((error) => {
-                console.error("Error adding document: ", error);
+                this.props.notification(
+                    "Het is niet gelukt om het template te bewaren: " + error,
+                );
             });
     };
 
@@ -339,9 +343,15 @@ class HoursContainer extends Component {
     getReport = () => {
         this.setState({ isLoading: true });
 
-        JSReport.getReport(this.state).then(() => {
-            this.setState({ isLoading: false });
-        });
+        JSReport.getReport(this.state)
+            .then(() => {
+                this.setState({ isLoading: false });
+            })
+            .catch((error) => {
+                this.props.notification(
+                    "Het is niet gelukt om een PDF te maken: " + error,
+                );
+            });
     };
 
     render() {

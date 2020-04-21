@@ -1,5 +1,6 @@
 import React from "react";
 import {
+    makeStyles,
     Table,
     TableBody,
     TableCell,
@@ -16,7 +17,14 @@ import HoursTableHead from "./HoursTableHeader";
 
 const columns = HoursConstants.columns;
 
+const useStyles = makeStyles((theme) => ({
+    tableContainer: {
+        overflowX: "inherit",
+    },
+}));
+
 const HoursGrid = ({ expandColumns, days, handleChange, save, readOnly }) => {
+    const classes = useStyles();
     const getRowClass = (row) => {
         return row.isWeekend ? "highlight" : "";
     };
@@ -41,7 +49,7 @@ const HoursGrid = ({ expandColumns, days, handleChange, save, readOnly }) => {
     };
 
     return (
-        <TableContainer component={Paper} className="hoursGrid">
+        <TableContainer component={Paper} className={classes.tableContainer}>
             <Table stickyHeader size="small" aria-label="simple table">
                 <HoursTableHead expandColumns={expandColumns} />
                 <TableBody>

@@ -45,23 +45,31 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
+interface IProps {
+    numSelected: number;
+    currentMonth: number;
+    currentYear: number;
+    onChangeDate: any;
+    approve: any;
+}
+
 export default function OverviewToolbar({
     numSelected,
     currentMonth,
     currentYear,
     onChangeDate,
     approve,
-}) {
+}: IProps) {
     const classes = useStyles();
     const [month, setMonth] = React.useState(currentMonth);
     const [year, setYear] = React.useState(currentYear);
 
-    const onChangeMonth = (value) => {
+    const onChangeMonth = (value: number) => {
         setMonth(value);
         onChangeDate(value, year);
     };
 
-    const onChangeYear = (value) => {
+    const onChangeYear = (value: number) => {
         setYear(value);
         onChangeDate(month, value);
     };
@@ -111,7 +119,7 @@ export default function OverviewToolbar({
                             id="select-month-label"
                             value={month}
                             onChange={(event) =>
-                                onChangeMonth(event.target.value)
+                                onChangeMonth(Number(event.target.value))
                             }
                         >
                             {HoursConstants.months.map((month) => {
@@ -130,7 +138,7 @@ export default function OverviewToolbar({
                             id="select-year-label"
                             value={year}
                             onChange={(event) =>
-                                onChangeYear(event.target.value)
+                                onChangeYear(Number(event.target.value))
                             }
                         >
                             {HoursConstants.years.map((year) => {

@@ -13,7 +13,7 @@ import firebase from "./firebase/firebase";
 import Header from "./navigation/header";
 import HoursContainer from "./hours/HoursContainer";
 import PreLoad from "./navigation/preLoad";
-import Admin from "./admin/admin";
+import Admin from "./admin/Admin";
 import AdminDetail from "./admin/detail/Detail";
 
 require("dotenv").config();
@@ -30,10 +30,7 @@ const theme = createMuiTheme({
 });
 
 const useStyles = makeStyles((theme) => ({
-    activeItem: {
-        backgroundColor: theme.palette.primary[100],
-    },
-    item: {},
+    root: {},
     menuButton: {
         marginRight: 36,
     },
@@ -55,10 +52,30 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
+interface User {
+    displayName: string;
+    uid: string;
+    email: string;
+}
+
+interface Profile {
+    displayName: string;
+    email: string;
+    id: string;
+    isAdmin: boolean;
+    microsoftId: string;
+}
+
 export default function App() {
     const classes = useStyles();
-    const [profile, setProfile] = React.useState({});
-    const [isLoading, setIsLoading] = React.useState(true);
+    const [profile, setProfile] = React.useState<Profile>({
+        displayName: "",
+        email: "",
+        id: "",
+        isAdmin: false,
+        microsoftId: "",
+    });
+    const [isLoading, setIsLoading] = React.useState<boolean>(true);
     const [notificationMessage, setNotificationMessage] = React.useState("");
 
     const signIn = () => {
@@ -71,11 +88,11 @@ export default function App() {
         firebase.auth().signInWithRedirect(provider);
     };
 
-    const notification = (message) => {
+    const notification = (message: string) => {
         setNotificationMessage(message);
     };
 
-    const closeNotification = (event, reason) => {
+    const closeNotification = (event: any, reason: string) => {
         if (reason === "clickaway") {
             return;
         }
@@ -87,7 +104,7 @@ export default function App() {
         firebase
             .auth()
             .getRedirectResult()
-            .then(function (result) {
+            .then(function (result: any) {
                 if (result.user === null) {
                     signIn();
                     return;
@@ -104,7 +121,7 @@ export default function App() {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    const fetchProfile = async (user) => {
+    const fetchProfile = async (user: User) => {
         const db = firebase.firestore();
         const snapshot = await db.collection("profile").get();
         const response = snapshot.docs.find((doc) => {
@@ -117,12 +134,17 @@ export default function App() {
         }
 
         const data = response.data();
-        data.id = response.id;
-        setProfile(data);
+        setProfile({
+            id: response.id,
+            isAdmin: Boolean(data.isAdmin),
+            displayName: data.displayName,
+            email: data.email,
+            microsoftId: data.microsoftId,
+        });
         setIsLoading(false);
     };
 
-    const createNewProfile = (user) => {
+    const createNewProfile = (user: User) => {
         const db = firebase.firestore();
         const newProfile = {
             displayName: user.displayName,
@@ -179,7 +201,6 @@ export default function App() {
                                         exact
                                         component={() => (
                                             <Admin
-                                                profile={profile}
                                                 notification={notification}
                                             />
                                         )}
@@ -219,7 +240,7 @@ export default function App() {
     );
 }
 
-const TemplateHeader = ({ classes }) => (
+const TemplateHeader = ({ classes }: { classes: any }) => (
     <>
         <Typography variant="body1" className={classes.title}>
             Maak hier een template voor je gemiddelde werkweek. Pas het template

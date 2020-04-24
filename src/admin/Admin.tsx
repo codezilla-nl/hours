@@ -16,12 +16,15 @@ import DoneIcon from "@material-ui/icons/Done";
 
 import Hours from "../firebase/data/Hours";
 
-import * as Constants from "./overview/constants";
+import * as Constants from "./overview/Constants";
+import IAdminOverviewColumn from "../common/interfaces/IAdminOverviewColumn";
+import IDay from "../common/interfaces/IDay";
+import IHours from "../common/interfaces/IHours";
 
-import OverviewHeader from "./overview/overviewHeader";
-import OverviewToolbar from "./overview/overviewToolbar";
+import OverviewHeader from "./overview/OverviewHeader";
+import OverviewToolbar from "./overview/OverviewToolbar";
 
-function descendingComparator(a, b, orderBy) {
+function descendingComparator(a: any, b: any, orderBy: string) {
     if (b[orderBy] < a[orderBy]) {
         return -1;
     }
@@ -31,13 +34,13 @@ function descendingComparator(a, b, orderBy) {
     return 0;
 }
 
-function getComparator(order, orderBy) {
+function getComparator(order: string, orderBy: string) {
     return order === "desc"
-        ? (a, b) => descendingComparator(a, b, orderBy)
-        : (a, b) => -descendingComparator(a, b, orderBy);
+        ? (a: any, b: any) => descendingComparator(a, b, orderBy)
+        : (a: any, b: any) => -descendingComparator(a, b, orderBy);
 }
 
-function stableSort(array, comparator) {
+function stableSort(array: any[], comparator: any) {
     const stabilizedThis = array.map((el, index) => [el, index]);
     stabilizedThis.sort((a, b) => {
         const order = comparator(a[0], b[0]);
@@ -47,9 +50,9 @@ function stableSort(array, comparator) {
     return stabilizedThis.map((el) => el[0]);
 }
 
-function getTotalHoursPerCategory(days, category) {
+function getTotalHoursPerCategory(days: IDay[], category: string) {
     let total = 0;
-    days.forEach((day) => {
+    days.forEach((day: IDay) => {
         total += Number(day[category]);
     });
     return total;
@@ -82,39 +85,39 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export default function OverviewTable({ notification }) {
+export default function OverviewTable({ notification }: { notification: any }) {
     const classes = useStyles();
     const [order, setOrder] = React.useState("asc");
     const [orderBy, setOrderBy] = React.useState("calories");
-    const [selected, setSelected] = React.useState([]);
+    const [selected, setSelected] = React.useState<string[]>([]);
     const [isLoading, setIsLoading] = React.useState(true);
-    const [rows, setRows] = React.useState([]);
+    const [rows, setRows] = React.useState<IHours[]>([]);
 
     const currentYear = new Date().getFullYear();
     const currentMonth = new Date().getMonth() + 1;
 
-    const handleChangeDate = (month, year) => {
+    const handleChangeDate = (month: number, year: number) => {
         getData(month, year);
     };
 
-    const handleRequestSort = (event, property) => {
+    const handleRequestSort = (event: any, property: string) => {
         const isAsc = orderBy === property && order === "asc";
         setOrder(isAsc ? "desc" : "asc");
         setOrderBy(property);
     };
 
-    const handleSelectAllClick = (event) => {
+    const handleSelectAllClick = (event: any) => {
         if (event.target.checked) {
-            const newSelecteds = rows.map((row) => row.id);
+            const newSelecteds = rows.map((row: IHours) => row.id);
             setSelected(newSelecteds);
             return;
         }
         setSelected([]);
     };
 
-    const handleClick = (event, id) => {
+    const handleClick = (event: any, id: string) => {
         const selectedIndex = selected.indexOf(id);
-        let newSelected = [];
+        let newSelected: string[] = [];
 
         if (selectedIndex === -1) {
             newSelected = newSelected.concat(selected, id);
@@ -132,7 +135,7 @@ export default function OverviewTable({ notification }) {
         setSelected(newSelected);
     };
 
-    const isSelected = (id) => selected.indexOf(id) !== -1;
+    const isSelected = (id: string) => selected.indexOf(id) !== -1;
 
     const approve = () => {
         const newRows = rows.map((item) => {
@@ -145,15 +148,25 @@ export default function OverviewTable({ notification }) {
         saveData();
     };
 
-    const getData = async (month, year) => {
+    const getData = async (month: number, year: number) => {
         setIsLoading(true);
-        const list = await Hours.getHours(month, year);
-        setRows(
-            list.map((row) => {
-                initRow(row);
-                return row;
-            }),
-        );
+        Hours.getHours(month, year)
+            .then((response) => {
+                const list = response.docs.map((doc) => {
+                    const row = doc.data();
+                    row.id = doc.id;
+                    return row;
+                });
+                setRows(
+                    list.map((row: any) => {
+                        initRow(row);
+                        return row;
+                    }),
+                );
+            })
+            .catch((error) => {
+                notification("Niet gelukt om uren op te halen: " + error);
+            });
         setIsLoading(false);
     };
 
@@ -169,7 +182,7 @@ export default function OverviewTable({ notification }) {
             });
     };
 
-    const initRow = (row) => {
+    const initRow = (row: IHours) => {
         Constants.columns.forEach((cell) => {
             if (cell.numeric) {
                 row[cell.id] = getTotalHoursPerCategory(row.days, cell.id);
@@ -177,7 +190,7 @@ export default function OverviewTable({ notification }) {
         });
     };
 
-    const getTotal = (column) => {
+    const getTotal = (column: IAdminOverviewColumn) => {
         if (!column.numeric) {
             return "";
         }

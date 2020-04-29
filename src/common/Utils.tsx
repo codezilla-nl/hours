@@ -1,5 +1,7 @@
+import IDay from "../common/interfaces/IDay";
+
 export default {
-    getDayOfTheWeek(item, isTemplate) {
+    getDayOfTheWeek(item: IDay, isTemplate: boolean): number {
         if (isTemplate) {
             return item.day - 1;
         }
@@ -10,10 +12,10 @@ export default {
         /* No valid date, return -1 */
         return -1;
     },
-    isWeekend(item) {
+    isWeekend(item: IDay): boolean {
         return [0, 6].includes(item.dayOfTheWeek);
     },
-    parseDate(date) {
+    parseDate(date: any): Date {
         if (date instanceof Date) {
             /* date is valid date object */
             return new Date(date);
@@ -22,8 +24,14 @@ export default {
             /* date is a timestamp */
             return new Date(date.toDate());
         }
+        return new Date();
     },
-    initDays(days, isTemplate, year, month) {
+    initDays(
+        days: IDay[],
+        isTemplate: boolean,
+        year: number,
+        month: number,
+    ): IDay[] {
         return days.map((x, index) => {
             const day = x;
 

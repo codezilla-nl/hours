@@ -9,6 +9,8 @@ import HoursGrid from "../../hours/HoursGrid";
 import Utils from "../../common/Utils";
 import Hours from "../../firebase/data/Hours";
 
+import IHours from "../../common/interfaces/IHours";
+
 const useStyles = makeStyles((theme) => ({
     alert: {
         color: "red",
@@ -31,24 +33,50 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export default function AdminDetail({ notification }) {
+export default function AdminDetail({ notification }: { notification: any }) {
     const { id } = useParams();
-    const [data, setData] = React.useState({});
+    const [data, setData] = React.useState<IHours>({
+        profile: {
+            id: "",
+            isAdmin: false,
+            microsoftId: "",
+            displayName: "",
+            email: "",
+        },
+        id: "",
+        days: [],
+        approved: false,
+    });
     const [isLoading, setIsLoading] = React.useState(true);
 
     const classes = useStyles();
 
-    const fetchMonth = async (documentId) => {
-        const instance = await Hours.getHoursWithId(documentId);
-
-        const data = instance.data();
-        data.days = Utils.initDays(data.days, false, data.year, data.month);
-        setData(data);
-
+    const fetchMonth = async (documentId: string) => {
+        setIsLoading(true);
+        Hours.getHoursWithId(documentId)
+            .then((response) => {
+                const data = response.data();
+                if (data) {
+                    setData({
+                        days: Utils.initDays(
+                            data.days,
+                            false,
+                            data.year,
+                            data.month,
+                        ),
+                        id: data.id,
+                        profile: data.profile,
+                        approved: data.approved,
+                    });
+                }
+            })
+            .catch((error) => {
+                notification("Niet gelukt om uren op te halen: " + error);
+            });
         setIsLoading(false);
     };
 
-    const saveMonth = async (documentId, document) => {
+    const saveMonth = async (documentId: string, document: IHours) => {
         setIsLoading(true);
 
         Hours.updateHours(documentId, document)
@@ -62,17 +90,21 @@ export default function AdminDetail({ notification }) {
     };
 
     const onApprove = () => {
-        const approved = !Boolean(data.approved);
+        const approved = !Boolean(data?.approved);
         setData({ ...data, approved: approved });
 
         const document = data;
         document.approved = approved;
 
-        saveMonth(id, document);
+        if (id) {
+            saveMonth(id, document);
+        }
     };
 
     React.useEffect(() => {
-        fetchMonth(id);
+        if (id) {
+            fetchMonth(id);
+        }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [id]);
 
@@ -136,6 +168,8 @@ export default function AdminDetail({ notification }) {
                 expandColumns="false"
                 days={data.days}
                 readOnly="true"
+                handleChange=""
+                save=""
             ></HoursGrid>
         </>
     );

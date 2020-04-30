@@ -1,5 +1,4 @@
 import React from "react";
-import PropTypes from "prop-types";
 import {
     Checkbox,
     TableHead,
@@ -8,29 +7,28 @@ import {
     TableSortLabel,
 } from "@material-ui/core/";
 
-import * as Constants from "./constants";
+import * as Constants from "./Constants";
 
-OverviewHeader.propTypes = {
-    classes: PropTypes.object.isRequired,
-    numSelected: PropTypes.number.isRequired,
-    onRequestSort: PropTypes.func.isRequired,
-    onSelectAllClick: PropTypes.func.isRequired,
-    order: PropTypes.oneOf(["asc", "desc"]).isRequired,
-    orderBy: PropTypes.string.isRequired,
-    rowCount: PropTypes.number.isRequired,
-};
+interface IProps {
+    classes: any;
+    numSelected: number;
+    onRequestSort: any;
+    onSelectAllClick: any;
+    order: any;
+    orderBy: any;
+    rowCount: number;
+}
 
-export default function OverviewHeader(props) {
-    const {
-        classes,
-        onSelectAllClick,
-        order,
-        orderBy,
-        numSelected,
-        rowCount,
-        onRequestSort,
-    } = props;
-    const createSortHandler = (property) => (event) => {
+export default function OverviewHeader({
+    classes,
+    onSelectAllClick,
+    order,
+    orderBy,
+    numSelected,
+    rowCount,
+    onRequestSort,
+}: IProps) {
+    const createSortHandler = (property: string) => (event: any) => {
         onRequestSort(event, property);
     };
 

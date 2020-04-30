@@ -1,8 +1,6 @@
 import React, { Component } from "react";
-import Snackbar from "@material-ui/core/Snackbar";
 import LinearProgress from "@material-ui/core/LinearProgress";
 
-import firebase from "../firebase/firebase";
 import Hours from "../firebase/data/Hours";
 import JSReport from "../pdf/JSReport";
 
@@ -11,20 +9,36 @@ import HoursGrid from "./HoursGrid";
 import Validators from "./validation/Validators";
 import Utils from "../common/Utils";
 
-class HoursContainer extends Component {
+import IDay from "../common/interfaces/IDay";
+import IProfile from "../common/interfaces/IProfile";
+
+interface IProps {
+    type: string;
+    profile: IProfile;
+    notification: any;
+}
+
+class HoursContainer extends Component<IProps> {
     state = {
         id: "",
         days: [],
-        month: "",
-        year: "",
+        month: 0,
+        year: 0,
         expandColumns: true,
         client: "",
         project: "",
         profileId: "",
-        profile: "",
+        profile: {
+            id: "",
+            displayName: "",
+            microsoftId: "",
+            email: "",
+            isAdmin: false,
+        },
         saved: false,
         approved: false,
-        showValidationMessages: [],
+        showValidationMessage: false,
+        validationMessages: [],
         isLoading: false,
         isTemplate: false,
     };
@@ -55,15 +69,15 @@ class HoursContainer extends Component {
 
     componentWillUnmount() {
         document
-            .querySelector("input")
-            .removeEventListener("blur", this.handleInputChange);
+            .querySelector("input")!
+            .removeEventListener("blur", () => this.handleInputChange);
     }
 
     fetchMonth = async () => {
         this.setState({ isLoading: true });
         const instance = await Hours.getHoursForProfile(
-            this.state.month,
-            this.state.year,
+            Number(this.state.month),
+            Number(this.state.year),
             this.state.profileId,
         );
 
@@ -96,37 +110,44 @@ class HoursContainer extends Component {
         this.setState({ isLoading: false });
     };
 
-    fetchTemplate = async (profileId) => {
+    fetchTemplate = async (profileId: string) => {
         this.setState({ isLoading: true });
 
-        const db = firebase.firestore();
-        const instance = await db.collection("template").doc(profileId).get();
-
-        if (instance && instance.exists && instance.data().days) {
-            this.setState(
-                {
-                    days: instance.data().days,
-                    client: instance.data().client,
-                    project: instance.data().project,
-                    id: instance.id,
-                },
-                () => {
-                    this.initData();
-                },
-            );
-        } else {
-            this.getTemplateWeek();
-        }
-
-        this.setState({ isLoading: false });
+        Hours.getTemplate(profileId)
+            .then((response) => {
+                if (response && response?.exists) {
+                    const data = response.data();
+                    if (data) {
+                        this.setState(
+                            {
+                                days: data.days,
+                                client: data.client,
+                                project: data.project,
+                                id: response.id,
+                            },
+                            () => {
+                                this.initData();
+                            },
+                        );
+                    }
+                } else {
+                    this.getTemplateWeek();
+                }
+                this.setState({ isLoading: false });
+            })
+            .catch((error) => {
+                this.props.notification(
+                    "Het is niet gelukt een template op te halen: " + error,
+                );
+            });
     };
 
     initData = () => {
         const days = Utils.initDays(
             this.state.days,
             this.state.isTemplate,
-            this.state.year,
-            this.state.month,
+            Number(this.state.year),
+            Number(this.state.month),
         );
         this.setState({ days: days }, () => {
             this.isValid();
@@ -136,44 +157,61 @@ class HoursContainer extends Component {
     applyTemplate = async () => {
         this.setState({ isLoading: true });
 
-        const db = firebase.firestore();
-        const instance = await db
-            .collection("template")
-            .doc(this.state.profileId)
-            .get();
+        Hours.getTemplate(this.state.profileId)
+            .then((response) => {
+                if (response && response?.exists) {
+                    const data = response.data();
+                    if (data) {
+                        const templateDays = data.days;
+                        const { days } = this.state;
 
-        const templateDays = await instance.data().days;
-        const { days } = this.state;
+                        const mergedDays = days.map((day: IDay) => {
+                            const sameDay = templateDays.find(
+                                (templateDay: IDay) => {
+                                    const monthDayOfTheWeek = day.dayOfTheWeek;
+                                    return (
+                                        monthDayOfTheWeek ===
+                                        templateDay.day - 1
+                                    );
+                                },
+                            );
 
-        const mergedDays = days.map((day) => {
-            const sameDay = templateDays.find((templateDay) => {
-                const monthDayOfTheWeek = day.dayOfTheWeek;
-                return monthDayOfTheWeek === templateDay.day - 1;
-            });
+                            if (day !== sameDay) {
+                                Object.keys(day).forEach((item) => {
+                                    if (day[item] === "") {
+                                        day[item] = sameDay[item];
+                                    }
+                                });
+                            }
 
-            if (day !== sameDay) {
-                Object.keys(day).forEach((item) => {
-                    if (day[item] === "") {
-                        day[item] = sameDay[item];
+                            return day;
+                        });
+                        this.setState(
+                            {
+                                isLoading: false,
+                                days: mergedDays,
+                                client: data.client,
+                                project: data.project,
+                                saved: true,
+                            },
+                            () => this.save(),
+                        );
                     }
-                });
-            }
-
-            return day;
-        });
-        this.setState(
-            {
-                isLoading: false,
-                days: mergedDays,
-                client: instance.data().client,
-                project: instance.data().project,
-                saved: true,
-            },
-            () => this.save(),
-        );
+                } else {
+                    this.props.notification(
+                        "Er is nog geen template aangemaakt.",
+                    );
+                }
+                this.setState({ isLoading: false });
+            })
+            .catch((error) => {
+                this.props.notification(
+                    "Het is niet gelukt een template op te halen: " + error,
+                );
+            });
     };
 
-    handleInputChange = (name, value) => {
+    handleInputChange = (name: string, value: string) => {
         this.setState({ [name]: value }, () => {
             if (["month", "year"].includes(name)) {
                 this.setState({ isLoading: true });
@@ -207,7 +245,7 @@ class HoursContainer extends Component {
         return this.setState({ days: rows });
     };
 
-    getDaysInMonth(month, year) {
+    getDaysInMonth(month: number, year: number) {
         const daysInAMonth = new Date(year, month, 0).getDate();
 
         const rows = [];
@@ -242,6 +280,7 @@ class HoursContainer extends Component {
             this.state.profile.displayName;
 
         const document = {
+            id: id,
             client: this.state.client,
             days: this.state.days,
             profile: this.state.profile,
@@ -249,6 +288,7 @@ class HoursContainer extends Component {
             project: this.state.project,
             year: this.state.year,
             month: this.state.month,
+            approved: this.state.approved,
         };
 
         Hours.updateHours(id, document)
@@ -262,27 +302,27 @@ class HoursContainer extends Component {
             });
     };
 
-    submitTemplate = (days, client, project, profile) => {
+    submitTemplate = (
+        days: IDay[],
+        client: string,
+        project: string,
+        profile: IProfile,
+    ) => {
         const data = days.map((day) => {
             delete day.date;
             delete day.dayOfTheWeek;
             return day;
         });
 
-        const db = firebase.firestore();
-        db.collection("template")
-            .doc(this.props.profile.id)
-            .set({
-                days: data,
-                client,
-                project,
-                profileName: profile.displayName,
-            })
-            .then((docRef) => {
-                this.setState((prevState) => {
-                    prevState.snackbarOpen = true;
-                    return prevState;
-                });
+        Hours.updateTemplate(
+            profile.id,
+            data,
+            client,
+            project,
+            profile.displayName,
+        )
+            .then(() => {
+                this.props.notification("Template opgeslagen");
             })
             .catch((error) => {
                 this.props.notification(
@@ -332,7 +372,7 @@ class HoursContainer extends Component {
         return true;
     };
 
-    closeValidationMessage = (event, reason) => {
+    closeValidationMessage = (event: any, reason: string) => {
         if (reason === "clickaway") {
             return;
         }
@@ -380,16 +420,9 @@ class HoursContainer extends Component {
                         days={this.state.days}
                         handleChange={this.handleInputChange}
                         save={this.save}
-                        isTemplate={this.state.isTemplate}
                         readOnly={this.state.approved}
                     />
                 )}
-                <Snackbar
-                    open={this.state.showValidationMessage}
-                    autoHideDuration={6000}
-                    onClose={this.closeValidationMessage}
-                    message={this.state.validationMessage}
-                ></Snackbar>
             </form>
         );
     }

@@ -1,5 +1,7 @@
+import IHours from "../common/interfaces/IHours";
+
 export default {
-    async getReport(data) {
+    async getReport(data: IHours): Promise<any> {
         const postData = {
             template: { shortid: "HJewFyx0vL" },
             data: data,

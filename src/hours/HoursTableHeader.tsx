@@ -2,7 +2,11 @@ import React from "react";
 import { TableHead, TableRow, TableCell } from "@material-ui/core";
 import { columns } from "./hoursConstants";
 
-const HoursTableHead = ({ expandColumns }) => {
+interface IProps {
+    expandColumns: boolean;
+}
+
+const HoursTableHead = ({ expandColumns }: IProps) => {
     return (
         <TableHead>
             <TableRow>

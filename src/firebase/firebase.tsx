@@ -9,7 +9,7 @@ const firebaseConfig = {
     storageBucket: "codezilla-hours.appspot.com",
     messagingSenderId: "634823174203",
     appId: "1:634823174203:web:ca40af276111cfae66541e",
-    measurementId: "G-DR0KK33WCW"
+    measurementId: "G-DR0KK33WCW",
 };
 
 firebase.initializeApp(firebaseConfig);

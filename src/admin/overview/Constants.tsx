@@ -1,4 +1,6 @@
-export const columns = [
+import IAdminOverviewColumn from "../../common/interfaces/IAdminOverviewColumn";
+
+export const columns: IAdminOverviewColumn[] = [
     {
         id: "name",
         numeric: false,

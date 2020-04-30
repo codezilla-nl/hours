@@ -5,6 +5,8 @@ import { NavLink } from "react-router-dom";
 
 import AccountCircle from "@material-ui/icons/AccountCircle";
 
+import IProfile from "../common/interfaces/IProfile";
+
 const useStyles = makeStyles((theme) => ({
     appBar: {
         backgroundColor: "#7d518",
@@ -25,11 +27,15 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export default function Header({ profile }) {
+interface IProps {
+    profile: IProfile;
+}
+
+export default function Header({ profile }: IProps) {
     const classes = useStyles();
 
     return (
-        <div className={classes.root}>
+        <div>
             <AppBar position="static" className={classes.appBar}>
                 <Toolbar>
                     <Avatar className={classes.avatar}>

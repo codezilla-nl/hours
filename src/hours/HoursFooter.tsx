@@ -3,12 +3,19 @@ import TableFooter from "@material-ui/core/TableFooter";
 import TableRow from "@material-ui/core/TableRow";
 import TableCell from "@material-ui/core/TableCell";
 
+import IDay from "../common/interfaces/IDay";
+
 import * as HoursConstants from "./hoursConstants";
+
+interface IProps {
+    expandColumns: boolean;
+    days: IDay[];
+}
 
 const columns = HoursConstants.columns;
 
-const HoursFooter = ({ expandColumns, days }) => {
-    const getTotal = (column) => {
+const HoursFooter = ({ expandColumns, days }: IProps) => {
+    const getTotal = (column: string) => {
         const values = days.map((x) => x[column]);
         return values.reduce((total, currentValue) => {
             return Number(total) + Number(currentValue);

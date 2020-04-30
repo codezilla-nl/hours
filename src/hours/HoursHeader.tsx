@@ -17,6 +17,19 @@ import MoreVertIcon from "@material-ui/icons/MoreVert";
 import ValidationNotification from "./validation/ValidationNotification";
 import * as HoursConstants from "./hoursConstants";
 
+interface IProps {
+    isTemplate: boolean;
+    client: string;
+    project: string;
+    expandColumns: boolean;
+    handleInputChange: any;
+    applyTemplate: any;
+    getReport: any;
+    validationMessages: string[];
+    saved: boolean;
+    approved: boolean;
+}
+
 const useStyles = makeStyles((theme) => ({
     alert: {
         color: "red",
@@ -51,13 +64,13 @@ const HoursHeader = ({
     validationMessages,
     saved,
     approved,
-}) => {
+}: IProps) => {
     const classes = useStyles();
 
     const [anchorEl, setAnchorEl] = React.useState(null);
     const open = Boolean(anchorEl);
 
-    const handleClick = (event) => {
+    const handleClick = (event: any) => {
         setAnchorEl(event.currentTarget);
     };
 
@@ -76,7 +89,7 @@ const HoursHeader = ({
                 classes={classes}
                 client={client}
                 project={project}
-                readOnly={approved}
+                approved={approved}
                 handleInputChange={handleInputChange}
             />
         );
@@ -129,10 +142,7 @@ const HoursHeader = ({
             />
 
             {validationMessages?.length > 0 ? (
-                <ValidationNotification
-                    className={classes.spacingLeft}
-                    messages={validationMessages}
-                />
+                <ValidationNotification messages={validationMessages} />
             ) : null}
             <div className={classes.right}>
                 {saved ? (
@@ -210,20 +220,28 @@ const HoursHeader = ({
 
 export default HoursHeader;
 
+interface IClientAndProjectProps {
+    classes: any;
+    client: string;
+    project: string;
+    handleInputChange: any;
+    approved: boolean;
+}
+
 const ClientAndProject = ({
     classes,
     client,
     project,
     handleInputChange,
     approved,
-}) => (
+}: IClientAndProjectProps) => (
     <>
         <TextField
             className={classes.spacingLeft}
             id="client"
             label="Klant"
             value={client}
-            disabled={Boolean(approved)}
+            disabled={approved}
             onChange={(event) =>
                 handleInputChange("client", event.target.value)
             }
@@ -233,7 +251,7 @@ const ClientAndProject = ({
             id="project"
             label="Project"
             value={project}
-            disabled={Boolean(approved)}
+            disabled={approved}
             onChange={(event) =>
                 handleInputChange("project", event.target.value)
             }

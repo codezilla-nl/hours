@@ -3,13 +3,31 @@ import { makeStyles } from "@material-ui/core/styles";
 import TableCell from "@material-ui/core/TableCell";
 import TextField from "@material-ui/core/TextField";
 
+import IDay from "../common/interfaces/IDay";
+
 const useStyles = makeStyles((theme) => ({
     textField: {
         width: "90%",
     },
 }));
 
-const HoursCell = ({ row, column, days, handleChange, save, readOnly }) => {
+interface IProps {
+    row: any;
+    column: string;
+    days: IDay[];
+    handleChange: any;
+    save: any;
+    readOnly: boolean;
+}
+
+const HoursCell = ({
+    row,
+    column,
+    days,
+    handleChange,
+    save,
+    readOnly,
+}: IProps) => {
     const classes = useStyles();
     const [value, setValue] = React.useState(row[column]);
 
@@ -17,21 +35,16 @@ const HoursCell = ({ row, column, days, handleChange, save, readOnly }) => {
         setValue(row[column]);
     }, [row, column, days]);
 
-    const handleHoursInput = (value, column, day) => {
+    const handleHoursInput = (value: string, column: string, day: number) => {
         const daysInput = [...days];
-        let output = "";
-        if (value !== "") {
-            const numberValue = Number(value);
-            output = isNaN(numberValue) ? "" : numberValue;
-        }
-        daysInput[day][column] = output;
-        setValue(output);
+        daysInput[day][column] = value;
+        setValue(value);
         handleChange("days", daysInput);
         save();
     };
 
     /* Jump with arrow keys to another field */
-    const onKeyDown = (event) => {
+    const onKeyDown = (event: any) => {
         const column = event.target.closest("td");
         const row = column.parentNode;
         const index = Array.from(row.children).indexOf(column);

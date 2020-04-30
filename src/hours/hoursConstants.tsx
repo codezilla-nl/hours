@@ -1,105 +1,108 @@
-export const columns = [
+import IHoursColumn from "../common/interfaces/IHoursColumn";
+import IMonth from "../common/interfaces/IMonth";
+
+export const columns: IHoursColumn[] = [
     {
         id: "worked",
         description: "Gewerkt",
-        enabled: true
+        enabled: true,
     },
     {
         id: "overtime",
         description: "Overwerk",
-        enabled: true
+        enabled: true,
     },
     {
         id: "sick",
         description: "Ziek",
-        enabled: true
+        enabled: true,
     },
     {
         id: "holiday",
         description: "Verlof",
-        enabled: true
+        enabled: true,
     },
     {
         id: "publicHoliday",
         description: "Feestdag",
-        enabled: true
+        enabled: true,
     },
     {
         id: "available",
         description: "Beschikbaar",
-        enabled: false
+        enabled: false,
     },
     {
         id: "education",
         description: "Opleiding",
-        enabled: false
+        enabled: false,
     },
     {
         id: "other",
         description: "Overig",
-        enabled: false
+        enabled: false,
     },
     {
         id: "standBy",
         description: "StandBy",
-        enabled: false
+        enabled: false,
     },
     {
         id: "kilometers",
         description: "Kilometers",
-        enabled: false
-    }
+        enabled: false,
+    },
 ];
 
-export const months = [
+export const months: IMonth[] = [
     {
         id: 1,
-        description: "Januari"
+        description: "Januari",
     },
     {
         id: 2,
-        description: "Februari"
+        description: "Februari",
     },
     {
         id: 3,
-        description: "Maart"
+        description: "Maart",
     },
     {
         id: 4,
-        description: "April"
+        description: "April",
     },
     {
         id: 5,
-        description: "Mei"
+        description: "Mei",
     },
     {
         id: 6,
-        description: "Juni"
+        description: "Juni",
     },
     {
         id: 7,
-        description: "Juli"
+        description: "Juli",
     },
     {
         id: 8,
-        description: "Augustus"
+        description: "Augustus",
     },
     {
         id: 9,
-        description: "September"
+        description: "September",
     },
     {
         id: 10,
-        description: "Oktober"
+        description: "Oktober",
     },
     {
         id: 11,
-        description: "November"
+        description: "November",
     },
     {
         id: 12,
-        description: "December"
-    }
+        description: "December",
+    },
 ];
 
-export const years = [2020, 2021, 2022, 2023, 2025];
+export const years: number[] = [2020, 2021, 2022, 2023, 2024, 2025];

@@ -15,6 +15,16 @@ import HoursFooter from "./HoursFooter";
 import HoursCell from "./HoursCell";
 import HoursTableHead from "./HoursTableHeader";
 
+import IDay from "../common/interfaces/IDay";
+
+interface IProps {
+    expandColumns: boolean;
+    days: IDay[];
+    handleChange: any;
+    save: any;
+    readOnly: any;
+}
+
 const columns = HoursConstants.columns;
 
 const useStyles = makeStyles((theme) => ({
@@ -23,13 +33,19 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-const HoursGrid = ({ expandColumns, days, handleChange, save, readOnly }) => {
+const HoursGrid = ({
+    expandColumns,
+    days,
+    handleChange,
+    save,
+    readOnly,
+}: IProps) => {
     const classes = useStyles();
-    const getRowClass = (row) => {
-        return row.isWeekend ? "highlight" : "";
+    const getRowClass = (isWeekend: boolean) => {
+        return isWeekend ? "highlight" : "";
     };
 
-    const getDayName = (date, index) => {
+    const getDayName = (date: string, index: number) => {
         const days = [
             "Zondag",
             "Maandag",
@@ -57,7 +73,7 @@ const HoursGrid = ({ expandColumns, days, handleChange, save, readOnly }) => {
                         return (
                             <TableRow
                                 key={row.day}
-                                className={getRowClass(row)}
+                                className={getRowClass(row.isWeekend)}
                             >
                                 <TableCell component="th" scope="row">
                                     {getDayName(row.date, index)}

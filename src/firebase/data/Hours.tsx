@@ -1,7 +1,15 @@
 import firebase from "../firebase";
 
+import IDay from "../../common/interfaces/IDay";
+import IHours from "../../common/interfaces/IHours";
+
 export default {
-    async getHours(month, year) {
+    async getHours(
+        month: number,
+        year: number,
+    ): Promise<
+        firebase.firestore.QuerySnapshot<firebase.firestore.DocumentData>
+    > {
         const db = firebase.firestore();
         debugger;
         return await db
@@ -10,7 +18,8 @@ export default {
             .where("year", "==", Number(year))
             .get();
     },
-    async getHoursForProfile(month, year, profileId) {
+
+    async getHoursForProfile(month: number, year: number, profileId: string) {
         const db = firebase.firestore();
         const response = await db
             .collection("months")
@@ -24,12 +33,16 @@ export default {
             return row;
         });
     },
-    async getHoursWithId(id) {
+    async getHoursWithId(
+        id: string,
+    ): Promise<
+        firebase.firestore.DocumentSnapshot<firebase.firestore.DocumentData>
+    > {
         const db = firebase.firestore();
         return await db.collection("months").doc(id).get();
     },
 
-    async updateHours(id, document) {
+    async updateHours(id: string, document: IHours): Promise<void> {
         const db = firebase.firestore();
         return await db
             .collection("months")
@@ -46,11 +59,11 @@ export default {
             });
     },
 
-    async updateHourList(documents) {
+    async updateHourList(documents: IHours[]): Promise<void> {
         const db = firebase.firestore();
         const batch = db.batch();
 
-        documents.forEach((document) => {
+        documents.forEach((document: IHours) => {
             if (!document.id || document.id === "") {
                 return;
             }
@@ -61,7 +74,32 @@ export default {
         return batch.commit();
     },
 
-    processDays(days) {
+    async getTemplate(
+        profileId: string,
+    ): Promise<
+        firebase.firestore.DocumentSnapshot<firebase.firestore.DocumentData>
+    > {
+        const db = firebase.firestore();
+        return await db.collection("template").doc(profileId).get();
+    },
+
+    async updateTemplate(
+        profileId: string,
+        days: IDay[],
+        client: string,
+        project: string,
+        profileName: string,
+    ): Promise<void> {
+        const db = firebase.firestore();
+        return await db.collection("template").doc(profileId).set({
+            days,
+            client,
+            project,
+            profileName,
+        });
+    },
+
+    processDays(days: IDay[]) {
         return days.map((x, index) => {
             return {
                 day: x.day ? x.day : index + 1,
@@ -82,7 +120,7 @@ export default {
         });
     },
 
-    transformToString(value) {
+    transformToString(value: any): string {
         return value ? value : "";
     },
 };

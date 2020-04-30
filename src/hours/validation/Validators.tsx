@@ -1,8 +1,10 @@
 import React from "react";
 import Moment from "react-moment";
 
+import IDay from "../../common/interfaces/IDay";
+
 export default {
-    validateWeekend(day) {
+    validateWeekend(day: IDay): any {
         const hours = this.getTotalHoursPerDay(day);
         if (day.isWeekend && hours > 0) {
             return (
@@ -16,10 +18,10 @@ export default {
         }
         return;
     },
-    validateTotalHoursOfMonth(days) {
+    validateTotalHoursOfMonth(days: IDay[]): string {
         let userTotalHours = 0;
         let potentialTotalHours = 0;
-        days.forEach((day) => {
+        days.forEach((day: IDay) => {
             if (day.isWeekend) {
                 return;
             }
@@ -46,9 +48,9 @@ export default {
                 "). Klopt dat?"
             );
         }
-        return;
+        return "";
     },
-    getTotalHoursPerDay(day) {
+    getTotalHoursPerDay(day: IDay): number {
         const output = Number(
             [
                 Number(day.worked),

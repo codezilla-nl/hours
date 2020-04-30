@@ -9,13 +9,6 @@ import {
 import { makeStyles } from "@material-ui/core/styles";
 
 const useStyles = makeStyles((theme) => ({
-    root: {
-        height: "100%",
-        minHeight: "100%",
-        width: "100%",
-        position: "fixed",
-        background: "url('./bg-pattern-triangles.png') 0 0 repeat",
-    },
     paper: {
         marginTop: theme.spacing(8),
         display: "flex",

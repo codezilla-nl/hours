@@ -9,10 +9,14 @@ import {
 } from "@material-ui/core";
 import WarningIcon from "@material-ui/icons/Warning";
 
-export default function ValidationNotification({ messages }) {
+export default function ValidationNotification({
+    messages,
+}: {
+    messages: string[];
+}) {
     const [anchorEl, setAnchorEl] = React.useState(null);
 
-    const handleClick = (event) => {
+    const handleClick = (event: any) => {
         setAnchorEl(event.currentTarget);
     };
 

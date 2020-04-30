@@ -7,10 +7,13 @@ export default {
         switch (type) {
             case "intern":
                 id = "HJewFyx0vL";
+                break;
             case "extern":
                 id = "H1gnFUldtI";
+                break;
             default:
                 id = "";
+                break;
         }
 
         if (id === "") {

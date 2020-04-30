@@ -204,12 +204,21 @@ const HoursHeader = ({
                         </MenuItem>
                         <MenuItem
                             onClick={() => {
-                                getReport();
+                                getReport("intern");
                                 handleClose();
                             }}
-                            id="getReport"
+                            id="getInternReport"
                         >
-                            Maak PDF
+                            Maak interne PDF
+                        </MenuItem>
+                        <MenuItem
+                            onClick={() => {
+                                getReport("extern");
+                                handleClose();
+                            }}
+                            id="getExternReport"
+                        >
+                            Maak externe PDF
                         </MenuItem>
                     </Menu>
                 </div>

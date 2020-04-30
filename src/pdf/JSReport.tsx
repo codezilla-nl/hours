@@ -1,9 +1,24 @@
 import IHours from "../common/interfaces/IHours";
 
 export default {
-    async getReport(data: IHours): Promise<any> {
+    async getReport(data: IHours, type: string): Promise<any> {
+        let id = "";
+
+        switch (type) {
+            case "intern":
+                id = "HJewFyx0vL";
+            case "extern":
+                id = "H1gnFUldtI";
+            default:
+                id = "";
+        }
+
+        if (id === "") {
+            return;
+        }
+
         const postData = {
-            template: { shortid: "HJewFyx0vL" },
+            template: { shortid: id },
             data: data,
             options: { reports: { save: true } },
         };

@@ -10,6 +10,9 @@ import {
 
 import firebase from "./firebase/firebase";
 
+import IProfile from "./common/interfaces/IProfile";
+import IUser from "./common/interfaces/IUser";
+
 import Header from "./navigation/header";
 import HoursContainer from "./hours/HoursContainer";
 import PreLoad from "./navigation/preLoad";
@@ -52,23 +55,9 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-interface User {
-    displayName: string;
-    uid: string;
-    email: string;
-}
-
-interface Profile {
-    displayName: string;
-    email: string;
-    id: string;
-    isAdmin: boolean;
-    microsoftId: string;
-}
-
 export default function App() {
     const classes = useStyles();
-    const [profile, setProfile] = React.useState<Profile>({
+    const [profile, setProfile] = React.useState<IProfile>({
         displayName: "",
         email: "",
         id: "",
@@ -121,7 +110,7 @@ export default function App() {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    const fetchProfile = async (user: User) => {
+    const fetchProfile = async (user: IUser) => {
         const db = firebase.firestore();
         const snapshot = await db.collection("profile").get();
         const response = snapshot.docs.find((doc) => {
@@ -144,7 +133,7 @@ export default function App() {
         setIsLoading(false);
     };
 
-    const createNewProfile = (user: User) => {
+    const createNewProfile = (user: IUser) => {
         const db = firebase.firestore();
         const newProfile = {
             displayName: user.displayName,

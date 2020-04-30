@@ -109,4 +109,33 @@ describe("HoursHeader", () => {
 
         expect(applyTemplate).toHaveBeenCalled();
     });
+
+    it("should call getReport function when button is clicked", () => {
+        const getReport = jest.fn();
+        const wrapper = mount(
+            <HoursHeader
+                handleInputChange={jest.fn()}
+                client={"Codezilla"}
+                project={"Hours"}
+                expandColumns
+                isTemplate={false}
+                getReport={getReport}
+                applyTemplate={jest.fn()}
+            />,
+        );
+
+        const headerMenuButton = wrapper.find("button");
+        headerMenuButton.simulate("click");
+
+        const button = wrapper
+            .find("#headerMenu")
+            .find("li")
+            .find("#getInternReport");
+
+        expect(button.text()).toEqual("Maak interne PDF");
+
+        button.simulate("click");
+
+        expect(getReport).toHaveBeenCalled();
+    });
 });

@@ -380,10 +380,10 @@ class HoursContainer extends Component<IProps> {
         this.setState({ showValidationMessage: false });
     };
 
-    getReport = () => {
+    getReport = (type: string) => {
         this.setState({ isLoading: true });
 
-        JSReport.getReport(this.state)
+        JSReport.getReport(this.state, type)
             .then(() => {
                 this.setState({ isLoading: false });
             })

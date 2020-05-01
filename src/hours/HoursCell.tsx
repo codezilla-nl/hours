@@ -49,6 +49,8 @@ const HoursCell = ({
         const row = column.parentNode;
         const index = Array.from(row.children).indexOf(column);
 
+        event.preventDefault();
+
         switch (event.keyCode) {
             case 40:
                 /* arrow key down */

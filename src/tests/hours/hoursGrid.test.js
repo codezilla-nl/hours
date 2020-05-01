@@ -88,7 +88,7 @@ describe("HoursGrid", () => {
             />,
         );
 
-        const weekend = wrapper.find(".highlight");
+        const weekend = wrapper.find(".isWeekend");
         expect(weekend).toHaveLength(mockWeekend.length);
     });
 
@@ -103,7 +103,7 @@ describe("HoursGrid", () => {
             />,
         );
 
-        const weekendDay = wrapper.find(".highlight");
+        const weekendDay = wrapper.find(".isWeekend");
         expect(weekendDay).toHaveLength(0);
     });
 });

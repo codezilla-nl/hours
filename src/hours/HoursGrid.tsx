@@ -7,6 +7,7 @@ import {
     TableContainer,
     TableRow,
     TextField,
+    Tooltip,
     Paper,
 } from "@material-ui/core";
 
@@ -82,9 +83,15 @@ const HoursGrid = ({
                                 )}
                             >
                                 <TableCell component="th" scope="row">
-                                    <span className="dayName">
-                                        {getDayName(row.date, index)}
-                                    </span>
+                                    {row.isPublicHoliday ? (
+                                        <Tooltip title="Dit is een feestdag">
+                                            <span>
+                                                {getDayName(row.date, index)}
+                                            </span>
+                                        </Tooltip>
+                                    ) : (
+                                        getDayName(row.date, index)
+                                    )}
                                 </TableCell>
                                 <TableCell component="th" scope="row">
                                     {row.day}

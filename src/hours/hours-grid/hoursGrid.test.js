@@ -5,8 +5,8 @@ import {
     mockWeekend,
     mockWeekendTemplate,
     mockDaysChanged,
-} from "./hours.mock";
-import HoursGrid from "../../hours/HoursGrid";
+} from "../hours.mock";
+import HoursGrid from "./HoursGrid.component";
 import { createShallow, createMount } from "@material-ui/core/test-utils";
 
 let wrapper = null;

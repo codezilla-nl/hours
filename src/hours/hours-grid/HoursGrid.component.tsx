@@ -10,12 +10,12 @@ import {
     Paper,
 } from "@material-ui/core";
 
-import * as HoursConstants from "./hoursConstants";
-import HoursFooter from "./HoursFooter";
-import HoursCell from "./HoursCell";
-import HoursTableHead from "./HoursTableHeader";
+import * as HoursConstants from "../hours-constants/hoursConstants.component";
+import HoursFooter from "../hours-footer/HoursFooter.component";
+import HoursCell from "../hours-cell/HoursCell.component";
+import HoursTableHead from "../hours-table-header/HoursTableHeader.component";
 
-import IDay from "../common/interfaces/IDay";
+import IDay from "../../common/interfaces/IDay";
 
 interface IProps {
     expandColumns: boolean;

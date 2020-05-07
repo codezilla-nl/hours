@@ -1,7 +1,7 @@
 import React from "react";
 import { unmountComponentAtNode } from "react-dom";
-import HoursTableHeader from "../../hours/HoursTableHeader";
-import { mockColumns } from "./hours.mock";
+import HoursTableHeader from "./HoursTableHeader.component";
+import { mockColumns } from "../hours.mock";
 import { createShallow, createMount } from "@material-ui/core/test-utils";
 
 let wrapper = null;

@@ -1,5 +1,5 @@
-import IHoursColumn from "../common/interfaces/IHoursColumn";
-import IMonth from "../common/interfaces/IMonth";
+import IHoursColumn from "./IHoursColumn";
+import IMonth from "./IMonth";
 
 export const columns: IHoursColumn[] = [
     {

@@ -1,4 +1,4 @@
-import firebase from "../firebase";
+import firebase from "../firebase.component";
 
 import IDay from "../../common/interfaces/IDay";
 import IHours from "../../common/interfaces/IHours";

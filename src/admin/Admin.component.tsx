@@ -21,8 +21,8 @@ import IAdminOverviewColumn from "../common/interfaces/IAdminOverviewColumn";
 import IDay from "../common/interfaces/IDay";
 import IHours from "../common/interfaces/IHours";
 
-import OverviewHeader from "./overview/OverviewHeader";
-import OverviewToolbar from "./overview/OverviewToolbar";
+import OverviewHeader from "./overview/OverviewHeader.component";
+import OverviewToolbar from "./overview/OverviewToolbar.component";
 
 function descendingComparator(a: any, b: any, orderBy: string) {
     if (b[orderBy] < a[orderBy]) {

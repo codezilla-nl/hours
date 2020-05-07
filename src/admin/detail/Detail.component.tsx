@@ -5,7 +5,7 @@ import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import DoneIcon from "@material-ui/icons/Done";
 import UndoIcon from "@material-ui/icons/Undo";
 
-import HoursGrid from "../../hours/HoursGrid";
+import HoursGrid from "../../hours/hours-grid/HoursGrid.component";
 import Utils from "../../common/Utils";
 import Hours from "../../firebase/data/Hours";
 

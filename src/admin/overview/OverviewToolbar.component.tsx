@@ -14,7 +14,7 @@ import {
 
 import DoneIcon from "@material-ui/icons/Done";
 
-import * as HoursConstants from "../../hours/hoursConstants";
+import * as HoursConstants from "../../hours/hours-constants/hoursConstants.component";
 
 OverviewToolbar.propTypes = {
     numSelected: PropTypes.number.isRequired,

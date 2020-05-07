@@ -2,7 +2,7 @@ import React from "react";
 import { render, unmountComponentAtNode } from "react-dom";
 import { act } from "react-dom/test-utils";
 
-import PreLoad from "./preLoad";
+import PreLoad from "./preLoad.component";
 
 let container = null;
 beforeEach(() => {

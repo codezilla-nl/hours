@@ -1,16 +1,16 @@
 import React, { Component } from "react";
 import LinearProgress from "@material-ui/core/LinearProgress";
 
-import Hours from "../firebase/data/Hours";
-import JSReport from "../pdf/JSReport";
+import Hours from "../../firebase/data/Hours";
+import JSReport from "../../pdf/JSReport";
 
-import HoursHeader from "./HoursHeader";
-import HoursGrid from "./HoursGrid";
-import Validators from "./validation/Validators";
-import Utils from "../common/Utils";
+import HoursHeader from "../hours-header/HoursHeader.component";
+import HoursGrid from "../hours-grid/HoursGrid.component";
+import Validators from "../validation/Validators";
+import Utils from "../../common/Utils";
 
-import IDay from "../common/interfaces/IDay";
-import IProfile from "../common/interfaces/IProfile";
+import IDay from "../../common/interfaces/IDay";
+import IProfile from "../../common/interfaces/IProfile";
 
 interface IProps {
     type: string;

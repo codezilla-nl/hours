@@ -3,7 +3,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import TableCell from "@material-ui/core/TableCell";
 import TextField from "@material-ui/core/TextField";
 
-import IDay from "../common/interfaces/IDay";
+import IDay from "../../common/interfaces/IDay";
 
 const useStyles = makeStyles((theme) => ({
     textField: {

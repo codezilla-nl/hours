@@ -3,9 +3,9 @@ import TableFooter from "@material-ui/core/TableFooter";
 import TableRow from "@material-ui/core/TableRow";
 import TableCell from "@material-ui/core/TableCell";
 
-import IDay from "../common/interfaces/IDay";
+import IDay from "../../common/interfaces/IDay";
 
-import * as HoursConstants from "./hoursConstants";
+import * as HoursConstants from "../hours-constants/hoursConstants.component";
 
 interface IProps {
     expandColumns: boolean;

@@ -1,6 +1,6 @@
 import React from "react";
 import { unmountComponentAtNode } from "react-dom";
-import HoursContainer from "../hours-container/HoursContainer.component";
+import HoursContainer from "./HoursContainer.component";
 import { mockProfile } from "../hours.mock";
 import { createShallow, createMount } from "@material-ui/core/test-utils";
 

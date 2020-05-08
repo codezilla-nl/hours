@@ -1,18 +1,20 @@
 import React from "react";
 import {
     makeStyles,
+    Button,
     Table,
     TableBody,
     TableCell,
     TableContainer,
     TableRow,
-    TextField,
     Paper,
 } from "@material-ui/core";
+import ChatBubbleOutlineIcon from "@material-ui/icons/ChatBubbleOutline";
 
 import * as HoursConstants from "../hours-constants/hoursConstants.component";
 import HoursFooter from "../hours-footer/HoursFooter.component";
 import HoursCell from "../hours-cell/HoursCell.component";
+import HoursComment from "../hours-comment/HoursComment.component";
 import HoursTableHead from "../hours-table-header/HoursTableHeader.component";
 
 import IDay from "../../common/interfaces/IDay";
@@ -45,6 +47,10 @@ const HoursGrid = ({
         return isWeekend ? "highlight" : "";
     };
 
+    const [explanation, setExplanation] = React.useState("");
+    const [showComment, setShowComment] = React.useState(false);
+    const [rowIndex, setRowIndex] = React.useState(0);
+
     const getDayName = (date: string, index: number) => {
         const days = [
             "Zondag",
@@ -62,6 +68,17 @@ const HoursGrid = ({
 
         const dateObj = new Date(date);
         return days[dateObj.getDay()];
+    };
+
+    const openComment = (explanation: string, index: number) => {
+        setExplanation(explanation);
+        setRowIndex(index);
+        setShowComment(true);
+    };
+
+    const onSaveComment = (comment: string, index: number) => {
+        days[index].explanation = comment;
+        save();
     };
 
     return (
@@ -98,24 +115,19 @@ const HoursGrid = ({
                                     );
                                 })}
                                 <TableCell>
-                                    {Boolean(readOnly) ? (
-                                        row.explanation
-                                    ) : (
-                                        <TextField
-                                            id="explanation"
-                                            inputProps={{
-                                                day: row.day,
-                                            }}
-                                            value={row.explanation}
-                                            onBlur={(event) =>
-                                                handleChange(
-                                                    event.target.value,
-                                                    "explanation",
-                                                    row.day,
-                                                )
+                                    <Button
+                                        onClick={(event) => {
+                                            openComment(row.explanation, index);
+                                        }}
+                                    >
+                                        <ChatBubbleOutlineIcon
+                                            color={
+                                                row.explanation === ""
+                                                    ? "disabled"
+                                                    : "primary"
                                             }
                                         />
-                                    )}
+                                    </Button>
                                 </TableCell>
                             </TableRow>
                         );
@@ -123,6 +135,13 @@ const HoursGrid = ({
                 </TableBody>
                 <HoursFooter expandColumns={expandColumns} days={days} />
             </Table>
+            <HoursComment
+                explanation={explanation}
+                show={showComment}
+                readonly={readOnly}
+                onSave={onSaveComment}
+                index={rowIndex}
+            />
         </TableContainer>
     );
 };

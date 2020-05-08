@@ -129,6 +129,7 @@ const HoursGrid = ({
                                         onClick={(event) => {
                                             openComment(row.explanation, index);
                                         }}
+                                        id={"commentButton-" + index}
                                     >
                                         <ChatBubbleOutlineIcon
                                             color={
@@ -152,12 +153,10 @@ const HoursGrid = ({
                 aria-labelledby="form-dialog-title"
                 fullWidth={true}
                 maxWidth="md"
+                id="commentDialog"
             >
                 <DialogTitle id="form-dialog-title">Toelichting</DialogTitle>
                 <DialogContent>
-                    <DialogContentText>
-                        Geef hier je toelichting
-                    </DialogContentText>
                     <TextField
                         autoFocus
                         margin="dense"
@@ -166,6 +165,7 @@ const HoursGrid = ({
                         onChange={(event) => {
                             setExplanation(event.target.value);
                         }}
+                        disabled={readOnly}
                         fullWidth
                     />
                 </DialogContent>

@@ -132,7 +132,7 @@ describe("HoursHeader", () => {
             .find("li")
             .find("#getInternReport");
 
-        expect(button.text()).toEqual("Maak interne PDF");
+        expect(button.text()).toEqual("Download interne PDF");
 
         button.simulate("click");
 

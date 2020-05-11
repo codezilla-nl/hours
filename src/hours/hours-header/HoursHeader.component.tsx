@@ -25,6 +25,7 @@ interface IProps {
     handleInputChange: any;
     applyTemplate: any;
     getReport: any;
+    getCSV: Function;
     validationMessages: string[];
     saved: boolean;
     approved: boolean;
@@ -61,6 +62,7 @@ const HoursHeader = ({
     handleInputChange,
     applyTemplate,
     getReport,
+    getCSV,
     validationMessages,
     saved,
     approved,
@@ -209,7 +211,7 @@ const HoursHeader = ({
                             }}
                             id="getInternReport"
                         >
-                            Maak interne PDF
+                            Download interne PDF
                         </MenuItem>
                         <MenuItem
                             onClick={() => {
@@ -218,7 +220,16 @@ const HoursHeader = ({
                             }}
                             id="getExternReport"
                         >
-                            Maak externe PDF
+                            Download externe PDF
+                        </MenuItem>
+                        <MenuItem
+                            onClick={() => {
+                                getCSV();
+                                handleClose();
+                            }}
+                            id="getInternalCSV"
+                        >
+                            Download interne CSV
                         </MenuItem>
                     </Menu>
                 </div>

@@ -1,4 +1,4 @@
-import IHours from "../common/interfaces/IHours";
+import IHours from "../../common/interfaces/IHours";
 
 export default {
     async getReport(data: IHours, type: string): Promise<any> {

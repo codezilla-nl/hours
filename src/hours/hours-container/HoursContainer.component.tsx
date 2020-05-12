@@ -211,7 +211,7 @@ class HoursContainer extends Component<IProps> {
             });
     };
 
-    handleInputChange = (name: string, value: string) => {
+    handleInputChange = (name: string, value: any) => {
         this.setState({ [name]: value }, () => {
             if (["month", "year"].includes(name)) {
                 this.setState({ isLoading: true });

@@ -12,7 +12,14 @@ code {
         monospace;
 }
 
-.highlight td,
-.highlight th {
+.isWeekend td,
+.isWeekend th,
+.isPublicHoliday td,
+.isPublicHoliday th {
     background-color: #f0f0f0;
+}
+
+.isPublicHoliday td,
+.isPublicHoliday th {
+    color: orange;
 }

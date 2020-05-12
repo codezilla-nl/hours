@@ -7,6 +7,7 @@ import {
     TableContainer,
     TableRow,
     TextField,
+    Tooltip,
     Paper,
 } from "@material-ui/core";
 
@@ -41,8 +42,11 @@ const HoursGrid = ({
     readOnly,
 }: IProps) => {
     const classes = useStyles();
-    const getRowClass = (isWeekend: boolean) => {
-        return isWeekend ? "highlight" : "";
+    const getRowClass = (isWeekend: boolean, isPublicHoliday: boolean) => {
+        let output = "";
+        output += isWeekend ? " isWeekend" : "";
+        output += isPublicHoliday ? " isPublicHoliday" : "";
+        return output;
     };
 
     const getDayName = (date: string, index: number) => {
@@ -73,10 +77,21 @@ const HoursGrid = ({
                         return (
                             <TableRow
                                 key={row.day}
-                                className={getRowClass(row.isWeekend)}
+                                className={getRowClass(
+                                    row.isWeekend,
+                                    row.isPublicHoliday,
+                                )}
                             >
                                 <TableCell component="th" scope="row">
-                                    {getDayName(row.date, index)}
+                                    {row.isPublicHoliday ? (
+                                        <Tooltip title="Dit is een feestdag">
+                                            <span>
+                                                {getDayName(row.date, index)}
+                                            </span>
+                                        </Tooltip>
+                                    ) : (
+                                        getDayName(row.date, index)
+                                    )}
                                 </TableCell>
                                 <TableCell component="th" scope="row">
                                     {row.day}

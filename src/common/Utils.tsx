@@ -1,4 +1,5 @@
 import IDay from "../common/interfaces/IDay";
+import * as HoursConstants from "../hours/hours-constants/hoursConstants.component";
 
 export default {
     getDayOfTheWeek(item: IDay, isTemplate: boolean): number {
@@ -11,6 +12,12 @@ export default {
         }
         /* No valid date, return -1 */
         return -1;
+    },
+    isPublicHoliday(date: Date): boolean {
+        const publicHolidays = HoursConstants.publicHolidays.map((x) =>
+            new Date(x).getTime(),
+        );
+        return publicHolidays.includes(date.getTime());
     },
     isWeekend(item: IDay): boolean {
         return [0, 6].includes(item.dayOfTheWeek);
@@ -48,6 +55,7 @@ export default {
             day.date = this.parseDate(x.date);
             day.dayOfTheWeek = this.getDayOfTheWeek(x, isTemplate);
             day.isWeekend = this.isWeekend(x);
+            day.isPublicHoliday = this.isPublicHoliday(x.date);
             return day;
         });
     },

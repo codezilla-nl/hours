@@ -14,8 +14,8 @@ import {
 import DoneIcon from "@material-ui/icons/Done";
 import MoreVertIcon from "@material-ui/icons/MoreVert";
 
-import ValidationNotification from "./validation/ValidationNotification";
-import * as HoursConstants from "./hoursConstants";
+import ValidationNotification from "../validation/ValidationNotification.component";
+import * as HoursConstants from "../hours-constants/hoursConstants.component";
 
 interface IProps {
     isTemplate: boolean;

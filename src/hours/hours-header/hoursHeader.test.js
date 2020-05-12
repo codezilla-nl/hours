@@ -1,6 +1,6 @@
 import React from "react";
 import { unmountComponentAtNode } from "react-dom";
-import HoursHeader from "../../hours/HoursHeader";
+import HoursHeader from "./HoursHeader.component";
 import { createShallow, createMount } from "@material-ui/core/test-utils";
 
 let wrapper = null;

@@ -8,16 +8,16 @@ import {
     createMuiTheme,
 } from "@material-ui/core/styles";
 
-import firebase from "./firebase/firebase";
+import firebase from "./firebase/firebase.component";
 
 import IProfile from "./common/interfaces/IProfile";
 import IUser from "./common/interfaces/IUser";
 
-import Header from "./navigation/header";
-import HoursContainer from "./hours/HoursContainer";
-import PreLoad from "./navigation/preLoad";
-import Admin from "./admin/Admin";
-import AdminDetail from "./admin/detail/Detail";
+import Header from "./navigation/header.component";
+import HoursContainer from "./hours/hours-container/HoursContainer.component";
+import PreLoad from "./navigation/pre-load/preLoad.component";
+import Admin from "./admin/Admin.component";
+import AdminDetail from "./admin/detail/Detail.component";
 
 require("dotenv").config();
 

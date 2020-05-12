@@ -3,7 +3,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import TableCell from "@material-ui/core/TableCell";
 import TextField from "@material-ui/core/TextField";
 
-import IDay from "../common/interfaces/IDay";
+import IDay from "../../common/interfaces/IDay";
 
 const useStyles = makeStyles((theme) => ({
     textField: {
@@ -48,8 +48,6 @@ const HoursCell = ({
         const column = event.target.closest("td");
         const row = column.parentNode;
         const index = Array.from(row.children).indexOf(column);
-
-        event.preventDefault();
 
         switch (event.keyCode) {
             case 40:
@@ -96,7 +94,6 @@ const HoursCell = ({
                     id={column}
                     className={classes.textField}
                     fullWidth={false}
-                    type="number"
                     inputProps={{
                         style: {
                             textAlign: "left",

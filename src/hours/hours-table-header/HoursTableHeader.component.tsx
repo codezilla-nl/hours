@@ -1,6 +1,6 @@
 import React from "react";
 import { TableHead, TableRow, TableCell } from "@material-ui/core";
-import { columns } from "./hoursConstants";
+import { columns } from "../hours-constants/hoursConstants.component";
 
 interface IProps {
     expandColumns: boolean;

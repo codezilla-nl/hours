@@ -1,7 +1,7 @@
 import React from "react";
 import { unmountComponentAtNode } from "react-dom";
-import HoursCell from "../../hours/HoursCell";
-import { mockDays, mockDaysChanged } from "./hours.mock";
+import HoursCell from "./HoursCell.component";
+import { mockDays, mockDaysChanged } from "../hours.mock";
 import { createShallow, createMount } from "@material-ui/core/test-utils";
 
 let wrapper = null;

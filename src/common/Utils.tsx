@@ -1,5 +1,5 @@
 import IDay from "../common/interfaces/IDay";
-import * as HoursConstants from "../hours/hoursConstants";
+import * as HoursConstants from "../hours/hours-constants/hoursConstants.component";
 
 export default {
     getDayOfTheWeek(item: IDay, isTemplate: boolean): number {

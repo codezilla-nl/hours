@@ -49,8 +49,6 @@ const HoursCell = ({
         const row = column.parentNode;
         const index = Array.from(row.children).indexOf(column);
 
-        event.preventDefault();
-
         switch (event.keyCode) {
             case 40:
                 /* arrow key down */
@@ -96,7 +94,6 @@ const HoursCell = ({
                     id={column}
                     className={classes.textField}
                     fullWidth={false}
-                    type="number"
                     inputProps={{
                         style: {
                             textAlign: "left",

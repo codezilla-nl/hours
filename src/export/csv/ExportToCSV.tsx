@@ -6,13 +6,13 @@ import { columns } from "../../hours/hours-constants/hoursConstants.component";
 
 export default {
     getCSV(data: IHours): void {
-        const csvColumns = columns;
-        columns.unshift({
+        const csvColumns = columns.map((column) => column);
+        csvColumns.unshift({
             description: "Dag",
             id: "day",
             enabled: true,
         });
-        columns.push({
+        csvColumns.push({
             description: "Toelichting",
             id: "explanation",
             enabled: true,

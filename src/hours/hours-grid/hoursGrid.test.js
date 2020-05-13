@@ -106,4 +106,22 @@ describe("HoursGrid", () => {
         const weekendDay = wrapper.find(".isWeekend");
         expect(weekendDay).toHaveLength(0);
     });
+
+    it("should open comment dialog when clicking on comment button", () => {
+        const wrapper = mount(
+            <HoursGrid
+                expandColumns="true"
+                days={mockDays}
+                handleChange={() => {}}
+                save={() => {}}
+                isTemplate={false}
+            />,
+        );
+        const button = wrapper.find("button#commentButton-0");
+        button.simulate("click");
+
+        const title = wrapper.find("div#commentDialog").find("h2");
+
+        expect(title.text()).toEqual("Toelichting");
+    });
 });

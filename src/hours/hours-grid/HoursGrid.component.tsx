@@ -2,16 +2,11 @@ import React from "react";
 import {
     makeStyles,
     Button,
-    Dialog,
-    DialogActions,
-    DialogContent,
-    DialogTitle,
     Table,
     TableBody,
     TableCell,
     TableContainer,
     TableRow,
-    TextField,
     Paper,
 } from "@material-ui/core";
 import ChatBubbleOutlineIcon from "@material-ui/icons/ChatBubbleOutline";
@@ -20,6 +15,7 @@ import * as HoursConstants from "../hours-constants/hoursConstants.component";
 import HoursFooter from "../hours-footer/HoursFooter.component";
 import HoursCell from "../hours-cell/HoursCell.component";
 import HoursTableHead from "../hours-table-header/HoursTableHeader.component";
+import HoursComment from "../hours-comment/HoursComment.component";
 
 import IDay from "../../common/interfaces/IDay";
 
@@ -80,13 +76,13 @@ const HoursGrid = ({
         setShowComment(true);
     };
 
-    const onCloseComment = () => {
+    const onCancelComment = () => {
         setShowComment(false);
     };
 
-    const onSaveComment = () => {
-        days[rowIndex].explanation = explanation;
-        onCloseComment();
+    const onSaveComment = (text: string) => {
+        days[rowIndex].explanation = text;
+        setShowComment(false);
         save();
     };
 
@@ -146,35 +142,13 @@ const HoursGrid = ({
                 <HoursFooter expandColumns={expandColumns} days={days} />
             </Table>
 
-            <Dialog
-                open={showComment}
-                onClose={onCloseComment}
-                aria-labelledby="form-dialog-title"
-                fullWidth={true}
-                maxWidth="md"
-                id="commentDialog"
-            >
-                <DialogTitle id="form-dialog-title">Toelichting</DialogTitle>
-                <DialogContent>
-                    <TextField
-                        autoFocus
-                        margin="dense"
-                        id="explanation"
-                        value={explanation}
-                        onChange={(event) => {
-                            setExplanation(event.target.value);
-                        }}
-                        disabled={readOnly}
-                        fullWidth
-                    />
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={onCloseComment}>Annuleer</Button>
-                    <Button onClick={onSaveComment} color="primary">
-                        Bewaar
-                    </Button>
-                </DialogActions>
-            </Dialog>
+            <HoursComment
+                input={explanation}
+                readOnly={readOnly}
+                save={onSaveComment}
+                cancel={onCancelComment}
+                show={showComment}
+            />
         </TableContainer>
     );
 };

@@ -26,7 +26,7 @@ const useStyles = makeStyles((theme) => ({
     content: {
         flexGrow: 1,
     },
-    text: {
+    textSpacing: {
         margin: theme.spacing(1, 0),
     },
 }));
@@ -42,23 +42,23 @@ export default function Settings({ profile, notification }: IProps) {
     return (
         <>
             <div className={classes.spacing}>
-                <Typography variant="h4">Instellingen</Typography>
-                <Typography variant="body1">Hoeveel uren werk jij?</Typography>
+                <Typography variant="h4" className={classes.textSpacing}>
+                    Instellingen
+                </Typography>
+                <Typography variant="body2">
+                    Hoeveel uren werk jij in de week?
+                </Typography>
                 <TextField
                     autoFocus
                     margin="dense"
                     id="hoursPerWeek"
-                    label="Aantal uren per week"
+                    label="Aantal uren (bijv. 40)"
                     type="number"
                 />
-                <Typography variant="h5">Template</Typography>
-                <Typography variant="body1" className={classes.text}>
-                    Maak hier een template voor je gemiddelde werkweek. Pas het
-                    template toe op de hele urenstaat met een klik op de knop.
-                </Typography>
 
-                <Typography variant="body2" className={classes.text}>
-                    Uren die je al hebt ingevuld worden niet overschreven.
+                <Typography variant="body2" className={classes.textSpacing}>
+                    Hieronder zie een je een template van een werkweek. Vul deze
+                    in en je kan hem voor elke maand als basis gebruiken.
                 </Typography>
             </div>
             <HoursContainer

@@ -165,7 +165,7 @@ export default function AdminDetail({ notification }: { notification: any }) {
                 </div>
             </Toolbar>
             <HoursGrid
-                expandColumns={false}
+                expandColumns={true}
                 days={data.days}
                 readOnly="true"
                 handleChange=""

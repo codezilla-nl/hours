@@ -2,7 +2,8 @@ import React, { Component } from "react";
 import LinearProgress from "@material-ui/core/LinearProgress";
 
 import Hours from "../../firebase/data/Hours";
-import JSReport from "../../pdf/JSReport";
+import JSReport from "../../export/pdf/JSReport";
+import ExportToCSV from "../../export/csv/ExportToCSV";
 
 import HoursHeader from "../hours-header/HoursHeader.component";
 import HoursGrid from "../hours-grid/HoursGrid.component";
@@ -211,7 +212,7 @@ class HoursContainer extends Component<IProps> {
             });
     };
 
-    handleInputChange = (name: string, value: string) => {
+    handleInputChange = (name: string, value: any) => {
         this.setState({ [name]: value }, () => {
             if (["month", "year"].includes(name)) {
                 this.setState({ isLoading: true });
@@ -394,6 +395,10 @@ class HoursContainer extends Component<IProps> {
             });
     };
 
+    getCSV = () => {
+        ExportToCSV.getCSV(this.state);
+    };
+
     render() {
         if (!this.props.profile.id) return null;
 
@@ -407,6 +412,7 @@ class HoursContainer extends Component<IProps> {
                     isTemplate={this.state.isTemplate}
                     applyTemplate={this.applyTemplate}
                     getReport={this.getReport}
+                    getCSV={this.getCSV}
                     validationMessages={this.state.validationMessages}
                     saved={this.state.saved}
                     approved={this.state.approved}

@@ -27,19 +27,19 @@ const HoursFooter = ({ expandColumns, days }: IProps) => {
     return (
         <TableFooter>
             <TableRow>
-                <TableCell> Totaal</TableCell>
+                <TableCell>Totaal</TableCell>
                 <TableCell></TableCell>
                 {columns.map((column) => {
                     if (!column.enabled && !expandColumns) {
                         return null;
                     }
                     return (
-                        <TableCell align="right" key={"footer-" + column.id}>
+                        <TableCell key={"footer-" + column.id}>
                             {getTotal(column.id)}
                         </TableCell>
                     );
                 })}
-                <TableCell align="right"></TableCell>
+                <TableCell></TableCell>
             </TableRow>
         </TableFooter>
     );

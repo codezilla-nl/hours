@@ -11,7 +11,6 @@ export default {
         firebase.firestore.QuerySnapshot<firebase.firestore.DocumentData>
     > {
         const db = firebase.firestore();
-        debugger;
         return await db
             .collection("months")
             .where("month", "==", Number(month))

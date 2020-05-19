@@ -49,7 +49,7 @@ export default {
             }
 
             if (!day.date) {
-                day.date = new Date(year, month - 1, index);
+                day.date = new Date(year, month - 1, index + 1);
             }
 
             day.date = this.parseDate(x.date);

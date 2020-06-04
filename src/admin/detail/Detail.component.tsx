@@ -39,6 +39,7 @@ export default function AdminDetail({ notification }: { notification: any }) {
         profile: {
             id: "",
             isAdmin: false,
+            hoursPerWeek: "40",
             microsoftId: "",
             displayName: "",
             email: "",

@@ -16,6 +16,8 @@ import Admin from "./admin/Admin.component";
 import AdminDetail from "./admin/detail/Detail.component";
 import Settings from "./settings/Settings.component";
 
+import Profile from "./firebase/data/Profile";
+
 require("dotenv").config();
 
 const theme = createMuiTheme({
@@ -33,6 +35,7 @@ export default function App() {
     const [profile, setProfile] = React.useState<IProfile>({
         displayName: "",
         email: "",
+        hoursPerWeek: "40",
         id: "",
         isAdmin: false,
         microsoftId: "",
@@ -84,26 +87,32 @@ export default function App() {
     }, []);
 
     const fetchProfile = async (user: IUser) => {
-        const db = firebase.firestore();
-        const snapshot = await db.collection("profile").get();
-        const response = snapshot.docs.find((doc) => {
-            return doc.data().microsoftId === user.uid;
-        });
-
-        if (!response) {
-            createNewProfile(user);
-            return;
-        }
-
-        const data = response.data();
-        setProfile({
-            id: response.id,
-            isAdmin: Boolean(data.isAdmin),
-            displayName: data.displayName,
-            email: data.email,
-            microsoftId: data.microsoftId,
-        });
-        setIsLoading(false);
+        Profile.getProfile(user.uid)
+            .then((response) => {
+                if (response && response?.docs.length > 0) {
+                    const doc = response.docs[0];
+                    const data = doc.data();
+                    if (data) {
+                        setProfile({
+                            displayName: data.displayName,
+                            email: data.email,
+                            hoursPerWeek: data.hoursPerWeek,
+                            id: doc.id,
+                            isAdmin: Boolean(data.isAdmin),
+                            microsoftId: data.microsoftId,
+                        });
+                        setIsLoading(false);
+                    }
+                } else {
+                    createNewProfile(user);
+                }
+            })
+            .catch((error) => {
+                notification(
+                    "Het is niet gelukt een profiel op te halen: " + error,
+                );
+                setIsLoading(false);
+            });
     };
 
     const createNewProfile = (user: IUser) => {

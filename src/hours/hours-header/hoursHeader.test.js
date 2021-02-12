@@ -30,6 +30,7 @@ describe("HoursHeader", () => {
                 handleInputChange={jest.fn()}
                 client={"Codezilla"}
                 project={"Hours"}
+                hoursPerWeek={"40"}
                 expandColumns
                 isTemplate={false}
                 applyTemplate={jest.fn()}
@@ -40,11 +41,13 @@ describe("HoursHeader", () => {
     it("should only render client and project on template", () => {
         const client = "Codezilla";
         const project = "Hours";
+        const hoursPerWeek = "40";
         const wrapper = mount(
             <HoursHeader
                 handleInputChange={jest.fn()}
                 client={client}
                 project={project}
+                hoursPerWeek={hoursPerWeek}
                 expandColumns
                 isTemplate
                 applyTemplate={jest.fn()}
@@ -52,7 +55,7 @@ describe("HoursHeader", () => {
         );
 
         const inputs = wrapper.find("input");
-        expect(inputs).toHaveLength(2);
+        expect(inputs).toHaveLength(3);
 
         const clientInput = inputs.find("#client");
         expect(clientInput.props().value).toEqual(client);
@@ -117,6 +120,7 @@ describe("HoursHeader", () => {
                 handleInputChange={jest.fn()}
                 client={"Codezilla"}
                 project={"Hours"}
+                hoursPerWeek={"40"}
                 expandColumns
                 isTemplate={false}
                 getReport={getReport}

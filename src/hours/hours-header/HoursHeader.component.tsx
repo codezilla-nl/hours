@@ -21,8 +21,10 @@ interface IProps {
     isTemplate: boolean;
     client: string;
     project: string;
+    hoursPerWeek: string;
     expandColumns: boolean;
     handleInputChange: any;
+    validateHours: any;
     applyTemplate: any;
     getReport: any;
     getCSV: Function;
@@ -58,8 +60,10 @@ const HoursHeader = ({
     isTemplate,
     client,
     project,
+    hoursPerWeek,
     expandColumns,
     handleInputChange,
+    validateHours,
     applyTemplate,
     getReport,
     getCSV,
@@ -91,8 +95,10 @@ const HoursHeader = ({
                 classes={classes}
                 client={client}
                 project={project}
+                hoursPerWeek={hoursPerWeek}
                 approved={approved}
                 handleInputChange={handleInputChange}
+                validateHours={validateHours}
             />
         );
     return (
@@ -139,8 +145,10 @@ const HoursHeader = ({
                 classes={classes}
                 client={client}
                 project={project}
+                hoursPerWeek={hoursPerWeek}
                 approved={approved}
                 handleInputChange={handleInputChange}
+                validateHours={validateHours}
             />
 
             {validationMessages?.length > 0 ? (
@@ -244,7 +252,9 @@ interface IClientAndProjectProps {
     classes: any;
     client: string;
     project: string;
+    hoursPerWeek: string;
     handleInputChange: any;
+    validateHours: any;
     approved: boolean;
 }
 
@@ -252,7 +262,9 @@ const ClientAndProject = ({
     classes,
     client,
     project,
+    hoursPerWeek,
     handleInputChange,
+    validateHours,
     approved,
 }: IClientAndProjectProps) => (
     <>
@@ -274,6 +286,19 @@ const ClientAndProject = ({
             disabled={approved}
             onChange={(event) =>
                 handleInputChange("project", event.target.value)
+            }
+        />
+        <TextField
+            className={classes.spacingLeft}
+            id="hoursPerWeek"
+            label="Uren per week"
+            value={hoursPerWeek}
+            disabled={approved}
+            onChange={(event) =>
+                handleInputChange("hoursPerWeek", event.target.value)
+            }
+            onBlur={(event) =>
+                validateHours("hoursPerWeek", event.target.value)
             }
         />
     </>

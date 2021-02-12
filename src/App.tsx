@@ -35,7 +35,6 @@ export default function App() {
     const [profile, setProfile] = React.useState<IProfile>({
         displayName: "",
         email: "",
-        hoursPerWeek: "40",
         id: "",
         isAdmin: false,
         microsoftId: "",
@@ -96,7 +95,6 @@ export default function App() {
                         setProfile({
                             displayName: data.displayName,
                             email: data.email,
-                            hoursPerWeek: data.hoursPerWeek,
                             id: doc.id,
                             isAdmin: Boolean(data.isAdmin),
                             microsoftId: data.microsoftId,

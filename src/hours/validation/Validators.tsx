@@ -18,7 +18,7 @@ export default {
         }
         return;
     },
-    validateTotalHoursOfMonth(days: IDay[]): string {
+    validateTotalHoursOfMonth(days: IDay[], hoursPerWeek: string): string {
         let userTotalHours = 0;
         let potentialTotalHours = 0;
         days.forEach((day: IDay) => {
@@ -28,6 +28,8 @@ export default {
             userTotalHours += this.getTotalHoursPerDay(day);
             potentialTotalHours += 8;
         });
+
+        potentialTotalHours *= (Number(hoursPerWeek) / 40);
 
         if (userTotalHours < potentialTotalHours) {
             return (

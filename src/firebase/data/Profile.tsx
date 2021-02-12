@@ -19,7 +19,6 @@ export default {
             .set({
                 displayName: this.transformToString(document.displayName),
                 email: this.transformToString(document.email),
-                hoursPerWeek: this.transformToString(document.hoursPerWeek),
                 isAdmin: Boolean(document.isAdmin),
                 microsoftId: this.transformToString(document.microsoftId),
             });

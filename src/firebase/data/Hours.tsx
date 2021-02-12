@@ -52,6 +52,7 @@ export default {
                 profile: document.profile,
                 profileId: this.transformToString(document.profileId),
                 project: this.transformToString(document.project),
+                hoursPerWeek: this.transformToString(document.hoursPerWeek),
                 year: this.transformToString(document.year),
                 month: this.transformToString(document.month),
                 approved: document.approved ? document.approved : false,

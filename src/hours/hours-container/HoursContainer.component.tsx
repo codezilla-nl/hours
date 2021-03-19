@@ -28,13 +28,14 @@ class HoursContainer extends Component<IProps> {
         expandColumns: true,
         client: "",
         project: "",
+        hoursPerWeek: "40",
         profileId: "",
         profile: {
-            id: "",
             displayName: "",
-            microsoftId: "",
             email: "",
+            id: "",
             isAdmin: false,
+            microsoftId: "",
         },
         saved: false,
         approved: false,
@@ -287,6 +288,7 @@ class HoursContainer extends Component<IProps> {
             profile: this.state.profile,
             profileId: this.state.profileId,
             project: this.state.project,
+            hoursPerWeek: this.state.hoursPerWeek,
             year: this.state.year,
             month: this.state.month,
             approved: this.state.approved,
@@ -361,6 +363,7 @@ class HoursContainer extends Component<IProps> {
 
         const totalHoursValidation = Validators.validateTotalHoursOfMonth(
             this.state.days,
+            this.state.hoursPerWeek
         );
         if (totalHoursValidation) {
             validationMessages.push(totalHoursValidation);
@@ -406,8 +409,10 @@ class HoursContainer extends Component<IProps> {
             <form noValidate autoComplete="off">
                 <HoursHeader
                     handleInputChange={this.handleInputChange}
+                    validateHours={this.isValid}
                     client={this.state.client}
                     project={this.state.project}
+                    hoursPerWeek={this.state.hoursPerWeek}
                     expandColumns={this.state.expandColumns}
                     isTemplate={this.state.isTemplate}
                     applyTemplate={this.applyTemplate}

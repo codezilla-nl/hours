@@ -80,7 +80,7 @@ export const mockDaysChanged = [
     {
         day: 1,
         date: new Date(2020, 3, 1),
-        worked: 8,
+        worked: "8",
         overtime: "",
         sick: "",
         holiday: "",

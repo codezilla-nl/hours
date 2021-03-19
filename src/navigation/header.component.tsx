@@ -61,10 +61,10 @@ export default function Header({ profile }: IProps) {
                     <Button
                         component={NavLink}
                         color="inherit"
-                        to="/template"
+                        to="/settings"
                         activeClassName={classes.highlight}
                     >
-                        Template
+                        Instellingen
                     </Button>
                     {profile.isAdmin && (
                         <Button

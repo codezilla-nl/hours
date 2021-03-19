@@ -35,7 +35,9 @@ const HoursCell = ({
         setValue(row[column]);
     }, [row, column, days]);
 
-    const handleHoursInput = (value: string, column: string, day: number) => {
+    const handleHoursInput = (input: string, column: string, day: number) => {
+        let value = input ? Number(input).toFixed(0) : "";
+        value = value.toString();
         const daysInput = [...days];
         daysInput[day][column] = value;
         setValue(value);

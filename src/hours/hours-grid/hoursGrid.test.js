@@ -36,7 +36,7 @@ describe("HoursGrid", () => {
                 days={mockDays}
                 handleChange={() => {}}
                 save={() => {}}
-                isTemplate={false}
+                readOnly={false}
             />,
         );
         expect(wrapper).toMatchSnapshot();
@@ -49,7 +49,7 @@ describe("HoursGrid", () => {
                 days={mockDays}
                 handleChange={() => {}}
                 save={() => {}}
-                isTemplate={false}
+                readOnly={false}
             />,
         );
 
@@ -68,11 +68,11 @@ describe("HoursGrid", () => {
                 days={mockDays}
                 handleChange={onBlur}
                 save={() => {}}
-                isTemplate={false}
+                readOnly={false}
             />,
         );
         const explanations = wrapper.find("input");
-        explanations.first().simulate("blur", { target: { value: 8 } });
+        explanations.first().simulate("blur", { target: { value: "8" } });
 
         expect(onBlur).toHaveBeenCalledWith("days", mockDaysChanged);
     });
@@ -84,7 +84,7 @@ describe("HoursGrid", () => {
                 days={mockWeekend}
                 handleChange={() => {}}
                 save={() => {}}
-                isTemplate={false}
+                readOnly={false}
             />,
         );
 
@@ -99,7 +99,7 @@ describe("HoursGrid", () => {
                 days={mockWeekendTemplate}
                 handleChange={() => {}}
                 save={() => {}}
-                isTemplate
+                readOnly
             />,
         );
 

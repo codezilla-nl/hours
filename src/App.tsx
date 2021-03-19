@@ -1,12 +1,8 @@
 import React from "react";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
-import { CssBaseline, Snackbar, Typography } from "@material-ui/core";
+import { CssBaseline, Snackbar } from "@material-ui/core";
 
-import {
-    makeStyles,
-    ThemeProvider,
-    createMuiTheme,
-} from "@material-ui/core/styles";
+import { ThemeProvider, createMuiTheme } from "@material-ui/core/styles";
 
 import firebase from "./firebase/firebase.component";
 
@@ -18,6 +14,9 @@ import HoursContainer from "./hours/hours-container/HoursContainer.component";
 import PreLoad from "./navigation/pre-load/preLoad.component";
 import Admin from "./admin/Admin.component";
 import AdminDetail from "./admin/detail/Detail.component";
+import Settings from "./settings/Settings.component";
+
+import Profile from "./firebase/data/Profile";
 
 require("dotenv").config();
 
@@ -32,31 +31,7 @@ const theme = createMuiTheme({
     },
 });
 
-const useStyles = makeStyles((theme) => ({
-    root: {},
-    menuButton: {
-        marginRight: 36,
-    },
-    hide: {
-        display: "none",
-    },
-    toolbar: {
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        padding: theme.spacing(0, 1),
-        ...theme.mixins.toolbar,
-    },
-    content: {
-        flexGrow: 1,
-    },
-    title: {
-        margin: theme.spacing(1, 1),
-    },
-}));
-
 export default function App() {
-    const classes = useStyles();
     const [profile, setProfile] = React.useState<IProfile>({
         displayName: "",
         email: "",
@@ -111,26 +86,31 @@ export default function App() {
     }, []);
 
     const fetchProfile = async (user: IUser) => {
-        const db = firebase.firestore();
-        const snapshot = await db.collection("profile").get();
-        const response = snapshot.docs.find((doc) => {
-            return doc.data().microsoftId === user.uid;
-        });
-
-        if (!response) {
-            createNewProfile(user);
-            return;
-        }
-
-        const data = response.data();
-        setProfile({
-            id: response.id,
-            isAdmin: Boolean(data.isAdmin),
-            displayName: data.displayName,
-            email: data.email,
-            microsoftId: data.microsoftId,
-        });
-        setIsLoading(false);
+        Profile.getProfile(user.uid)
+            .then((response) => {
+                if (response && response?.docs.length > 0) {
+                    const doc = response.docs[0];
+                    const data = doc.data();
+                    if (data) {
+                        setProfile({
+                            displayName: data.displayName,
+                            email: data.email,
+                            id: doc.id,
+                            isAdmin: Boolean(data.isAdmin),
+                            microsoftId: data.microsoftId,
+                        });
+                        setIsLoading(false);
+                    }
+                } else {
+                    createNewProfile(user);
+                }
+            })
+            .catch((error) => {
+                notification(
+                    "Het is niet gelukt een profiel op te halen: " + error,
+                );
+                setIsLoading(false);
+            });
     };
 
     const createNewProfile = (user: IUser) => {
@@ -156,88 +136,69 @@ export default function App() {
 
     return (
         <ThemeProvider theme={theme}>
-            <div className={classes.root}>
-                {isLoading ? (
-                    <PreLoad />
-                ) : (
-                    <Router>
-                        <CssBaseline />
-                        <Header profile={profile} />
-                        <Switch>
-                            <Route
-                                path="/"
-                                exact
-                                component={() => (
-                                    <HoursContainer
-                                        profile={profile}
-                                        type="month"
-                                        notification={notification}
-                                    />
-                                )}
-                            />
-                            <Route path="/template">
-                                <TemplateHeader classes={classes} />
+            {isLoading ? (
+                <PreLoad />
+            ) : (
+                <Router>
+                    <CssBaseline />
+                    <Header profile={profile} />
+                    <Switch>
+                        <Route
+                            path="/"
+                            exact
+                            component={() => (
                                 <HoursContainer
-                                    type="template"
                                     profile={profile}
+                                    type="month"
                                     notification={notification}
                                 />
-                            </Route>
-                            {profile.isAdmin && (
-                                <>
-                                    <Route
-                                        path="/admin"
-                                        exact
-                                        component={() => (
-                                            <Admin
-                                                notification={notification}
-                                            />
-                                        )}
-                                    />
-                                    <Route
-                                        path="/admin/detail/:id"
-                                        component={() => (
-                                            <AdminDetail
-                                                notification={notification}
-                                            />
-                                        )}
-                                    />
-                                </>
                             )}
-                        </Switch>
-                        <Snackbar
-                            open={notificationMessage !== ""}
-                            autoHideDuration={6000}
-                            onClose={closeNotification}
-                            message={notificationMessage}
-                            anchorOrigin={{
-                                vertical: "bottom",
-                                horizontal: "right",
-                            }}
-                        ></Snackbar>
-                    </Router>
-                )}
+                        />
+                        <Route path="/settings">
+                            <Settings
+                                profile={profile}
+                                notification={notification}
+                            />
+                        </Route>
+                        {profile.isAdmin && (
+                            <>
+                                <Route
+                                    path="/admin"
+                                    exact
+                                    component={() => (
+                                        <Admin notification={notification} />
+                                    )}
+                                />
+                                <Route
+                                    path="/admin/detail/:id"
+                                    component={() => (
+                                        <AdminDetail
+                                            notification={notification}
+                                        />
+                                    )}
+                                />
+                            </>
+                        )}
+                    </Switch>
+                    <Snackbar
+                        open={notificationMessage !== ""}
+                        autoHideDuration={6000}
+                        onClose={closeNotification}
+                        message={notificationMessage}
+                        anchorOrigin={{
+                            vertical: "bottom",
+                            horizontal: "right",
+                        }}
+                    ></Snackbar>
+                </Router>
+            )}
 
-                <script src="https://www.gstatic.com/firebasejs/7.11.0/firebase-app.js"></script>
+            <script src="https://www.gstatic.com/firebasejs/7.11.0/firebase-app.js"></script>
 
-                <script src="https://www.gstatic.com/firebasejs/7.11.0/firebase-analytics.js"></script>
+            <script src="https://www.gstatic.com/firebasejs/7.11.0/firebase-analytics.js"></script>
 
-                <script src="https://www.gstatic.com/firebasejs/7.11.0/firebase-auth.js"></script>
-                <script src="https://www.gstatic.com/firebasejs/7.11.0/firebase-firestore.js"></script>
-            </div>
+            <script src="https://www.gstatic.com/firebasejs/7.11.0/firebase-auth.js"></script>
+            <script src="https://www.gstatic.com/firebasejs/7.11.0/firebase-firestore.js"></script>
         </ThemeProvider>
     );
 }
-
-const TemplateHeader = ({ classes }: { classes: any }) => (
-    <>
-        <Typography variant="body1" className={classes.title}>
-            Maak hier een template voor je gemiddelde werkweek. Pas het template
-            toe op de hele urenstaat met een klik op de knop.
-        </Typography>
-
-        <Typography variant="body2" className={classes.title}>
-            Uren die je al hebt ingevuld worden niet overschreven.
-        </Typography>
-    </>
-);
